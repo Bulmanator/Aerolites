@@ -1,0 +1,75 @@
+package com.teamtwo.engine.Utilities.State;
+
+import com.teamtwo.engine.Input.InputProcessor;
+import com.teamtwo.engine.Utilities.Game;
+import com.teamtwo.engine.Utilities.Interfaces.Disposable;
+import com.teamtwo.engine.Utilities.Interfaces.Renderable;
+import com.teamtwo.engine.Utilities.Interfaces.Updateable;
+import org.jsfml.graphics.RenderWindow;
+import org.jsfml.graphics.View;
+import org.jsfml.system.Vector2f;
+import org.jsfml.system.Vector2i;
+
+/**
+ * The base for a State to be used within the {@link GameStateManager}
+ * @author James Bulman
+ */
+public abstract class State implements Renderable, Updateable, Disposable {
+
+    /** The Game instance used to get information for this State */
+    protected Game game;
+    /** The {@link GameStateManager} this State belongs to */
+    protected GameStateManager gsm;
+
+    /** The Window used for rendering */
+    protected RenderWindow window;
+
+    /** The Input handler being used by the Engine */
+    protected InputProcessor inputProcessor;
+    /** The View used for moving the Camera */
+    protected View view;
+
+    /** A Vector2 used for converting mouse coordinates from screen to world */
+    protected Vector2i mouse;
+
+    /**
+     * Creates a new State
+     * @param gsm The {@link GameStateManager} which this State belongs to
+     */
+    public State(GameStateManager gsm) {
+
+        // Sets the game to the Game instance in the Game State Manager
+        game = gsm.game;
+        // Stores a reference to the Game State Manager
+        this.gsm = gsm;
+
+        // Gets the Window from the Game
+        window = game.getWindow();
+
+        // Creates a new View and applies it
+        view = new View(new Vector2f(0, 0), new Vector2f(window.getSize().x, window.getSize().y));
+    //    window.setView(view);
+
+        // Gets the Input Handler from the Engine
+        inputProcessor = game.getEngine().getInputHandler();
+
+        // Initialises the Vector to 0, 0
+        mouse = new Vector2i(0, 0);
+    }
+
+    /**
+     * Runs once per frame, used to update the entire State
+     * @param dt The amount of time passed since last frame
+     */
+    public abstract void update(float dt);
+
+    /**
+     * Runs once per frame, used to render the entire State
+     */
+    public abstract void render();
+
+    /**
+     * Runs once the State is removed from the {@link GameStateManager}, used to delete unused objects
+     */
+    public abstract void dispose();
+}
