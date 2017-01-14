@@ -32,6 +32,13 @@ public final class MathUtil {
     private MathUtil() {}
 
     /**
+     * Calculates the square of the given number
+     * @param number The number to square
+     * @return The square
+     */
+    public static float squared(float number) { return number * number; }
+
+    /**
      * A floating point conversion for {@link Math#cos(double)}
      * @param radians The angle, in radians
      * @return The cosine of the angle
@@ -169,5 +176,25 @@ public final class MathUtil {
         }
 
         return Vector2f.ZERO;
+    }
+
+    /**
+     * Calculates the resultant dot product of the vectors supplied
+     * @param a The first vector to perform the dot product on
+     * @param b The second vector to perform the dot product on
+     * @return The resultant dot product between the two vectors
+     */
+    public static float dot(Vector2f a, Vector2f b) {
+        return (a.x * b.x) + (a.y * b.y);
+    }
+
+    /**
+     * Calculates the cross product of the vectors supplied
+     * @param a The first vector to perform the cross product on
+     * @param b The second vector to perform the cross product on
+     * @return The resultant cross product between the two vectors
+     */
+    public static float cross(Vector2f a, Vector2f b) {
+        return (a.x * b.y) - (a.y * b.x);
     }
 }

@@ -2,6 +2,7 @@ package com.teamtwo.aerolites;
 
 import com.teamtwo.engine.Engine;
 import com.teamtwo.engine.Launcher.Configuration;
+import org.jsfml.window.WindowStyle;
 
 public class Launcher {
 
@@ -10,9 +11,8 @@ public class Launcher {
 
         config.width = 1280;
         config.height = 720;
-        config.title = "Aerolites";
-        config.fpsLimit = 168;
+        config.title = "ExampleGame";
 
-        new Engine(new Aerolites(), config);
+        new Engine(new ExampleGame(), config);
     }
 }

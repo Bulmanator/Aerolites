@@ -48,22 +48,22 @@ public class Animation implements Updateable, EntityRenderable {
 
     /**
      * Creates an animation from the given texture key, with a time per frame of 0.1 seconds
-     * @param textureKey The key within the {@link ContentManager} to get the texture from
+     * @param texture The texture to represent the animation
      * @param rows The number of rows in the animation sheet
      * @param columns The number of columns in the animation sheet
      */
-    public Animation(String textureKey, int rows, int columns) { this(textureKey, rows, columns, 0.1f); }
+    public Animation(Texture texture, int rows, int columns) { this(texture, rows, columns, 0.1f); }
 
     /**
      * Creates an animation from the given texture key, with a time per frame as given
-     * @param textureKey The key within the {@link ContentManager} to get the texture from
+     * @param texture The texture to represent the animation
      * @param rows The number of rows in the animation sheet
      * @param columns The number of columns in the animation sheet
      * @param timePerFrame The time each frame lasts for, in seconds
      */
-    public Animation(String textureKey, int rows, int columns, float timePerFrame) {
+    public Animation(Texture texture, int rows, int columns, float timePerFrame) {
         // Get the texture from the content manager
-        this.texture = ContentManager.instance.getTexture(textureKey);
+        this.texture = texture;
 
         // Set the number of rows and columns
         this.rows = rows;

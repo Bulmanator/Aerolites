@@ -1,5 +1,6 @@
 package com.teamtwo.engine.Utilities;
 
+import com.teamtwo.engine.Utilities.Debug.Debug;
 import org.jsfml.audio.Music;
 import org.jsfml.audio.Sound;
 import org.jsfml.audio.SoundBuffer;
@@ -104,124 +105,134 @@ public class ContentManager {
     }
 
     /**
-     * Loads a Texture from the given path into the Content Manager
+     * Loads a Texture from the given filename into the Content Manager
      * @param name The name to associate to the Texture for retrieving it
-     * @param path The path to the Texture
+     * @param filename The name of the file which contains the texture, including extension
+     * @return The Texture which was loaded
      */
-    public void loadTexture(String name, String path) {
+    public Texture loadTexture(String name, String filename) {
         // Makes sure a duplicate name has not been user
         // Stops loading if it has
         if(textures.containsKey(name)) {
-            System.err.println("Warning: A Texture of name \"" + name + "\" has already been loaded");
-            return;
+            Debug.log(Debug.LogLevel.WARNING, "A Texture of name \"" + name + "\" has already been loaded");
+            return textures.get(name);
         }
 
         // Creates a new Texture
         Texture t = new Texture();
         try {
-            // Tries to load if from the path
-            t.loadFromFile(Paths.get(System.getProperty("user.dir") + File.separator + path));
+            // Tries to load if from the filename provided
+            t.loadFromFile(Paths.get(System.getProperty("user.dir")
+                    + File.separator + "Textures" + File.separator + filename));
         }
         catch (IOException ex) {
             // If it fails the exit
-            System.err.println("Error: Failed to load Texture: " + path);
+            System.err.println("Error: Failed to load Texture: " + filename);
             ex.printStackTrace();
             System.exit(-1);
         }
 
         // If it succeeds then put it into the hash map
         textures.put(name, t);
+        return t;
     }
 
     /**
-     * Loads a Font from the given path into the Content Manager
+     * Loads a Font from the given filename into the Content Manager
      * @param name The name to associate to the Font for retrieving it
-     * @param path The path to the Font
+     * @param filename The name of the file wich contains the font, including extension
+     * @return The Font which was loaded
      */
-    public void loadFont(String name, String path) {
+    public Font loadFont(String name, String filename) {
         // Makes sure a duplicate name has not been used
         // Stops loading if it has
         if(fonts.containsKey(name)) {
-            System.err.println("Warning: A Font of name \"" + name + "\" has already been loaded");
-            return;
+            Debug.log(Debug.LogLevel.WARNING, "A Font of name \"" + name + "\" has already been loaded");
+            return fonts.get(name);
         }
 
         // Creates a new font
         Font f = new Font();
         try {
-            // Tries to load it from the path
-            f.loadFromFile(Paths.get(System.getProperty("user.dir") + File.separator + path));
+            // Tries to load it from the filename provided
+            f.loadFromFile(Paths.get(System.getProperty("user.dir")
+                    + File.separator + "Fonts" + File.separator + filename));
         }
         catch (IOException ex) {
             // If it fails the exit
-            System.err.println("Error: Failed to load Font: " + path);
+            System.err.println("Error: Failed to load Font: " + filename);
             ex.printStackTrace();
             System.exit(-1);
         }
 
         // If it succeeds then put it into the hash map
-        fonts.put(name, f);
+        return fonts.put(name, f);
     }
 
     /**
-     * Loads a Sound from the given path into the Content Manager
+     * Loads a Sound from the given filename into the Content Manager
      * @param name The name to associate with the Sound for retrieving
-     * @param path The path to the Sound
+     * @param filename The name of the file which contains the sound, including extension
+     * @return The Sound which was loaded
      */
-    public void loadSound(String name, String path) {
+    public Sound loadSound(String name, String filename) {
         // Makes sure a duplicate name has not been used
         // Stops loading if it has
         if(sounds.containsKey(name)) {
-            System.err.println("Warning: A Sound of name \"" + name + "\" has already been loaded");
-            return;
+            Debug.log(Debug.LogLevel.WARNING, "A Sound of name \"" + name + "\" has already been loaded");
+            return sounds.get(name);
         }
 
         // Creates a new Sound
         Sound s = new Sound();
         try {
-            // Loads a SoundBuffer from from the path
+            // Loads a SoundBuffer from from the filename provided
             SoundBuffer soundBuffer = new SoundBuffer();
-            soundBuffer.loadFromFile(Paths.get(System.getProperty("user.dir") + File.separator + path));
+            soundBuffer.loadFromFile(Paths.get(System.getProperty("user.dir")
+                    + File.separator + "Sounds" + File.separator + filename));
+
             s.setBuffer(soundBuffer);
         }
         catch (IOException ex) {
             // If it fails then exit
-            System.err.println("Error: Failed to load Sound: " + path);
+            System.err.println("Error: Failed to load Sound: " + filename);
             ex.printStackTrace();
             System.exit(-1);
         }
 
         // If it succeeds then put it into the hash map
-        sounds.put(name, s);
+        return sounds.put(name, s);
     }
 
     /**
-     * Loads Music from the given path into the Content Manager
+     * Loads Music from the given filename into the Content Manager
      * @param name The name to associate with the Music for retrieving
-     * @param path The path to the Music
+     * @param filename The name of the file which contains the music, including extension
+     * @return The piece of Music which was loaded
      */
-    public void loadMusic(String name, String path) {
+    public Music loadMusic(String name, String filename) {
         // Makes sure a duplicate name has not been used
         // Stops loading if it has
         if(music.containsKey(name)) {
-            System.err.println("Warning: Music of the name \"" + name + "\" has already been loaded");
-            return;
+            Debug.log(Debug.LogLevel.WARNING, "Music of the name \"" + name + "\" has already been loaded");
+            return music.get(name);
         }
 
         // Creates new Music
         Music m = new Music();
         try {
-            // Tries to load from the path
-            m.openFromFile(Paths.get(System.getProperty("user.dir") + File.separator + path));
+            // Tries to load from the filename provided
+            m.openFromFile(Paths.get(System.getProperty("user.dir")
+                    + File.separator + "Music" + File.separator + filename));
         }
         catch (IOException ex) {
             // If it fails then exit
-            System.err.println("Error: Failed to load Music: " + path);
+            System.err.println("Error: Failed to load Music: " + filename);
             ex.printStackTrace();
             System.exit(-1);
         }
 
         // If it succeeds then put it into the hash map
-        music.put(name, m);
+        return music.put(name, m);
     }
 }

@@ -1,6 +1,6 @@
 package com.teamtwo.engine.Utilities.State;
 
-import com.teamtwo.engine.Utilities.Game;
+import com.teamtwo.engine.Game;
 import com.teamtwo.engine.Utilities.Interfaces.Renderable;
 import com.teamtwo.engine.Utilities.Interfaces.Updateable;
 

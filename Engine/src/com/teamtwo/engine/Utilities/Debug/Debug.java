@@ -24,6 +24,9 @@ public final class Debug {
         ERROR
     }
 
+    // Cannot instantiate
+    private Debug() {}
+
     /**
      * Logs the given message at the specified level in the given layout "Level : Message"
      * @param level The level to log at

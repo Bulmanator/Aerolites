@@ -1,6 +1,5 @@
-package com.teamtwo.engine.Utilities;
+package com.teamtwo.engine;
 
-import com.teamtwo.engine.Engine;
 import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.Interfaces.Renderable;
 import com.teamtwo.engine.Utilities.Interfaces.Updateable;
@@ -73,10 +72,8 @@ public abstract class Game implements Updateable, Renderable, Disposable {
     /**
      * Sets the Engine instance of the Game<br>
      * @param engine The Engine to associate with the Game
-     * @deprecated Using this method will cause undefined behaviour
      */
-    @Deprecated
-    public final void setEngine(Engine engine) {
+    final void setEngine(Engine engine) {
         this.engine = engine;
         window = engine.getWindow();
     }

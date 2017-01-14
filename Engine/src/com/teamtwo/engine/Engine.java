@@ -4,7 +4,6 @@ import com.teamtwo.engine.Input.InputHandler;
 import com.teamtwo.engine.Input.InputProcessor;
 import com.teamtwo.engine.Launcher.Configuration;
 import com.teamtwo.engine.Utilities.Debug.Debug;
-import com.teamtwo.engine.Utilities.Game;
 import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.Interfaces.Renderable;
 import com.teamtwo.engine.Utilities.Interfaces.Updateable;
@@ -27,11 +26,12 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 
 /**
- * A Class which handles the Engine backed, this will update, draw and handle input
+ * A Class which handles the Engine backend, this will update, draw and handle input
  * @author James Bulman
  */
 public class Engine implements Updateable, Renderable, Disposable {
 
+    // The JSFML version which the engine requires
     private final String JSFML_VERSION = "2.2-J7";
 
     // The Game instance in use
@@ -56,7 +56,6 @@ public class Engine implements Updateable, Renderable, Disposable {
      * @param config The Window configuration
      * @see Configuration
      */
-    @SuppressWarnings("deprecation")
     public Engine(Game game, Configuration config) {
 
         if(!JSFML_VERSION.equals(JSFML.VERSION_STRING)) {
@@ -69,7 +68,7 @@ public class Engine implements Updateable, Renderable, Disposable {
         window.setKeyRepeatEnabled(false);
 
         // Clamp the FPS Limit as there aren't many screens which support > 144 Hz
-        // TODO Fix input issues when at higher frame rates
+        // The input lag frame rate issue seems to have fixed itself, more testing will take place
         config.fpsLimit = (int)MathUtil.clamp(config.fpsLimit, -1, 144);
 
         // Checks the FPS Limit
@@ -77,7 +76,7 @@ public class Engine implements Updateable, Renderable, Disposable {
         if(config.fpsLimit <= 0) {
             window.setVerticalSyncEnabled(true);
             int fps = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getRefreshRate();
-            deltaTime = 1.0f / (float)fps;
+            deltaTime = 1.0f / (fps != 0 ? (float)fps : 60f);
         }
         else {
             window.setVerticalSyncEnabled(false);
@@ -85,14 +84,15 @@ public class Engine implements Updateable, Renderable, Disposable {
             deltaTime = 1.0f / (float)config.fpsLimit;
         }
 
-        System.out.println("Framerate cap = " + Math.round(1f / deltaTime));
-
         if(Debug.DEBUG) printDebugInfo();
 
         // Sets the Input Handling to a Default Handler
         input = new InputHandler();
 
-        if(config.style == WindowStyle.NONE) window.setPosition(new Vector2i(0, 0));
+        // Move the window to the top left corner if there is not title-bar
+        if(config.style == WindowStyle.NONE) {
+            window.setPosition(new Vector2i(0, 0));
+        }
 
         // Set content directory
         setContentDir(config.contentRoot);
@@ -102,6 +102,7 @@ public class Engine implements Updateable, Renderable, Disposable {
         game.setEngine(this);
         game.initialise();
 
+        // Shouldn't close and start main loop if instructed to do so
         shouldClose = false;
         if(config.autoStart) mainLoop();
     }
@@ -129,12 +130,13 @@ public class Engine implements Updateable, Renderable, Disposable {
             accumulator = MathUtil.clamp(accumulator, 0, 0.2f);
 
             // If the accumulator has passed the specified delta time
-            // Then update and render the game
+            // Then update the game
             while (accumulator >= deltaTime) {
                 accumulator -= deltaTime;
                 update(deltaTime);
             }
 
+            // Render the game
             render();
 
             // Poll for events

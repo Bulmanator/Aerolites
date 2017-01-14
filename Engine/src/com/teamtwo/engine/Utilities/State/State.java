@@ -1,7 +1,8 @@
 package com.teamtwo.engine.Utilities.State;
 
+import com.teamtwo.engine.Engine;
 import com.teamtwo.engine.Input.InputProcessor;
-import com.teamtwo.engine.Utilities.Game;
+import com.teamtwo.engine.Game;
 import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.Interfaces.Renderable;
 import com.teamtwo.engine.Utilities.Interfaces.Updateable;
@@ -24,8 +25,6 @@ public abstract class State implements Renderable, Updateable, Disposable {
     /** The Window used for rendering */
     protected RenderWindow window;
 
-    /** The Input handler being used by the Engine */
-    protected InputProcessor inputProcessor;
     /** The View used for moving the Camera */
     protected View view;
 
@@ -48,10 +47,6 @@ public abstract class State implements Renderable, Updateable, Disposable {
 
         // Creates a new View and applies it
         view = new View(new Vector2f(0, 0), new Vector2f(window.getSize().x, window.getSize().y));
-    //    window.setView(view);
-
-        // Gets the Input Handler from the Engine
-        inputProcessor = game.getEngine().getInputHandler();
 
         // Initialises the Vector to 0, 0
         mouse = new Vector2i(0, 0);

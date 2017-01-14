@@ -6,6 +6,8 @@
     <JAVADOC>
       <root url="https://jsfml.sfmlprojects.org/javadoc/" />
     </JAVADOC>
-    <SOURCES />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/Libraries/jsfml_src" />
+    </SOURCES>
   </library>
 </component>

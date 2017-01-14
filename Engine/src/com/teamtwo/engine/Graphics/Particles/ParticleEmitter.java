@@ -7,6 +7,10 @@ import org.jsfml.graphics.CircleShape;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
 
+/**
+ * A class which will emit a given particles from a given configuration at the rate specified
+ * @author James Bulman
+ */
 public class ParticleEmitter implements Updateable, EntityRenderable {
 
     /** Whether the emitter is active or not */

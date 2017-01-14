@@ -230,10 +230,6 @@ public class Particle implements Initialisable<Particle.Configuration>, Updateab
         // Set whether to fade out or not
         fadeOut = config.fadeOut;
 
-        // Set the start and end size
-       // startColour = new Color(config.startColour, 255);
-      //  endColour = new Color(config.endColour, 255);
-
         // Reset the accumulator and set the lifetime
         accumulator = 0;
         lifetime = MathUtil.randomFloat(config.minLifetime, config.maxLifetime);
@@ -262,10 +258,12 @@ public class Particle implements Initialisable<Particle.Configuration>, Updateab
             display.setRadius(MathUtil.lerp(startSize, endSize, ratio));
             display.setOrigin(display.getRadius(), display.getRadius());
 
+
             position = new Vector2f(
-                    position.x + (velocity.x * dt),
-                    position.y + (velocity.y * dt)
+                position.x + (velocity.x * dt),
+                position.y + (velocity.y * dt)
             );
+
 
             display.setPosition(position);
             display.rotate(rotationalSpeed * dt);
