@@ -10,65 +10,9 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e1a6a382-2b49-4248-b02a-05840dd60c00" name="Default" comment="Changes:&#10;-- Content Manager now returns the content is has loaded when using the load methods&#10;   this is opposed to using load then get&#10;-- Physics stuff has gone, I will work on this properly&#10;-- Some documentation clean up&#10;-- Example game, input handler and state have been made&#10;-- The example state shows loading content, the particle system and input handling&#10;-- Removed controller stuff, this will be revised at a later date&#10;-- Removed reference to the Input handler in states (can be retrieved via &#10;   game.getEngine().getInputHandler()&#10;-- Changed the Animation constructor to take a texture rather than a String key&#10;-- Various cleanups">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Input/Controllers/Controller$1.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Input/Controllers/Controller$Buttons.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Input/Controllers/Controller.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Input/Controllers/ControllerManager$Controllers.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Input/Controllers/ControllerManager.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Physics/Body.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Physics/Collisions/Pair.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Physics/Matrix2f.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Physics/Shapes/AABB.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Physics/Shapes/Polygon.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Physics/Shapes/Shape.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Physics/Shapes/ShapeUtil.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Physics/Transform.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Utilities/Game.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Body.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Pair.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Matrix2f.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/AABB.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/Polygon.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/ShapeUtil.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/Shape_Old.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Transform.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Game/Content/Textures/FlameTexture.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Game/out/com/teamtwo/aerolites/Aerolites.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Game/out/com/teamtwo/aerolites/Controls$1.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Game/out/com/teamtwo/aerolites/Controls.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Game/out/com/teamtwo/aerolites/Others/ControllerBlob.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Game/out/com/teamtwo/aerolites/Others/ControllerInfo.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Game/out/com/teamtwo/aerolites/States/Testing.class" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/Game.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Game.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Aerolites.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleGame.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Controls.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleInput.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/Testing.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/ExampleState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Engine$1.class" afterPath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Engine$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Engine.class" afterPath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Engine.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Graphics/Animation.class" afterPath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Graphics/Animation.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Graphics/Particles/Particle.class" afterPath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Graphics/Particles/Particle.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Graphics/Particles/ParticleEmitter.class" afterPath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Graphics/Particles/ParticleEmitter.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Utilities/ContentManager.class" afterPath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Utilities/ContentManager.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Utilities/Debug/Debug$1.class" afterPath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Utilities/Debug/Debug$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Utilities/Debug/Debug.class" afterPath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Utilities/Debug/Debug.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Utilities/MathUtil.class" afterPath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Utilities/MathUtil.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Utilities/State/GameStateManager.class" afterPath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Utilities/State/GameStateManager.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Utilities/State/State.class" afterPath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Utilities/State/State.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/out/com/teamtwo/aerolites/Launcher.class" afterPath="$PROJECT_DIR$/Game/out/com/teamtwo/aerolites/Launcher.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/jsfml.xml" afterPath="$PROJECT_DIR$/.idea/libraries/jsfml.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+    <list default="true" id="e1a6a382-2b49-4248-b02a-05840dd60c00" name="Default" comment="Removed the Shapes class as for some reason it wasn't deleted before&#10;I am rewriting this">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/Shape.java" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Engine.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Engine.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Animation.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Animation.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/Particle.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/Particle.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleEmitter.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleEmitter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/ContentManager.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/ContentManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/Debug/Debug.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/Debug/Debug.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/MathUtil.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/MathUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/GameStateManager.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/GameStateManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/State.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/State.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Launcher.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Launcher.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -92,106 +36,14 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="ExampleInput.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleInput.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="21" column="26" lean-forward="true" selection-start-line="21" selection-start-column="26" selection-end-line="21" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ExampleGame.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleGame.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="16" column="5" lean-forward="true" selection-start-line="16" selection-start-column="5" selection-end-line="16" selection-end-column="5" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#746#747#0" expanded="true" />
-                <element signature="e#785#786#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Launcher.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Launcher.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ExampleState.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ExampleState.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/ExampleState.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1497">
+            <state relative-caret-position="1965">
               <caret line="131" column="0" lean-forward="false" selection-start-line="131" selection-start-column="0" selection-end-line="131" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ContentManager.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/ContentManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="291">
-              <caret line="144" column="7" lean-forward="true" selection-start-line="144" selection-start-column="7" selection-end-line="144" selection-end-column="7" />
-              <folding>
-                <element signature="method#getMusic#0;class#ContentManager#0" expanded="false" />
-                <element signature="method#loadTexture#0;class#ContentManager#0" expanded="false" />
-                <element signature="method#loadFont#0;class#ContentManager#0" expanded="false" />
-                <element signature="method#loadSound#0;class#ContentManager#0" expanded="false" />
-                <element signature="method#loadMusic#0;class#ContentManager#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Animation.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Animation.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="326">
-              <caret line="203" column="57" lean-forward="true" selection-start-line="203" selection-start-column="57" selection-end-line="203" selection-end-column="57" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MathUtil.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/MathUtil.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="86">
-              <caret line="152" column="4" lean-forward="false" selection-start-line="152" selection-start-column="4" selection-end-line="152" selection-end-column="4" />
-              <folding>
-                <element signature="method#clamp#0;class#MathUtil#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GameStateManager.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/GameStateManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="86">
-              <caret line="51" column="4" lean-forward="false" selection-start-line="51" selection-start-column="4" selection-end-line="51" selection-end-column="4" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="State.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/State.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="86">
-              <caret line="28" column="4" lean-forward="false" selection-start-line="28" selection-start-column="4" selection-end-line="28" selection-end-column="4" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -279,10 +131,10 @@
         <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Launcher.java" />
         <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/State.java" />
         <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleGame.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Animation.java" />
         <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/ContentManager.java" />
         <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleInput.java" />
         <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/ExampleState.java" />
+        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Animation.java" />
       </list>
     </option>
   </component>
@@ -447,8 +299,6 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -511,14 +361,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="teamtwo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="aerolites" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -538,14 +380,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="teamtwo" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -625,55 +459,15 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="teamtwo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="teamtwo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Utilities" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
         <option name="show-excluded-files" value="false" />
       </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -866,17 +660,6 @@
       <envs />
       <properties />
       <listeners />
-      <method />
-    </configuration>
-    <configuration default="true" type="BashConfigurationType" factoryName="Bash">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="INTERPRETER_PATH" value="/sbin/bash" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <module name="" />
-      <envs />
       <method />
     </configuration>
     <configuration default="true" type="Cold Fusion runner description" factoryName="Cold Fusion" custom_browser="" web_path="">
@@ -1185,11 +968,12 @@
       <workItem from="1484254259306" duration="7533000" />
       <workItem from="1484301065589" duration="23807000" />
       <workItem from="1484403353095" duration="16997000" />
+      <workItem from="1484613143908" duration="183000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="241960000" />
+    <option name="totallyTimeSpent" value="242143000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1202,39 +986,39 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="27" width="1920" height="996" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32959402" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Statistic" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.8699655" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32959402" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.57652473" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32911393" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.63981587" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31990793" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32959402" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3198146" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.6191024" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24252136" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32911393" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16452992" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32959402" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.57652473" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Statistic" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.8699655" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.61423653" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32911393" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1245,7 +1029,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Changes:&#10;-- Content Manager now returns the content is has loaded when using the load methods&#10;   this is opposed to using load then get&#10;-- Physics stuff has gone, I will work on this properly&#10;-- Some documentation clean up&#10;-- Example game, input handler and state have been made&#10;-- The example state shows loading content, the particle system and input handling&#10;-- Removed controller stuff, this will be revised at a later date&#10;-- Removed reference to the Input handler in states (can be retrieved via &#10;   game.getEngine().getInputHandler()&#10;-- Changed the Animation constructor to take a texture rather than a String key&#10;-- Various cleanups" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changes:&#10;-- Content Manager now returns the content is has loaded when using the load methods&#10;   this is opposed to using load then get&#10;-- Physics stuff has gone, I will work on this properly&#10;-- Some documentation clean up&#10;-- Example game, input handler and state have been made&#10;-- The example state shows loading content, the particle system and input handling&#10;-- Removed controller stuff, this will be revised at a later date&#10;-- Removed reference to the Input handler in states (can be retrieved via &#10;   game.getEngine().getInputHandler()&#10;-- Changed the Animation constructor to take a texture rather than a String key&#10;-- Various cleanups" />
+    <MESSAGE value="Removed the Shapes class as for some reason it wasn't deleted before&#10;I am rewriting this" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed the Shapes class as for some reason it wasn't deleted before&#10;I am rewriting this" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1274,43 +1059,13 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar:///usr/lib/jvm/java-8-openjdk/src.zip!/java/nio/file/FileSystems.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="107" column="27" lean-forward="false" selection-start-line="107" selection-start-column="27" selection-end-line="107" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/java-8-openjdk/src.zip!/java/nio/file/spi/FileSystemProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-935">
-          <caret line="135" column="20" lean-forward="true" selection-start-line="135" selection-start-column="20" selection-end-line="135" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/java-8-openjdk/src.zip!/java/nio/file/Paths.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="101" column="6" lean-forward="true" selection-start-line="101" selection-start-column="6" selection-end-line="101" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/java-8-openjdk/src.zip!/java/nio/file/Path.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="370">
-          <caret line="533" column="26" lean-forward="true" selection-start-line="533" selection-start-column="26" selection-end-line="533" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="jar:///usr/lib/jvm/java-8-openjdk/src.zip!/java/nio/file/FileSystems.java" />
+    <entry file="jar:///usr/lib/jvm/java-8-openjdk/src.zip!/java/nio/file/spi/FileSystemProvider.java" />
+    <entry file="jar:///usr/lib/jvm/java-8-openjdk/src.zip!/java/nio/file/Paths.java" />
+    <entry file="jar:///usr/lib/jvm/java-8-openjdk/src.zip!/java/nio/file/Path.java" />
     <entry file="file://$PROJECT_DIR$/Libraries/jsfml_src/org/jsfml/graphics/Texture.java" />
     <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Input/Controllers/Controller.java" />
-    <entry file="jar:///usr/lib/jvm/java-8-openjdk/src.zip!/java/lang/System.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1070">
-          <caret line="787" column="25" lean-forward="false" selection-start-line="787" selection-start-column="25" selection-end-line="787" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="jar:///usr/lib/jvm/java-8-openjdk/src.zip!/java/lang/System.java" />
     <entry file="file://$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Utilities/ContentManager.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -1411,81 +1166,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/Polygon_Old.java" />
     <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/Shape_Old.java" />
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/AABB.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="7" lean-forward="false" selection-start-line="14" selection-start-column="7" selection-end-line="14" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Transform.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="508">
-          <caret line="70" column="0" lean-forward="false" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/Polygon.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="855">
-          <caret line="66" column="7" lean-forward="true" selection-start-line="66" selection-start-column="7" selection-end-line="66" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/ShapeUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Libraries/jsfml_src/org/jsfml/system/Vector2f.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="67" column="27" lean-forward="false" selection-start-line="67" selection-start-column="27" selection-end-line="67" selection-end-column="27" />
-          <folding>
-            <element signature="e#2024#2025#0" expanded="false" />
-            <element signature="e#2077#2078#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/PhysicsHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="83" column="12" lean-forward="false" selection-start-line="83" selection-start-column="12" selection-end-line="83" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Body.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="100" column="23" lean-forward="false" selection-start-line="100" selection-start-column="23" selection-end-line="100" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/PhysicsTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="387">
-          <caret line="79" column="48" lean-forward="false" selection-start-line="79" selection-start-column="48" selection-end-line="79" selection-end-column="48" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Pair.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="27">
-          <caret line="109" column="0" lean-forward="false" selection-start-line="109" selection-start-column="0" selection-end-line="109" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/AABB.java" />
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Transform.java" />
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/Polygon.java" />
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/ShapeUtil.java" />
+    <entry file="file://$PROJECT_DIR$/Libraries/jsfml_src/org/jsfml/system/Vector2f.java" />
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/PhysicsHandler.java" />
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Body.java" />
+    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/PhysicsTest.java" />
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Pair.java" />
     <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/Particle.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1095">
@@ -1535,49 +1224,45 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/Debug/Debug.java">
+    <entry file="jar:///usr/lib/jvm/java-8-openjdk/src.zip!/java/util/HashMap.java" />
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/MathUtil.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="29" column="7" lean-forward="true" selection-start-line="29" selection-start-column="7" selection-end-line="29" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleGame.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="5" lean-forward="true" selection-start-line="16" selection-start-column="5" selection-end-line="16" selection-end-column="5" />
+        <state relative-caret-position="1875">
+          <caret line="152" column="4" lean-forward="false" selection-start-line="152" selection-start-column="4" selection-end-line="152" selection-end-column="4" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#746#747#0" expanded="true" />
-            <element signature="e#785#786#0" expanded="true" />
+            <element signature="method#clamp#0;class#MathUtil#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Launcher.java">
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/GameStateManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+        <state relative-caret-position="675">
+          <caret line="51" column="4" lean-forward="false" selection-start-line="51" selection-start-column="4" selection-end-line="51" selection-end-column="4" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="jar:///usr/lib/jvm/java-8-openjdk/src.zip!/java/util/HashMap.java">
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/State.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="52">
-          <caret line="609" column="13" lean-forward="false" selection-start-line="609" selection-start-column="13" selection-end-line="609" selection-end-column="13" />
-          <folding>
-            <element signature="e#25295#25296#0" expanded="false" />
-            <element signature="e#25360#25361#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="285">
+          <caret line="28" column="4" lean-forward="false" selection-start-line="28" selection-start-column="4" selection-end-line="28" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Animation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="326">
+          <caret line="203" column="57" lean-forward="false" selection-start-line="203" selection-start-column="57" selection-end-line="203" selection-end-column="57" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/ContentManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="291">
-          <caret line="144" column="7" lean-forward="true" selection-start-line="144" selection-start-column="7" selection-end-line="144" selection-end-column="7" />
+        <state relative-caret-position="102">
+          <caret line="89" column="5" lean-forward="true" selection-start-line="89" selection-start-column="5" selection-end-line="89" selection-end-column="5" />
           <folding>
             <element signature="method#getMusic#0;class#ContentManager#0" expanded="false" />
             <element signature="method#loadTexture#0;class#ContentManager#0" expanded="false" />
@@ -1588,55 +1273,49 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Launcher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleGame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="5" lean-forward="false" selection-start-line="16" selection-start-column="5" selection-end-line="16" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#746#747#0" expanded="true" />
+            <element signature="e#785#786#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleInput.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
-          <caret line="21" column="26" lean-forward="true" selection-start-line="21" selection-start-column="26" selection-end-line="21" selection-end-column="26" />
+          <caret line="21" column="26" lean-forward="false" selection-start-line="21" selection-start-column="26" selection-end-line="21" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/Debug/Debug.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="29" column="7" lean-forward="true" selection-start-line="29" selection-start-column="7" selection-end-line="29" selection-end-column="7" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/ExampleState.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1497">
+        <state relative-caret-position="1965">
           <caret line="131" column="0" lean-forward="false" selection-start-line="131" selection-start-column="0" selection-end-line="131" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/MathUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="86">
-          <caret line="152" column="4" lean-forward="false" selection-start-line="152" selection-start-column="4" selection-end-line="152" selection-end-column="4" />
-          <folding>
-            <element signature="method#clamp#0;class#MathUtil#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/GameStateManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="86">
-          <caret line="51" column="4" lean-forward="false" selection-start-line="51" selection-start-column="4" selection-end-line="51" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/State.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="86">
-          <caret line="28" column="4" lean-forward="false" selection-start-line="28" selection-start-column="4" selection-end-line="28" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Animation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="326">
-          <caret line="203" column="57" lean-forward="true" selection-start-line="203" selection-start-column="57" selection-end-line="203" selection-end-column="57" />
-          <folding />
         </state>
       </provider>
     </entry>
