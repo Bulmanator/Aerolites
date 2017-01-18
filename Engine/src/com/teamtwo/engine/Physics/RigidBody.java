@@ -32,10 +32,10 @@ public class RigidBody implements Updateable{
         restitution = config.restitution;
 
         mass = config.mass;
-        invMass = 1/config.mass;
+        invMass= mass==0?0:1/mass;
 
         inertia = config.inertia;
-        invInertia = 1/config.inertia;
+        invInertia = inertia==0?0:1/inertia;
 
         velocity = config.velocity;
         anglularVelocity = config.angularVelocity;
