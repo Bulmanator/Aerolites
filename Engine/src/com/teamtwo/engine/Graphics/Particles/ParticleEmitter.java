@@ -29,7 +29,7 @@ public class ParticleEmitter implements Updateable, EntityRenderable {
     private float accumulator;
 
     /** The configuration to initialise particles with */
-    private Particle.Configuration config;
+    private ParticleConfig config;
 
     // Debug stuff
     private CircleShape emitter;
@@ -40,7 +40,7 @@ public class ParticleEmitter implements Updateable, EntityRenderable {
      * @param emissionRate The emission rate of the emitter, in particles per second
      * @param maxParticles The max particles which can be active at once
      */
-    public ParticleEmitter(Particle.Configuration defaultConfig, float emissionRate, int maxParticles) {
+    public ParticleEmitter(ParticleConfig defaultConfig, float emissionRate, int maxParticles) {
         // Initialise the particle pool
         particlePool = new Particle[maxParticles];
         for(int i = 0; i < maxParticles; i++) {
@@ -50,7 +50,7 @@ public class ParticleEmitter implements Updateable, EntityRenderable {
         particleCount = 0;
 
         // Store the config
-        config = new Particle.Configuration(defaultConfig);
+        config = new ParticleConfig(defaultConfig);
 
         // Set the emission rate
         this.emissionRate = emissionRate;
@@ -154,10 +154,10 @@ public class ParticleEmitter implements Updateable, EntityRenderable {
     public boolean isPaused() { return pause; }
 
     /**
-     * Gets the {@link Particle.Configuration} used to initialise particles
+     * Gets the {@link ParticleConfig} used to initialise particles
      * @return The configuration
      */
-    public Particle.Configuration getConfig() { return config; }
+    public ParticleConfig getConfig() { return config; }
 
     /**
      * Gets the emission rate of the emitter

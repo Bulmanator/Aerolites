@@ -2,7 +2,7 @@ package com.teamtwo.engine;
 
 import com.teamtwo.engine.Input.InputHandler;
 import com.teamtwo.engine.Input.InputProcessor;
-import com.teamtwo.engine.Launcher.Configuration;
+import com.teamtwo.engine.Launcher.LauncherConfig;
 import com.teamtwo.engine.Utilities.Debug.Debug;
 import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.Interfaces.Renderable;
@@ -54,9 +54,9 @@ public class Engine implements Updateable, Renderable, Disposable {
      * Creates an Runnable Engine which will run the main Game loop
      * @param game The Game instance used for updating and rendering
      * @param config The Window configuration
-     * @see Configuration
+     * @see LauncherConfig
      */
-    public Engine(Game game, Configuration config) {
+    public Engine(Game game, LauncherConfig config) {
 
         if(!JSFML_VERSION.equals(JSFML.VERSION_STRING)) {
             throw new JSFMLError("Error: the Engine requires JSFML version \'"

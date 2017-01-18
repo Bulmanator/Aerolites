@@ -2,7 +2,7 @@ package com.teamtwo.aerolites.States;
 
 import com.teamtwo.aerolites.ExampleInput;
 import com.teamtwo.engine.Graphics.Animation;
-import com.teamtwo.engine.Graphics.Particles.Particle;
+import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
@@ -39,7 +39,7 @@ public class ExampleState extends State {
         game.getEngine().setInputHandler(input);
 
         // Particle Emitter example
-        Particle.Configuration config = new Particle.Configuration();
+        ParticleConfig config = new ParticleConfig();
 
         config.position = new Vector2f(50, window.getSize().y / 2);
 

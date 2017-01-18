@@ -2,7 +2,7 @@ package com.teamtwo.engine.Launcher;
 
 import org.jsfml.window.WindowStyle;
 
-public class Configuration {
+public class LauncherConfig {
 
     /** The target width of the window, default = 640 */
     public int width;
@@ -26,7 +26,7 @@ public class Configuration {
     /**
      * Creates a default configuration
      */
-    public Configuration() {
+    public LauncherConfig() {
         width = 640;
         height = 360;
 
