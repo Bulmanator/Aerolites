@@ -88,9 +88,9 @@ public class ExampleState extends State {
         // Using get instead of loading directly
         font = ContentManager.instance.getFont("Ubuntu");
 
-        world= new World(new Vector2f(0,9.8f));
+        world= new World(new Vector2f(0,0f));
         BodyConfig asdf = new BodyConfig();
-        asdf.velocity = new Vector2f(150,0);
+        asdf.velocity = new Vector2f(0,0);
         asdf.mass = 10000;
         asdf.position = new Vector2f(100,100);
         body = world.createBody(asdf);
