@@ -44,11 +44,17 @@ public class RigidBody implements Updateable{
 
     @Override
     public void update(float dt) {
+        //find acceleration in both axis
         float accelerationX = force.x*invMass;
         float accelerationY = force.y*invMass;
+        //work out the new velocities using the acceleration
         velocity = new Vector2f(velocity.x + (accelerationX * dt), velocity.y + (accelerationY * dt));
+        //find the new x and y
+        float newX = transform.getPosition().x + (velocity.x * dt);
+        float newY = transform.getPosition().y+ (velocity.y * dt);
+        Vector2f newPos = new Vector2f(newX, newY);
 
-        transform.setPosition(new Vector2f(transform.getPosition().x + (velocity.x * dt), transform.getPosition().y+ (velocity.y * dt)));
+        transform.setPosition(newPos);
     }
 
     /**
