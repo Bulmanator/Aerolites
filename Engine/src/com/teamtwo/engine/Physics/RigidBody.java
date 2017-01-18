@@ -1,8 +1,9 @@
 package com.teamtwo.engine.Physics;
 
+import com.teamtwo.engine.Utilities.Interfaces.Updateable;
 import org.jsfml.system.Vector2f;
 
-public class RigidBody {
+public class RigidBody implements Updateable{
 
     // Positional
     // TODO Shape -> private Polygon shape;
@@ -27,18 +28,27 @@ public class RigidBody {
     RigidBody(BodyConfig config) {
         transform = new Transform();
 
-        density = 0;
-        restitution = 0;
+        density = config.density;
+        restitution = config.restitution;
 
-        mass = 0;
-        invMass = 0;
+        mass = config.mass;
+        invMass = 1/config.mass;
 
-        inertia = 0;
-        invInertia = 0;
+        inertia = config.inertia;
+        invInertia = 1/config.inertia;
 
-        velocity = Vector2f.ZERO;
-        anglularVelocity = 0;
+        velocity = config.velocity;
+        anglularVelocity = config.angularVelocity;
         force = Vector2f.ZERO;
+    }
+
+    @Override
+    public void update(float dt) {
+        float accelerationX = force.x*invMass;
+        float accelerationY = force.y*invMass;
+        velocity = new Vector2f(velocity.x + (accelerationX * dt), velocity.y + (accelerationY * dt));
+
+        transform.setPosition(new Vector2f(transform.getPosition().x + (velocity.x * dt), transform.getPosition().y+ (velocity.y * dt)));
     }
 
     /**
@@ -46,4 +56,10 @@ public class RigidBody {
      * @return The Transform
      */
     public Transform getTransform() { return transform; }
+
+    public float getMass() { return mass; }
+
+    public void applyForce(Vector2f newForce){
+        force = new Vector2f(force.x+newForce.x, force.y+newForce.y);
+    }
 }

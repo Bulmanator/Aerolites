@@ -22,6 +22,11 @@ public class World implements Updateable {
 
     public void update(float dt) {
         // TODO Solve Collisions -> Integrate forces -> Apply Impulses -> Integrate positions
+        for(RigidBody b:bodies){
+            b.applyForce(new Vector2f(gravity.x * b.getMass(), gravity.y + b.getMass()));
+            //System.out.println(gravity.x*b.getMass());
+            b.update(dt);
+        }
     }
 
 
@@ -35,4 +40,5 @@ public class World implements Updateable {
 
         return rb;
     }
+
 }

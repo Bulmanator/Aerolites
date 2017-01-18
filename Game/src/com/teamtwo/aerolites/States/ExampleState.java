@@ -4,6 +4,9 @@ import com.teamtwo.aerolites.ExampleInput;
 import com.teamtwo.engine.Graphics.Animation;
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
+import com.teamtwo.engine.Physics.BodyConfig;
+import com.teamtwo.engine.Physics.RigidBody;
+import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
@@ -24,6 +27,9 @@ public class ExampleState extends State {
 
     private ExampleInput input;
     private Font font;
+    private World world;
+    private RigidBody body;
+    private CircleShape bodyshape;
 
     /**
      * Called once at the beginning of execution
@@ -81,6 +87,16 @@ public class ExampleState extends State {
         ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
         // Using get instead of loading directly
         font = ContentManager.instance.getFont("Ubuntu");
+
+        world= new World(new Vector2f(0,9.8f));
+        BodyConfig asdf = new BodyConfig();
+        asdf.velocity = new Vector2f(150,0);
+        asdf.mass = 10000;
+        asdf.position = new Vector2f(100,100);
+        body = world.createBody(asdf);
+
+        bodyshape = new CircleShape(10);
+        bodyshape.setFillColor(Color.GREEN);
     }
 
     public void update(float dt) {
@@ -88,6 +104,7 @@ public class ExampleState extends State {
         emitter.update(dt);
         // Update the animation
         animation.update(dt);
+        world.update(dt);
     }
 
     public void render() {
@@ -130,6 +147,8 @@ public class ExampleState extends State {
         text.setPosition(330, (window.getSize().y / 2) + 10);
         window.draw(text);
 
+        bodyshape.setPosition(body.getTransform().getPosition());
+        window.draw(bodyshape);
     }
 
     public void dispose() {}
