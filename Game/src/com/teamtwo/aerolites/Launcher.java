@@ -11,6 +11,7 @@ public class Launcher {
         config.width = 1280;
         config.height = 720;
         config.title = "ExampleGame";
+        config.fpsLimit = 120;
 
         new Engine(new ExampleGame(), config);
     }

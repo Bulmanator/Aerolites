@@ -44,7 +44,7 @@ public class Transform {
 
     /**
      * Gets the current rotation of the Transform
-     * @return The current rotation of the Transform, in ?
+     * @return The current rotation of the Transform, in radians
      */
     public float getAngle() { return angle; }
 
@@ -62,7 +62,7 @@ public class Transform {
 
     /**
      * Rotates the Transform to the given angle
-     * @param angle The angle to set the rotation to, in ?
+     * @param angle The angle to set the rotation to, in radians
      */
     void setAngle(float angle) { this.angle = angle; }
 
