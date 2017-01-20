@@ -1,12 +1,13 @@
 package com.teamtwo.engine.Physics;
 
 import com.teamtwo.engine.Physics.Collisions.AABB;
-import com.teamtwo.engine.Physics.ShapeUtil;
-import com.teamtwo.engine.Physics.RigidBody;
 import com.teamtwo.engine.Utilities.Interfaces.Initialisable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import org.jsfml.system.Vector2f;
 
+/**
+ * A class which represents a polygon shape that can be used with a {@link RigidBody}
+ */
 public class Polygon implements Initialisable<RigidBody> {
 
     /**
@@ -19,15 +20,12 @@ public class Polygon implements Initialisable<RigidBody> {
     /** The body associated with the polygon */
     private RigidBody body;
 
-    /** Whether or not the polygon has been initialised */
-    private boolean initialised;
-
     /**
      * Creates a randomly generated polygon
      */
     public Polygon() {
         // Pick a random radius between 10 and 100 and generate
-        this(MathUtil.randomFloat(10, 100));
+        this(MathUtil.randomFloat(10, 50));
     }
 
     /**
@@ -57,8 +55,7 @@ public class Polygon implements Initialisable<RigidBody> {
         vertices = new Vector2f[vertexCount];
         System.arraycopy(tmp, 0, vertices, 0, vertexCount);
 
-        // Set to be uninitialised
-        initialised = false;
+        // Set the body to be null as it isn't attached to one
         body = null;
     }
 
@@ -76,22 +73,19 @@ public class Polygon implements Initialisable<RigidBody> {
         Vector2f centroid = ShapeUtil.findCentroid(vertices);
 
         // If the centroid is not at (0, 0) then translate all vertices so the centroid is
-        if(!MathUtil.isZero(centroid.x) || !MathUtil.isZero(centroid.y)) {
-            this.vertices = new Vector2f[vertices.length];
-            for(int i = 0; i < vertices.length; i++) {
-                this.vertices[i] = Vector2f.sub(vertices[i], centroid);
-            }
-        }
-        else {
-            // Otherwise just store vertices given
-            this.vertices = vertices;
+        this.vertices = new Vector2f[vertices.length];
+        for(int i = 0; i < vertices.length; i++) {
+            this.vertices[i] = Vector2f.sub(vertices[i], centroid);
         }
 
-        // Set to be uninitialised
-        initialised = false;
+        // Set body to be null because it isn't attached
         body = null;
     }
 
+    /**
+     * Initialises the shape and calculates the mass and inertia of the body supplied
+     * @param body The
+     */
     public void initialise(RigidBody body) {
         this.body = body;
 
@@ -99,18 +93,14 @@ public class Polygon implements Initialisable<RigidBody> {
         float area = ShapeUtil.findArea(vertices);
         body.setMass(body.getDensity() * area);
 
-        System.out.println("Mass: " + body.getDensity() * area);
-
         // Use the moment of inertia of a rectangle
         // This is because it is way too complicated to work out the inertia of the actual shape
         AABB aabb = new AABB(vertices);
         float inertia = ((4 * aabb.getHalfSize().x * aabb.getHalfSize().y)) / 12f;
         inertia *= (MathUtil.squared(aabb.getHalfSize().x * 2) + MathUtil.squared(aabb.getHalfSize().y * 2));
 
+        // You can get huge inertia values from this but they seem to work all the same
         body.setInertia(Math.abs(inertia));
-        System.out.println("Inertia: " + Math.abs(inertia));
-
-        initialised = true;
     }
 
     /**

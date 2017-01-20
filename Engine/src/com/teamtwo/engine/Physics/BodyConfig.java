@@ -19,7 +19,7 @@ public class BodyConfig {
 
     /** How bouncy the body should be, default = 0.2 */
     public float restitution;
-    /** The density of the body, default = 1 */
+    /** The density of the body, default = 0.5 */
     public float density;
 
     /**
@@ -36,7 +36,7 @@ public class BodyConfig {
 
         // Material
         restitution = 0.2f;
-        density = 1;
+        density = 0.5f;
     }
 
 }

@@ -4,6 +4,9 @@ import com.teamtwo.engine.Physics.RigidBody;
 import com.teamtwo.engine.Utilities.MathUtil;
 import org.jsfml.system.Vector2f;
 
+/**
+ * A class which contains information about a collision pair
+ */
 public class Pair {
 
     /** The first body to test for collision */
@@ -35,11 +38,12 @@ public class Pair {
     }
 
     /**
-     * Evaluates whether the two bodies overlap
+     * Evaluates whether the two bodies overlap using separating axis theorem
      * @return True if they are overlapping otherwise false
      */
     public boolean evaluate() {
-        // TODO SAT Collision detection
+
+        // Separating Axis Theorem Collision Detection
 
         Vector2f[] vertsA = A.getShape().getTransformed();
         Vector2f[] vertsB = B.getShape().getTransformed();
@@ -139,15 +143,16 @@ public class Pair {
         return true;
     }
 
+    /**
+     * This applies the impulse to make bodies repel from each other if they collide
+     */
     public void apply() {
         if(!colliding) return;
 
-        /*Vector2f centre = Vector2f.sub(A.getTransform().getPosition(), B.getTransform().getPosition());
+        Vector2f centre = Vector2f.sub(A.getTransform().getPosition(), B.getTransform().getPosition());
         if(MathUtil.dot(centre, axis) > 0) {
-            RigidBody tmp = A;
-            A = B;
-            B = tmp;
-        } */
+            axis = Vector2f.neg(axis);
+        }
 
         // Choose which restitution value to use
         float e = Math.min(A.getRestitution(), B.getRestitution());
@@ -155,30 +160,29 @@ public class Pair {
         // Calculate the relative velocity between both bodies
         Vector2f rv = Vector2f.sub(B.getVelocity(), A.getVelocity());
 
+        // If they are not moving towards each other then don't apply collision
         if(MathUtil.dot(rv, axis) > 0) return;
 
+        // Work out the magnitude of the impulse
         float impulseMag = -(1 + e) * (MathUtil.dot(rv, axis));
         impulseMag /= (A.getInvMass() + B.getInvMass());
 
+        // Work out the actual impulse to apply
         Vector2f impulse = new Vector2f(axis.x * impulseMag, axis.y * impulseMag);
 
-        float totalMass = A.getMass() + B.getMass();
-        float ratio = A.getMass() / totalMass;
+        // Apply Impulse to body A
+        A.applyImpulse(Vector2f.neg(impulse));
 
-        Vector2f applied = new Vector2f(-impulse.x * ratio, -impulse.y * ratio);
-        A.applyImpulse(applied);
-
-        ratio = B.getMass() / totalMass;
-        applied = new Vector2f(impulse.x * ratio, impulse.y * ratio);
-        B.applyImpulse(applied);
-
-       // System.out.println("Vel A: " + A.getVelocity());
-       // System.out.println("Vel B: " + B.getVelocity());
+        // Apply Impulse to body B
+        B.applyImpulse(impulse);
     }
 
+    /**
+     * This deals with objects that sink into each other<br>
+     * More visible when dealing with very small bodies colliding with very large bodies, or bodies resting on static ones
+     */
     public void correctPosition() {
-        float percent = 0.2f;
-        float correctionVal = (overlap / (A.getInvMass() + B.getInvMass())) * percent;
+        float correctionVal = (Math.max(overlap - 0.05f, 0.0f) / (A.getInvMass() + B.getInvMass())) * 0.2f;
 
         Vector2f correction = new Vector2f(correctionVal * axis.x, correctionVal * axis.y);
 
@@ -191,6 +195,12 @@ public class Pair {
         A.setTransform(positionA, A.getTransform().getAngle());
         B.setTransform(positionB, B.getTransform().getAngle());
     }
+
+    /**
+     * Whether or not the pair of bodies are colliding
+     * @return True if they are colliding, otherwise false
+     */
+    public boolean isColliding() { return colliding; }
 
     /**
      * Generates the edge normals from the given vertices which make up a polygon
