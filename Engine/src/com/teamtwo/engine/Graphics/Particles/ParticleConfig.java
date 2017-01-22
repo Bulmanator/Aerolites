@@ -100,5 +100,8 @@ public class ParticleConfig {
         // Lifetime
         minLifetime = config.minLifetime;
         maxLifetime = config.maxLifetime;
+
+        //EmissionRate
+
     }
 }

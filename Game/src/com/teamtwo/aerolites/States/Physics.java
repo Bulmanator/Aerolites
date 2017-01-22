@@ -58,7 +58,7 @@ public class Physics extends State {
         config.shape = new Polygon(vertices);
 
         config.restitution = 0.4f;
-        config.velocity = new Vector2f(-200, 0);
+        config.velocity = new Vector2f(-800, 0);
         config.angularVelocity = MathUtil.PI / 6f;
 
         config.density = 0.3f;
@@ -95,7 +95,7 @@ public class Physics extends State {
             config.shape = new Polygon();
 
             config.restitution = 0.3f;
-            config.velocity = new Vector2f(200, 0);
+            config.velocity = new Vector2f(800, 0);
             config.angularVelocity = MathUtil.PI / 32f;
 
             config.density = 0.3f;

@@ -182,4 +182,6 @@ public class ParticleEmitter implements Updateable, EntityRenderable {
      * @param emissionRate The new emission rate, in particles per second
      */
     public void setEmissionRate(float emissionRate) { this.emissionRate = emissionRate; }
+
+    public void setConfig(ParticleConfig config) { this.config = config; }
 }
