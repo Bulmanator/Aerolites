@@ -1,35 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AnalysisUIOptions">
-    <option name="SCOPE_TYPE" value="8" />
-    <option name="CUSTOM_SCOPE_NAME" value="Module 'Engine'" />
-  </component>
-  <component name="ArtifactsWorkspaceSettings">
-    <artifacts-to-build>
-      <artifact name="Aerolites:jar" />
-    </artifacts-to-build>
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="e1a6a382-2b49-4248-b02a-05840dd60c00" name="Default" comment="Changes&#10;Engine:&#10;-- Added debug rendering for the World, can draw bodies, AABBs and velocities&#10;-- Changed the particle emitter to finish updating all alive particles when deactivating&#10;-- Fixed issue with particle emitter which meant lots of particles would get emitted at once when reactivating an emitter&#10;-- Changed velocity updating to do half before and half after position change, this is proven to be more accurate&#10;-- Added apply, applyPosition and applyRotation methods to the Transform class allowing for more efficient use of the angle&#10;-- Removed the scale attribute from the Transform class as it was not necessary&#10;-- Cached transformed vertices and normals within Polygons to gain significant efficiency when testing for collisions&#10;-- Stored untransformed normals in the Polygon class to allow for easy rotations&#10;-- Set the Polygon vertex limit to 8 for performance reasons&#10;-- Slightly modified polygon generation parameters for better looking polygons with only 8 vertices&#10;-- Removed colliding attribute from the Pair class as it was not necessary&#10;Game&#10;-- Cleaned the Player and Asteroid update methods to use the new Transform methods&#10;-- Renamed ExampleGame to Aerolites&#10;Other&#10;-- Removed workspace.xml">
+    <list default="true" id="4d9830a5-712d-4d09-a563-264b3fe3a544" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleGame.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Aerolites.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/Particle.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/Particle.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleConfig.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleConfig.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleEmitter.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleEmitter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Pair.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Pair.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Polygon.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Polygon.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/RigidBody.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/RigidBody.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/ShapeUtil.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/ShapeUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Transform.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Transform.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/World.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/World.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Asteroid.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Asteroid.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Player.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Player.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Launcher.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Launcher.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/ExampleState.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/ExampleState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/Physics.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/Physics.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/PlayState.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/PlayState.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Graphics/Particles/Particle.class" afterPath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Graphics/Particles/Particle.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Graphics/Particles/ParticleEmitter.class" afterPath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Graphics/Particles/ParticleEmitter.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/out/com/teamtwo/aerolites/Launcher.class" afterPath="$PROJECT_DIR$/Game/out/com/teamtwo/aerolites/Launcher.class" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
+    <ignored path="$PROJECT_DIR$/Engine/out/" />
+    <ignored path="$PROJECT_DIR$/Game/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,118 +21,27 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
-  <component name="DatabaseView">
-    <option name="GROUP_SCHEMA" value="true" />
-    <option name="GROUP_CONTENTS" value="false" />
-    <option name="SORT_POSITIONED" value="false" />
-    <option name="SHOW_TABLE_DETAILS" value="true" />
-    <option name="SHOW_EMPTY_GROUPS" value="false" />
-    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
-  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
-  <component name="FavoritesManager">
-    <favorites_list name="Aerolites" />
-  </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
-  </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="GLSL Shader" />
-        <option value="Enum" />
-        <option value="Interface" />
-        <option value="Class" />
-      </list>
-    </option>
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>team2</find>
-      <find>shapeB.getNormal(i)</find>
-      <find>pB</find>
-    </findStrings>
-    <replaceStrings>
-      <replace>teamtwo</replace>
-      <replace>normalsB[i]</replace>
-      <replace>shapeA</replace>
-      <replace>shapeB</replace>
-    </replaceStrings>
+    <leaf>
+      <file leaf-file-name="Launcher.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Launcher.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="Git.Settings">
-    <option name="PREVIOUS_COMMIT_AUTHORS">
-      <list>
-        <option value="James Bulman" />
-      </list>
-    </option>
-    <option name="UPDATE_TYPE" value="MERGE" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="master" />
-      </map>
-    </option>
   </component>
   <component name="GradleLocalSettings">
     <option name="externalProjectsViewState">
       <projects_view />
-    </option>
-  </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/GameStateManager.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/Loading.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Input/InputHandler.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Input/InputProcessor.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Controls.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Body.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/Shape.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/Shape_Old.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/AABB.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/ShapeUtil.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/MathUtil.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/Polygon.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/PhysicsHandler.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Body.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/PhysicsTest.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/Debug/Debug.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Game.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/Testing.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/Example.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/State.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/ContentManager.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Animation.java" />
-        <option value="$PROJECT_DIR$/Libraries/jsfml_src/org/jsfml/audio/Music.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Configurations/Configuration.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Configurations/LauncherConfiguration.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleConfiguration.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleInput.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Polygon.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Engine.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/Interfaces/PhysicsObject.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/BodyConfig.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Launcher.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/Matrix2f.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Transform.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/ShapeUtil.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Polygon.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/Physics.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/Particle.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleConfig.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleEmitter.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/World.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Entity.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Person.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleGame.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Asteroid.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Player.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/RigidBody.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Pair.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Aerolites.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/PlayState.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/ExampleState.java" />
-      </list>
     </option>
   </component>
   <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
@@ -160,146 +50,10 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="MavenProjectNavigator">
-    <treeState />
-  </component>
   <component name="ProjectFrameBounds">
     <option name="y" value="27" />
     <option name="width" value="1920" />
     <option name="height" value="996" />
-  </component>
-  <component name="ProjectInspectionProfilesVisibleTreeState">
-    <entry key="Project Default">
-      <profile-state>
-        <expanded-state>
-          <State>
-            <id />
-          </State>
-          <State>
-            <id>Android &gt; Lint &gt; Correctness</id>
-          </State>
-          <State>
-            <id>Android &gt; Lint &gt; Usability &gt; Icons</id>
-          </State>
-          <State>
-            <id>Android Lint for Kotlin</id>
-          </State>
-          <State>
-            <id>Ant inspections</id>
-          </State>
-          <State>
-            <id>Application Server Specific Inspections</id>
-          </State>
-          <State>
-            <id>BashSupport</id>
-          </State>
-          <State>
-            <id>Control flow issuesJava</id>
-          </State>
-          <State>
-            <id>Control flow issuesJavaScript</id>
-          </State>
-          <State>
-            <id>Declaration redundancyJava</id>
-          </State>
-          <State>
-            <id>Faces Model</id>
-          </State>
-          <State>
-            <id>General</id>
-          </State>
-          <State>
-            <id>GeneralJavaScript</id>
-          </State>
-          <State>
-            <id>Groovy</id>
-          </State>
-          <State>
-            <id>Hibernate Issues</id>
-          </State>
-          <State>
-            <id>Initialization issuesJava</id>
-          </State>
-          <State>
-            <id>Internationalization issuesJava</id>
-          </State>
-          <State>
-            <id>JBoss Seam issues</id>
-          </State>
-          <State>
-            <id>JPA issues</id>
-          </State>
-          <State>
-            <id>JSON</id>
-          </State>
-          <State>
-            <id>Java</id>
-          </State>
-          <State>
-            <id>Java EE issues</id>
-          </State>
-          <State>
-            <id>JavaScript</id>
-          </State>
-          <State>
-            <id>JavaScript validity issuesJavaScript</id>
-          </State>
-          <State>
-            <id>Maven</id>
-          </State>
-          <State>
-            <id>Plugin DevKit</id>
-          </State>
-          <State>
-            <id>Probable bugsJava</id>
-          </State>
-          <State>
-            <id>Properties Files</id>
-          </State>
-          <State>
-            <id>SQL</id>
-          </State>
-          <State>
-            <id>Spring</id>
-          </State>
-          <State>
-            <id>Spring CoreSpring</id>
-          </State>
-          <State>
-            <id>Struts</id>
-          </State>
-          <State>
-            <id>Struts 1Struts</id>
-          </State>
-          <State>
-            <id>TestNGJava</id>
-          </State>
-          <State>
-            <id>UI Form Problems</id>
-          </State>
-          <State>
-            <id>Validity issuesGroovy</id>
-          </State>
-          <State>
-            <id>XML</id>
-          </State>
-          <State>
-            <id>XMLSpring CoreSpring</id>
-          </State>
-          <State>
-            <id>XSLT</id>
-          </State>
-        </expanded-state>
-        <selected-state>
-          <State>
-            <id>Duplicates</id>
-          </State>
-        </selected-state>
-      </profile-state>
-    </entry>
-  </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
-    <ConfirmationsSetting value="1" id="Add" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -307,7 +61,7 @@
       <showMembers />
       <showModules />
       <showLibraryContents />
-      <hideEmptyPackages ProjectPane="false" />
+      <hideEmptyPackages />
       <abbreviatePackageNames />
       <autoscrollToSource />
       <autoscrollFromSource />
@@ -316,7 +70,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -393,58 +146,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Game" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="States" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Game" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Entities" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="Engine" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -504,39 +205,21 @@
             </PATH_ELEMENT>
           </PATH>
         </subPane>
-        <option name="show-excluded-files" value="false" />
       </pane>
-      <pane id="Scratches" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="project.structure.last.edited" value="Libraries" />
-    <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.2" />
     <property name="nodejs_interpreter_path" value="/usr/bin/node" />
     <property name="js.eslint.eslintPackage" value="" />
     <property name="js-jscs-nodeInterpreter" value="/usr/bin/node" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Libraries/jsfml_src" />
-    <property name="settings.editor.selected.configurable" value="Errors" />
-    <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
-    <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
-    <property name="GenerateAntBuildDialog.backupFiles" value="true" />
-    <property name="GenerateAntBuildDialog.outputFileNameProperty" value="aerolites" />
-  </component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/Libraries" />
-      <recent name="$PROJECT_DIR$/Game/Content/Music" />
-      <recent name="$PROJECT_DIR$/Game/Content/Sounds" />
-      <recent name="$PROJECT_DIR$/Game/Content" />
-      <recent name="$PROJECT_DIR$/libs" />
-    </key>
   </component>
   <component name="RunManager" selected="Application.Launcher">
-    <configuration default="false" name="Launcher" type="Application" factoryName="Application" singleton="true" temporary="true" nameIsGenerated="true">
+    <configuration default="false" name="Launcher" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
           <option name="PATTERN" value="com.teamtwo.aerolites.*" />
@@ -544,18 +227,16 @@
         </pattern>
       </extension>
       <option name="MAIN_CLASS_NAME" value="com.teamtwo.aerolites.Launcher" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/Game" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="Game" />
-      <envs>
-        <env name="DEBUG" value="" />
-      </envs>
+      <envs />
       <method />
     </configuration>
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
@@ -795,7 +476,6 @@
       <setting name="passParentEnv" value="true" />
       <setting name="launchBrowser" value="true" />
       <setting name="launchBrowserUrl" value="" />
-      <setting name="depsClasspath" value="false" />
       <method />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
@@ -920,12 +600,6 @@
       <method />
     </configuration>
     <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
-      <node-interpreter>project</node-interpreter>
-      <node-options />
-      <gulpfile />
-      <tasks />
-      <arguments />
-      <envs />
       <method />
     </configuration>
     <configuration default="true" type="js.build_tools.npm" factoryName="npm">
@@ -968,134 +642,50 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="e1a6a382-2b49-4248-b02a-05840dd60c00" name="Default" comment="" />
-      <created>1483068413805</created>
+      <changelist id="4d9830a5-712d-4d09-a563-264b3fe3a544" name="Default" comment="" />
+      <created>1485175807031</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1483068413805</updated>
-      <workItem from="1483068417632" duration="2175000" />
-      <workItem from="1483070608359" duration="480000" />
-      <workItem from="1483111442763" duration="4010000" />
-      <workItem from="1483193608851" duration="11699000" />
-      <workItem from="1483282192393" duration="10565000" />
-      <workItem from="1483304984689" duration="5683000" />
-      <workItem from="1483378226137" duration="4337000" />
-      <workItem from="1483387314246" duration="10214000" />
-      <workItem from="1483411237719" duration="7784000" />
-      <workItem from="1483455101692" duration="13041000" />
-      <workItem from="1483476559515" duration="4070000" />
-      <workItem from="1483492084490" duration="7942000" />
-      <workItem from="1483538041978" duration="921000" />
-      <workItem from="1483547144900" duration="12694000" />
-      <workItem from="1483626119961" duration="19232000" />
-      <workItem from="1483659082035" duration="29000" />
-      <workItem from="1483659173033" duration="2372000" />
-      <workItem from="1483705211669" duration="9462000" />
-      <workItem from="1483796918495" duration="3750000" />
-      <workItem from="1483803364718" duration="17106000" />
-      <workItem from="1483838080895" duration="8000" />
-      <workItem from="1483838106207" duration="3078000" />
-      <workItem from="1483880382908" duration="1749000" />
-      <workItem from="1483886937539" duration="4229000" />
-      <workItem from="1483995717546" duration="599000" />
-      <workItem from="1484022040496" duration="901000" />
-      <workItem from="1484058722025" duration="9137000" />
-      <workItem from="1484071123278" duration="12419000" />
-      <workItem from="1484095399896" duration="1877000" />
-      <workItem from="1484102625639" duration="5939000" />
-      <workItem from="1484147272943" duration="1066000" />
-      <workItem from="1484238089541" duration="5055000" />
-      <workItem from="1484254259306" duration="7533000" />
-      <workItem from="1484301065589" duration="23807000" />
-      <workItem from="1484403353095" duration="16997000" />
-      <workItem from="1484613143908" duration="3589000" />
-      <workItem from="1484666861733" duration="1757000" />
-      <workItem from="1484670706665" duration="6226000" />
-      <workItem from="1484758453340" duration="2953000" />
-      <workItem from="1484767789676" duration="926000" />
-      <workItem from="1484773557135" duration="716000" />
-      <workItem from="1484858969301" duration="12550000" />
-      <workItem from="1485102999133" duration="9462000" />
-      <workItem from="1485117846857" duration="8270000" />
-      <workItem from="1485167980156" duration="6374000" />
+      <updated>1485175807031</updated>
+      <workItem from="1485175809862" duration="80000" />
     </task>
-    <task id="LOCAL-00001" summary="Removed the Shapes class as for some reason it wasn't deleted before&#10;I am rewriting this">
-      <created>1484613338950</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1484613338950</updated>
-    </task>
-    <task id="LOCAL-00002" summary="Simple Physics&#10;&#10;++ made ridged bodies now move due to force and will maintain constant velocity&#10;++ filled in the body config file with public variables&#10;++ made world update all bodies with gravity">
-      <created>1484761341871</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1484761341871</updated>
-    </task>
-    <task id="LOCAL-00003" summary="I spread out some code ok&#10;&#10;++updating my workspace because james says i should">
-      <created>1484768768582</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1484768768582</updated>
-    </task>
-    <task id="LOCAL-00004" summary="Fixed the divide by zero issue with ridged bodies taking input from a config">
-      <created>1484773916478</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1484773916478</updated>
-    </task>
-    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="294783000" />
-  </component>
-  <component name="TodoView">
-    <todo-panel id="selected-file">
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="true" />
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
+    <option name="totallyTimeSpent" value="80000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="27" width="1920" height="996" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32796317" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.6375144" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32959402" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3164557" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.6191024" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32911393" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16346154" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32959402" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32796317" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32911393" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2056624" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5755479" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Statistic" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.8699655" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.61423653" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -1105,37 +695,9 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Changes:&#10;-- Content Manager now returns the content is has loaded when using the load methods&#10;   this is opposed to using load then get&#10;-- Physics stuff has gone, I will work on this properly&#10;-- Some documentation clean up&#10;-- Example game, input handler and state have been made&#10;-- The example state shows loading content, the particle system and input handling&#10;-- Removed controller stuff, this will be revised at a later date&#10;-- Removed reference to the Input handler in states (can be retrieved via &#10;   game.getEngine().getInputHandler()&#10;-- Changed the Animation constructor to take a texture rather than a String key&#10;-- Various cleanups" />
-    <MESSAGE value="Removed the Shapes class as for some reason it wasn't deleted before&#10;I am rewriting this" />
-    <MESSAGE value="Changes:&#10;Engine&#10;-- Made the Particle class package-private as no one really needs to use it&#10;-- Moved Particle.Configuration to ParticleConfig to allow Particle to be package-private&#10;-- Changed the Configuration to LauncherConfig for clarity&#10;-- Placeholder Physics classes (RigidBody, World, Pair, Polygon, BodyConfig etc.)&#10;Game&#10;-- Added some controller testing code to ExampleInput&#10;&#10;Bugs:&#10;-- Cannot find monitor refresh rate properly for some reason&#10;-- Wouldn't really call this a bug, but the title gets overwritten by the FPS counter" />
-    <MESSAGE value="Simple Physics&#10;&#10;++ made ridged bodies now move due to force and will maintain constant velocity&#10;++ filled in the body config file with public variables&#10;++ made world update all bodies with gravity" />
-    <MESSAGE value="I spread out some code ok&#10;&#10;++updating my workspace because james says i should" />
-    <MESSAGE value="Fixed the divide by zero issue with ridged bodies taking input from a config" />
-    <MESSAGE value="Changes:&#10;Engine&#10;-- Fixed a bug with the Content Manager's load methods which would cause null to be returned instead of the content loaded&#10;-- Added polygons which can be used to represent rigid bodies&#10;-- Added Rigid Body collision detection&#10;-- Made the pairs correct positions to prevent bodies from sinking into each other&#10;-- I haven't tested with more than two bodies, please try and break this now so we don't have to deal with it later&#10;Game&#10;-- Added a Physics state which I used for testing&#10;-- Removed other physics stuff from the ExampleState" />
-    <MESSAGE value="Changes&#10;Engine:&#10;-- Added debug rendering for the World, can draw bodies, AABBs and velocities&#10;-- Changed the particle emitter to finish updating all alive particles when deactivating&#10;-- Fixed issue with particle emitter which meant lots of particles would get emitted at once when reactivating an emitter&#10;-- Changed velocity updating to do half before and half after position change, this is proven to be more accurate&#10;-- Added apply, applyPosition and applyRotation methods to the Transform class allowing for more efficient use of the angle&#10;-- Removed the scale attribute from the Transform class as it was not necessary&#10;-- Cached transformed vertices and normals within Polygons to gain significant efficiency when testing for collisions&#10;-- Stored untransformed normals in the Polygon class to allow for easy rotations&#10;-- Set the Polygon vertex limit to 8 for performance reasons&#10;-- Slightly modified polygon generation parameters for better looking polygons with only 8 vertices&#10;-- Removed colliding attribute from the Pair class as it was not necessary&#10;Game&#10;-- Cleaned the Player and Asteroid update methods to use the new Transform methods&#10;-- Renamed ExampleGame to Aerolites&#10;Other&#10;-- Removed workspace.xml" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changes&#10;Engine:&#10;-- Added debug rendering for the World, can draw bodies, AABBs and velocities&#10;-- Changed the particle emitter to finish updating all alive particles when deactivating&#10;-- Fixed issue with particle emitter which meant lots of particles would get emitted at once when reactivating an emitter&#10;-- Changed velocity updating to do half before and half after position change, this is proven to be more accurate&#10;-- Added apply, applyPosition and applyRotation methods to the Transform class allowing for more efficient use of the angle&#10;-- Removed the scale attribute from the Transform class as it was not necessary&#10;-- Cached transformed vertices and normals within Polygons to gain significant efficiency when testing for collisions&#10;-- Stored untransformed normals in the Polygon class to allow for easy rotations&#10;-- Set the Polygon vertex limit to 8 for performance reasons&#10;-- Slightly modified polygon generation parameters for better looking polygons with only 8 vertices&#10;-- Removed colliding attribute from the Pair class as it was not necessary&#10;Game&#10;-- Cleaned the Player and Asteroid update methods to use the new Transform methods&#10;-- Renamed ExampleGame to Aerolites&#10;Other&#10;-- Removed workspace.xml" />
-    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
-  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <breakpoint enabled="true" type="java-exception">
-          <properties class="java.lang.ArrayIndexOutOfBoundsException" package="java.lang" />
-          <option name="timeStamp" value="11" />
-        </breakpoint>
-      </breakpoints>
-      <breakpoints-dialog>
-        <breakpoints-dialog />
-      </breakpoints-dialog>
-      <default-breakpoints>
-        <breakpoint enabled="true" type="java-exception">
-          <properties>
-            <option name="NOTIFY_CAUGHT" value="false" />
-          </properties>
-        </breakpoint>
-      </default-breakpoints>
-      <option name="time" value="22" />
+      <option name="time" value="1" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1144,215 +706,10 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/.idea/misc.xml">
+    <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/modules.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/uiDesigner.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Input/InputProcessor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="37" column="12" lean-forward="false" selection-start-line="37" selection-start-column="12" selection-end-line="37" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/libraries/jsfml.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="12" lean-forward="true" selection-start-line="10" selection-start-column="12" selection-end-line="10" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-6399">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/Polygon_Old.java" />
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/Shape_Old.java" />
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/AABB.java" />
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/Polygon.java" />
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Shapes/ShapeUtil.java" />
-    <entry file="file://$PROJECT_DIR$/Libraries/jsfml_src/org/jsfml/system/Vector2f.java" />
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/PhysicsHandler.java" />
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Body.java" />
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/PhysicsTest.java" />
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Game.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="7" lean-forward="true" selection-start-line="21" selection-start-column="7" selection-end-line="21" selection-end-column="7" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/java-8-openjdk/src.zip!/java/util/HashMap.java" />
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/GameStateManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="675">
-          <caret line="51" column="4" lean-forward="false" selection-start-line="51" selection-start-column="4" selection-end-line="51" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Animation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="326">
-          <caret line="203" column="57" lean-forward="false" selection-start-line="203" selection-start-column="57" selection-end-line="203" selection-end-column="57" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/Debug/Debug.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="29" column="7" lean-forward="true" selection-start-line="29" selection-start-column="7" selection-end-line="29" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Libraries/jsfml_src/org/jsfml/audio/Music.java" />
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Launcher/LauncherConfig.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="23" column="30" lean-forward="false" selection-start-line="23" selection-start-column="30" selection-end-line="23" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Polygon.java" />
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/AABB.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/Interfaces/PhysicsObject.java" />
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/ContentManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="329">
-          <caret line="68" column="38" lean-forward="true" selection-start-line="68" selection-start-column="38" selection-end-line="68" selection-end-column="38" />
-          <folding>
-            <element signature="method#getMusic#0;class#ContentManager#0" expanded="false" />
-            <element signature="method#loadTexture#0;class#ContentManager#0" expanded="false" />
-            <element signature="method#loadFont#0;class#ContentManager#0" expanded="false" />
-            <element signature="method#loadSound#0;class#ContentManager#0" expanded="false" />
-            <element signature="method#loadMusic#0;class#ContentManager#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/BodyConfig.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="31" column="0" lean-forward="true" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/State.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="28" column="4" lean-forward="false" selection-start-line="28" selection-start-column="4" selection-end-line="28" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Input/InputHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="18" column="26" lean-forward="false" selection-start-line="18" selection-start-column="16" selection-end-line="18" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleInput.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1080">
-          <caret line="68" column="35" lean-forward="true" selection-start-line="68" selection-start-column="35" selection-end-line="68" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/Matrix2f.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="25" column="57" lean-forward="true" selection-start-line="25" selection-start-column="57" selection-end-line="25" selection-end-column="57" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/MathUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="178" column="5" lean-forward="false" selection-start-line="178" selection-start-column="5" selection-end-line="178" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Engine.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="41" column="50" lean-forward="false" selection-start-line="41" selection-start-column="50" selection-end-line="41" selection-end-column="50" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleConfig.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1305">
-          <caret line="101" column="41" lean-forward="false" selection-start-line="101" selection-start-column="41" selection-end-line="101" selection-end-column="41" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/ShapeUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="63" column="0" lean-forward="true" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Transform.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="33" lean-forward="true" selection-start-line="22" selection-start-column="33" selection-end-line="22" selection-end-column="33" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Entity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="6" lean-forward="true" selection-start-line="8" selection-start-column="6" selection-end-line="8" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Person.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="3" lean-forward="false" selection-start-line="6" selection-start-column="3" selection-end-line="6" selection-end-column="3" />
           <folding />
         </state>
       </provider>
@@ -1365,208 +722,5 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/World.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2310">
-          <caret line="165" column="44" lean-forward="false" selection-start-line="165" selection-start-column="44" selection-end-line="165" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Player.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="25" column="27" lean-forward="true" selection-start-line="25" selection-start-column="27" selection-end-line="25" selection-end-column="27" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Asteroid.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="13" column="11" lean-forward="true" selection-start-line="13" selection-start-column="11" selection-end-line="13" selection-end-column="28" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Polygon.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="18" column="32" lean-forward="true" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
-          <folding>
-            <element signature="method#Polygon#0;class#Polygon#0" expanded="false" />
-            <element signature="method#Polygon#1;class#Polygon#0" expanded="false" />
-            <element signature="method#Polygon#2;class#Polygon#0" expanded="false" />
-            <element signature="method#initialise#0;class#Polygon#0" expanded="false" />
-            <element signature="method#getTransformed#0;class#Polygon#0" expanded="false" />
-            <element signature="method#getNormals#0;class#Polygon#0" expanded="false" />
-            <element signature="method#reset#0;class#Polygon#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleEmitter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2670">
-          <caret line="183" column="5" lean-forward="true" selection-start-line="183" selection-start-column="5" selection-end-line="183" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/Physics.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="915">
-          <caret line="71" column="0" lean-forward="true" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
-          <folding>
-            <element signature="e#1791#1792#0" expanded="true" />
-            <element signature="e#1823#1824#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Aerolites.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="42" lean-forward="false" selection-start-line="9" selection-start-column="42" selection-end-line="9" selection-end-column="42" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/ExampleState.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-390">
-          <caret line="22" column="32" lean-forward="true" selection-start-line="22" selection-start-column="32" selection-end-line="22" selection-end-column="32" />
-          <folding>
-            <element signature="method#ExampleState#0;class#ExampleState#0" expanded="false" />
-            <element signature="method#update#0;class#ExampleState#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/PlayState.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="57" column="4" lean-forward="false" selection-start-line="57" selection-start-column="4" selection-end-line="57" selection-end-column="4" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/Particle.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="186" column="0" lean-forward="true" selection-start-line="186" selection-start-column="0" selection-end-line="186" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/RigidBody.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="245">
-          <caret line="171" column="4" lean-forward="false" selection-start-line="171" selection-start-column="4" selection-end-line="171" selection-end-column="4" />
-          <folding>
-            <element signature="method#setMass#0;class#RigidBody#0" expanded="false" />
-            <element signature="method#setInertia#0;class#RigidBody#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Pair.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="63" column="8" lean-forward="false" selection-start-line="63" selection-start-column="8" selection-end-line="63" selection-end-column="8" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#Pair#0;class#Pair#0" expanded="false" />
-            <element signature="method#apply#0;class#Pair#0" expanded="false" />
-            <element signature="method#correctPosition#0;class#Pair#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-  </component>
-  <component name="masterDetails">
-    <states>
-      <state key="ArtifactsStructureConfigurable.UI">
-        <settings>
-          <artifact-editor />
-          <last-edited>Aerolites:jar</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-                <option value="0.5" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="FacetStructureConfigurable.UI">
-        <settings>
-          <last-edited>No facets are configured</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="GlobalLibrariesConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="JdkListConfigurable.UI">
-        <settings>
-          <last-edited>1.8</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ModuleStructureConfigurable.UI">
-        <settings>
-          <last-edited>Game</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectLibrariesConfigurable.UI">
-        <settings>
-          <last-edited>jsfml</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-    </states>
   </component>
 </project>
