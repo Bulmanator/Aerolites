@@ -32,7 +32,7 @@ public class ExampleState extends State {
     public ExampleState(GameStateManager gsm) {
         super(gsm);
 
-        // This method is like the initialise method from the ExampleGame class
+        // This method is like the initialise method from the Aerolites class
 
         // Changing the Input handler
         input = new ExampleInput();

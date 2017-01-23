@@ -3,9 +3,8 @@ package com.teamtwo.aerolites;
 import com.teamtwo.aerolites.States.PlayState;
 import com.teamtwo.engine.Game;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
-import org.jsfml.graphics.Color;
 
-public class ExampleGame extends Game {
+public class Aerolites extends Game {
 
     /** A manager for all of the game states */
     private GameStateManager stateManager;
@@ -26,7 +25,7 @@ public class ExampleGame extends Game {
 
     /** This is also called once per frame, used to draw anything needed */
     public void render() {
-        window.clear(new Color(0, 0, 0));
+        window.clear();
         stateManager.render();
     }
 

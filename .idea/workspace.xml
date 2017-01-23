@@ -10,17 +10,24 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e1a6a382-2b49-4248-b02a-05840dd60c00" name="Default" comment="Changes:&#10;Game&#10;">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Asteroid.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Player.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/PlayState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Graphics/Particles/ParticleEmitter.class" afterPath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Graphics/Particles/ParticleEmitter.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/out/com/teamtwo/aerolites/Launcher.class" afterPath="$PROJECT_DIR$/Game/out/com/teamtwo/aerolites/Launcher.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    <list default="true" id="e1a6a382-2b49-4248-b02a-05840dd60c00" name="Default" comment="Changes&#10;Engine:&#10;-- Added debug rendering for the World, can draw bodies, AABBs and velocities&#10;-- Changed the particle emitter to finish updating all alive particles when deactivating&#10;-- Fixed issue with particle emitter which meant lots of particles would get emitted at once when reactivating an emitter&#10;-- Changed velocity updating to do half before and half after position change, this is proven to be more accurate&#10;-- Added apply, applyPosition and applyRotation methods to the Transform class allowing for more efficient use of the angle&#10;-- Removed the scale attribute from the Transform class as it was not necessary&#10;-- Cached transformed vertices and normals within Polygons to gain significant efficiency when testing for collisions&#10;-- Stored untransformed normals in the Polygon class to allow for easy rotations&#10;-- Set the Polygon vertex limit to 8 for performance reasons&#10;-- Slightly modified polygon generation parameters for better looking polygons with only 8 vertices&#10;-- Removed colliding attribute from the Pair class as it was not necessary&#10;Game&#10;-- Cleaned the Player and Asteroid update methods to use the new Transform methods&#10;-- Renamed ExampleGame to Aerolites&#10;Other&#10;-- Removed workspace.xml">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleGame.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Aerolites.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/Particle.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/Particle.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleConfig.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleConfig.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleEmitter.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleEmitter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleGame.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleGame.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Pair.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Pair.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Polygon.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Polygon.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/RigidBody.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/RigidBody.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/ShapeUtil.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/ShapeUtil.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Transform.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Transform.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/World.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/World.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Asteroid.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Asteroid.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Player.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Player.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Launcher.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Launcher.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/ExampleState.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/ExampleState.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/Physics.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/Physics.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/PlayState.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/PlayState.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -46,123 +53,7 @@
     <favorites_list name="Aerolites" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Physics.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/Physics.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="54" column="41" lean-forward="true" selection-start-line="54" selection-start-column="41" selection-end-line="54" selection-end-column="41" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PlayState.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/PlayState.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="612">
-              <caret line="39" column="24" lean-forward="false" selection-start-line="39" selection-start-column="24" selection-end-line="39" selection-end-column="24" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MathUtil.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/MathUtil.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2052">
-              <caret line="152" column="4" lean-forward="false" selection-start-line="152" selection-start-column="4" selection-end-line="152" selection-end-column="4" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Pair.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Pair.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="318">
-              <caret line="213" column="57" lean-forward="false" selection-start-line="213" selection-start-column="57" selection-end-line="213" selection-end-column="57" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="method#Pair#0;class#Pair#0" expanded="false" />
-                <element signature="method#apply#0;class#Pair#0" expanded="false" />
-                <element signature="method#correctPosition#0;class#Pair#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RigidBody.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/RigidBody.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="94">
-              <caret line="80" column="4" lean-forward="false" selection-start-line="80" selection-start-column="4" selection-end-line="80" selection-end-column="4" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="method#setMass#0;class#RigidBody#0" expanded="false" />
-                <element signature="method#setInertia#0;class#RigidBody#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Asteroid.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Asteroid.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="42" column="15" lean-forward="true" selection-start-line="42" selection-start-column="15" selection-end-line="42" selection-end-column="15" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1363#1364#0" expanded="true" />
-                <element signature="e#1385#1386#0" expanded="true" />
-                <element signature="e#1416#1417#0" expanded="true" />
-                <element signature="e#1454#1455#0" expanded="true" />
-                <element signature="e#1488#1489#0" expanded="true" />
-                <element signature="e#1515#1516#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Player.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Player.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="58" column="30" lean-forward="true" selection-start-line="58" selection-start-column="30" selection-end-line="58" selection-end-column="30" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="InputHandler.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Input/InputHandler.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="201">
-              <caret line="18" column="26" lean-forward="false" selection-start-line="18" selection-start-column="16" selection-end-line="18" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Polygon.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Polygon.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="117" column="64" lean-forward="false" selection-start-line="117" selection-start-column="64" selection-end-line="117" selection-end-column="64" />
-              <folding>
-                <element signature="method#Polygon#0;class#Polygon#0" expanded="false" />
-                <element signature="method#Polygon#1;class#Polygon#0" expanded="false" />
-                <element signature="method#Polygon#2;class#Polygon#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -209,10 +100,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Input/MouseHandler.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Input/Controllers/ControllerManager.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Launcher/Configuration.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/Game.java" />
         <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/GameStateManager.java" />
         <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/Loading.java" />
         <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Input/InputHandler.java" />
@@ -232,34 +119,38 @@
         <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Game.java" />
         <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/Testing.java" />
         <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/Example.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Aerolites.java" />
         <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/State.java" />
         <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/ContentManager.java" />
         <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Animation.java" />
         <option value="$PROJECT_DIR$/Libraries/jsfml_src/org/jsfml/audio/Music.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Transform.java" />
         <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Configurations/Configuration.java" />
         <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Configurations/LauncherConfiguration.java" />
         <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleConfiguration.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/Particle.java" />
         <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleInput.java" />
         <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Polygon.java" />
         <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Engine.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleConfig.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleEmitter.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/ExampleState.java" />
         <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/Interfaces/PhysicsObject.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/World.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Pair.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/RigidBody.java" />
         <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/BodyConfig.java" />
         <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Launcher.java" />
+        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/Matrix2f.java" />
+        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Transform.java" />
+        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/ShapeUtil.java" />
+        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Polygon.java" />
         <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/Physics.java" />
+        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/Particle.java" />
+        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleConfig.java" />
+        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleEmitter.java" />
+        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/World.java" />
+        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Entity.java" />
+        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Person.java" />
         <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleGame.java" />
         <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Asteroid.java" />
-        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/PlayState.java" />
-        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Polygon.java" />
         <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Player.java" />
+        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/RigidBody.java" />
+        <option value="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Pair.java" />
+        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Aerolites.java" />
+        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/PlayState.java" />
+        <option value="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/ExampleState.java" />
       </list>
     </option>
   </component>
@@ -275,7 +166,7 @@
   <component name="ProjectFrameBounds">
     <option name="y" value="27" />
     <option name="width" value="1920" />
-    <option name="height" value="991" />
+    <option name="height" value="996" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -425,6 +316,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -607,226 +499,15 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Utilities" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Utilities" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="State" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Utilities" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Interfaces" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Physics" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Physics" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Collisions" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Input" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Graphics" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerolites" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="engine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Graphics" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Particles" />
+              <option name="myItemId" value=".idea" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
         <option name="show-excluded-files" value="false" />
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
       <pane id="Scratches" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1193,6 +874,9 @@
       <envs />
       <method />
     </configuration>
+    <configuration default="true" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="project" working-dir="">
+      <method />
+    </configuration>
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
       <option name="SERVER_MODE" value="false" />
@@ -1245,10 +929,23 @@
       <method />
     </configuration>
     <configuration default="true" type="js.build_tools.npm" factoryName="npm">
-      <command value="run-script" />
+      <command value="run" />
       <scripts />
       <node-interpreter value="project" />
       <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="mocha-javascript-test-runner" factoryName="Mocha">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <working-directory />
+      <pass-parent-env>true</pass-parent-env>
+      <envs />
+      <ui />
+      <extra-mocha-options />
+      <test-kind>DIRECTORY</test-kind>
+      <test-directory />
+      <recursive>false</recursive>
       <method />
     </configuration>
     <configuration default="true" type="osgi.bnd.run" factoryName="Run Launcher">
@@ -1319,6 +1016,8 @@
       <workItem from="1484773557135" duration="716000" />
       <workItem from="1484858969301" duration="12550000" />
       <workItem from="1485102999133" duration="9462000" />
+      <workItem from="1485117846857" duration="8270000" />
+      <workItem from="1485167980156" duration="6374000" />
     </task>
     <task id="LOCAL-00001" summary="Removed the Shapes class as for some reason it wasn't deleted before&#10;I am rewriting this">
       <created>1484613338950</created>
@@ -1352,7 +1051,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="280139000" />
+    <option name="totallyTimeSpent" value="294783000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1364,26 +1063,27 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="27" width="1920" height="991" extended-state="6" />
-    <editor active="true" />
+    <frame x="0" y="27" width="1920" height="996" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32796317" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.6378316" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.6375144" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32959402" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3171857" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3164557" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.6191024" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32911393" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20330843" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16346154" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32959402" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32796317" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1397,7 +1097,6 @@
       <window_info id="Statistic" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.8699655" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.61423653" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32908458" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1414,7 +1113,8 @@
     <MESSAGE value="I spread out some code ok&#10;&#10;++updating my workspace because james says i should" />
     <MESSAGE value="Fixed the divide by zero issue with ridged bodies taking input from a config" />
     <MESSAGE value="Changes:&#10;Engine&#10;-- Fixed a bug with the Content Manager's load methods which would cause null to be returned instead of the content loaded&#10;-- Added polygons which can be used to represent rigid bodies&#10;-- Added Rigid Body collision detection&#10;-- Made the pairs correct positions to prevent bodies from sinking into each other&#10;-- I haven't tested with more than two bodies, please try and break this now so we don't have to deal with it later&#10;Game&#10;-- Added a Physics state which I used for testing&#10;-- Removed other physics stuff from the ExampleState" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changes:&#10;Engine&#10;-- Fixed a bug with the Content Manager's load methods which would cause null to be returned instead of the content loaded&#10;-- Added polygons which can be used to represent rigid bodies&#10;-- Added Rigid Body collision detection&#10;-- Made the pairs correct positions to prevent bodies from sinking into each other&#10;-- I haven't tested with more than two bodies, please try and break this now so we don't have to deal with it later&#10;Game&#10;-- Added a Physics state which I used for testing&#10;-- Removed other physics stuff from the ExampleState" />
+    <MESSAGE value="Changes&#10;Engine:&#10;-- Added debug rendering for the World, can draw bodies, AABBs and velocities&#10;-- Changed the particle emitter to finish updating all alive particles when deactivating&#10;-- Fixed issue with particle emitter which meant lots of particles would get emitted at once when reactivating an emitter&#10;-- Changed velocity updating to do half before and half after position change, this is proven to be more accurate&#10;-- Added apply, applyPosition and applyRotation methods to the Transform class allowing for more efficient use of the angle&#10;-- Removed the scale attribute from the Transform class as it was not necessary&#10;-- Cached transformed vertices and normals within Polygons to gain significant efficiency when testing for collisions&#10;-- Stored untransformed normals in the Polygon class to allow for easy rotations&#10;-- Set the Polygon vertex limit to 8 for performance reasons&#10;-- Slightly modified polygon generation parameters for better looking polygons with only 8 vertices&#10;-- Removed colliding attribute from the Pair class as it was not necessary&#10;Game&#10;-- Cleaned the Player and Asteroid update methods to use the new Transform methods&#10;-- Renamed ExampleGame to Aerolites&#10;Other&#10;-- Removed workspace.xml" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changes&#10;Engine:&#10;-- Added debug rendering for the World, can draw bodies, AABBs and velocities&#10;-- Changed the particle emitter to finish updating all alive particles when deactivating&#10;-- Fixed issue with particle emitter which meant lots of particles would get emitted at once when reactivating an emitter&#10;-- Changed velocity updating to do half before and half after position change, this is proven to be more accurate&#10;-- Added apply, applyPosition and applyRotation methods to the Transform class allowing for more efficient use of the angle&#10;-- Removed the scale attribute from the Transform class as it was not necessary&#10;-- Cached transformed vertices and normals within Polygons to gain significant efficiency when testing for collisions&#10;-- Stored untransformed normals in the Polygon class to allow for easy rotations&#10;-- Set the Polygon vertex limit to 8 for performance reasons&#10;-- Slightly modified polygon generation parameters for better looking polygons with only 8 vertices&#10;-- Removed colliding attribute from the Pair class as it was not necessary&#10;Game&#10;-- Cleaned the Player and Asteroid update methods to use the new Transform methods&#10;-- Renamed ExampleGame to Aerolites&#10;Other&#10;-- Removed workspace.xml" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -1435,7 +1135,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="21" />
+      <option name="time" value="22" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1444,26 +1144,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Game/Content/Textures/PlayerMove.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/vcs.xml" />
-    <entry file="file://$PROJECT_DIR$/.idea/dictionaries/james.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/artifacts/Aerolites_jar.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.idea/misc.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1557,30 +1237,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Polygon.java" />
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleConfig.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="77" column="21" lean-forward="false" selection-start-line="77" selection-start-column="21" selection-end-line="77" selection-end-column="21" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/Particle.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="64">
-          <caret line="75" column="49" lean-forward="false" selection-start-line="75" selection-start-column="49" selection-end-line="75" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Engine.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="292" column="4" lean-forward="false" selection-start-line="292" selection-start-column="4" selection-end-line="292" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/AABB.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
@@ -1590,14 +1246,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/Interfaces/PhysicsObject.java" />
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Transform.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-15">
-          <caret line="26" column="4" lean-forward="false" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/ContentManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="329">
@@ -1620,26 +1268,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Launcher.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="13" column="28" lean-forward="false" selection-start-line="13" selection-start-column="28" selection-end-line="13" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/RigidBody.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="94">
-          <caret line="80" column="4" lean-forward="false" selection-start-line="80" selection-start-column="4" selection-end-line="80" selection-end-column="4" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#setMass#0;class#RigidBody#0" expanded="false" />
-            <element signature="method#setInertia#0;class#RigidBody#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/State/State.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
@@ -1648,77 +1276,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/World.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="12">
-          <caret line="35" column="33" lean-forward="false" selection-start-line="35" selection-start-column="33" selection-end-line="35" selection-end-column="33" />
-          <folding>
-            <element signature="method#update#0;class#World#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Asteroid.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="42" column="15" lean-forward="true" selection-start-line="42" selection-start-column="15" selection-end-line="42" selection-end-column="15" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1363#1364#0" expanded="true" />
-            <element signature="e#1385#1386#0" expanded="true" />
-            <element signature="e#1416#1417#0" expanded="true" />
-            <element signature="e#1454#1455#0" expanded="true" />
-            <element signature="e#1488#1489#0" expanded="true" />
-            <element signature="e#1515#1516#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/MathUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2052">
-          <caret line="152" column="4" lean-forward="false" selection-start-line="152" selection-start-column="4" selection-end-line="152" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Input/InputHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="201">
+        <state relative-caret-position="225">
           <caret line="18" column="26" lean-forward="false" selection-start-line="18" selection-start-column="16" selection-end-line="18" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Polygon.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="117" column="64" lean-forward="false" selection-start-line="117" selection-start-column="64" selection-end-line="117" selection-end-column="64" />
-          <folding>
-            <element signature="method#Polygon#0;class#Polygon#0" expanded="false" />
-            <element signature="method#Polygon#1;class#Polygon#0" expanded="false" />
-            <element signature="method#Polygon#2;class#Polygon#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleGame.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="17" column="44" lean-forward="false" selection-start-line="17" selection-start-column="44" selection-end-line="17" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/ExampleState.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="19" column="13" lean-forward="false" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
-          <folding>
-            <element signature="method#ExampleState#0;class#ExampleState#0" expanded="false" />
-            <element signature="method#update#0;class#ExampleState#0" expanded="false" />
-            <element signature="method#render#0;class#ExampleState#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1730,51 +1291,202 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/Physics.java">
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/Matrix2f.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="54" column="41" lean-forward="true" selection-start-line="54" selection-start-column="41" selection-end-line="54" selection-end-column="41" />
+        <state relative-caret-position="285">
+          <caret line="25" column="57" lean-forward="true" selection-start-line="25" selection-start-column="57" selection-end-line="25" selection-end-column="57" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/PlayState.java">
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/MathUtil.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="39" column="24" lean-forward="false" selection-start-line="39" selection-start-column="24" selection-end-line="39" selection-end-column="24" />
+        <state relative-caret-position="315">
+          <caret line="178" column="5" lean-forward="false" selection-start-line="178" selection-start-column="5" selection-end-line="178" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Engine.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="41" column="50" lean-forward="false" selection-start-line="41" selection-start-column="50" selection-end-line="41" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleConfig.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1305">
+          <caret line="101" column="41" lean-forward="false" selection-start-line="101" selection-start-column="41" selection-end-line="101" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/ShapeUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="63" column="0" lean-forward="true" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Transform.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="33" lean-forward="true" selection-start-line="22" selection-start-column="33" selection-end-line="22" selection-end-column="33" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Entity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="6" lean-forward="true" selection-start-line="8" selection-start-column="6" selection-end-line="8" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Person.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="3" lean-forward="false" selection-start-line="6" selection-start-column="3" selection-end-line="6" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Launcher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/World.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2310">
+          <caret line="165" column="44" lean-forward="false" selection-start-line="165" selection-start-column="44" selection-end-line="165" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Player.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="25" column="27" lean-forward="true" selection-start-line="25" selection-start-column="27" selection-end-line="25" selection-end-column="27" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Asteroid.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="11" lean-forward="true" selection-start-line="13" selection-start-column="11" selection-end-line="13" selection-end-column="28" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Polygon.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="18" column="32" lean-forward="true" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
+          <folding>
+            <element signature="method#Polygon#0;class#Polygon#0" expanded="false" />
+            <element signature="method#Polygon#1;class#Polygon#0" expanded="false" />
+            <element signature="method#Polygon#2;class#Polygon#0" expanded="false" />
+            <element signature="method#initialise#0;class#Polygon#0" expanded="false" />
+            <element signature="method#getTransformed#0;class#Polygon#0" expanded="false" />
+            <element signature="method#getNormals#0;class#Polygon#0" expanded="false" />
+            <element signature="method#reset#0;class#Polygon#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/ParticleEmitter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1566">
-          <caret line="17" column="70" lean-forward="false" selection-start-line="17" selection-start-column="70" selection-end-line="17" selection-end-column="70" />
+        <state relative-caret-position="2670">
+          <caret line="183" column="5" lean-forward="true" selection-start-line="183" selection-start-column="5" selection-end-line="183" selection-end-column="5" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/Physics.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="915">
+          <caret line="71" column="0" lean-forward="true" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
+          <folding>
+            <element signature="e#1791#1792#0" expanded="true" />
+            <element signature="e#1823#1824#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Aerolites.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="42" lean-forward="false" selection-start-line="9" selection-start-column="42" selection-end-line="9" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/ExampleState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-390">
+          <caret line="22" column="32" lean-forward="true" selection-start-line="22" selection-start-column="32" selection-end-line="22" selection-end-column="32" />
+          <folding>
+            <element signature="method#ExampleState#0;class#ExampleState#0" expanded="false" />
+            <element signature="method#update#0;class#ExampleState#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/PlayState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="765">
+          <caret line="57" column="4" lean-forward="false" selection-start-line="57" selection-start-column="4" selection-end-line="57" selection-end-column="4" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Graphics/Particles/Particle.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="185">
+          <caret line="186" column="0" lean-forward="true" selection-start-line="186" selection-start-column="0" selection-end-line="186" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/RigidBody.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="245">
+          <caret line="171" column="4" lean-forward="false" selection-start-line="171" selection-start-column="4" selection-end-line="171" selection-end-column="4" />
+          <folding>
+            <element signature="method#setMass#0;class#RigidBody#0" expanded="false" />
+            <element signature="method#setInertia#0;class#RigidBody#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Physics/Collisions/Pair.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="318">
-          <caret line="213" column="57" lean-forward="false" selection-start-line="213" selection-start-column="57" selection-end-line="213" selection-end-column="57" />
+        <state relative-caret-position="95">
+          <caret line="63" column="8" lean-forward="false" selection-start-line="63" selection-start-column="8" selection-end-line="63" selection-end-column="8" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#Pair#0;class#Pair#0" expanded="false" />
             <element signature="method#apply#0;class#Pair#0" expanded="false" />
             <element signature="method#correctPosition#0;class#Pair#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Entities/Player.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="58" column="30" lean-forward="true" selection-start-line="58" selection-start-column="30" selection-end-line="58" selection-end-column="30" />
-          <folding>
-            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>

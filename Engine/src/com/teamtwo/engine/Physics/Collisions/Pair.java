@@ -6,6 +6,7 @@ import org.jsfml.system.Vector2f;
 
 /**
  * A class which contains information about a collision pair
+ * @author James Bulman
  */
 public class Pair {
 
@@ -19,9 +20,6 @@ public class Pair {
     /** The amount the two bodies overlap each other */
     private float overlap;
 
-    /** Whether or not the bodies are colliding */
-    private boolean colliding;
-
     /**
      * Creates a new collision pair from the two bodies supplied
      * @param bodyA The first body to test collision on
@@ -33,8 +31,6 @@ public class Pair {
 
         axis = null;
         overlap = 0;
-
-        colliding = false;
     }
 
     /**
@@ -45,6 +41,10 @@ public class Pair {
 
         // Separating Axis Theorem Collision Detection
 
+        // If they are both static then don't resolve
+        if(MathUtil.isZero(A.getInvMass() + B.getInvMass()))
+            return false;
+
         Vector2f[] vertsA = A.getShape().getTransformed();
         Vector2f[] vertsB = B.getShape().getTransformed();
 
@@ -53,8 +53,8 @@ public class Pair {
 
         if(!AABB.overlaps(aabbA, aabbB)) return false;
 
-        Vector2f[] normalsA = calculateNormals(vertsA);
-        Vector2f[] normalsB = calculateNormals(vertsB);
+        Vector2f[] normalsA = A.getShape().getNormals();
+        Vector2f[] normalsB = B.getShape().getNormals();
 
         float minA, maxA;
         float minB, maxB;
@@ -88,7 +88,6 @@ public class Pair {
             }
 
             if(minA > maxB || minB > maxA) {
-                colliding = false;
                 return false;
             }
             else {
@@ -127,7 +126,6 @@ public class Pair {
             }
 
             if(minA > maxB || minB > maxA) {
-                colliding = false;
                 return false;
             }
             else {
@@ -139,7 +137,6 @@ public class Pair {
             }
         }
 
-        colliding = true;
         return true;
     }
 
@@ -147,7 +144,6 @@ public class Pair {
      * This applies the impulse to make bodies repel from each other if they collide
      */
     public void apply() {
-        if(!colliding) return;
 
         Vector2f centre = Vector2f.sub(A.getTransform().getPosition(), B.getTransform().getPosition());
         if(MathUtil.dot(centre, axis) > 0) {
@@ -194,26 +190,5 @@ public class Pair {
 
         A.setTransform(positionA, A.getTransform().getAngle());
         B.setTransform(positionB, B.getTransform().getAngle());
-    }
-
-    /**
-     * Whether or not the pair of bodies are colliding
-     * @return True if they are colliding, otherwise false
-     */
-    public boolean isColliding() { return colliding; }
-
-    /**
-     * Generates the edge normals from the given vertices which make up a polygon
-     * @param vertices The vertices which make up the polygon
-     * @return The edge normals
-     */
-    private static Vector2f[] calculateNormals(Vector2f[] vertices) {
-        Vector2f[] normals = new Vector2f[vertices.length];
-        for(int i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
-            Vector2f nor = Vector2f.sub(vertices[i], vertices[j]);
-            normals[i] = MathUtil.normalise(new Vector2f(nor.y, -nor.x));
-        }
-
-        return normals;
     }
 }

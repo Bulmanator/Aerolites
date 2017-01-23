@@ -13,7 +13,7 @@ final class ShapeUtil {
      * @param vertices The vertices which make up the polygon
      * @return The area of the polygon
      */
-    static final float findArea(Vector2f[] vertices) {
+    static float findArea(Vector2f[] vertices) {
         float area = 0;
 
         for(int i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
@@ -28,7 +28,7 @@ final class ShapeUtil {
      * @param vertices The vertices that make up the polygon
      * @return The centroid of the polygon
      */
-    static final Vector2f findCentroid(Vector2f[] vertices) {
+    static Vector2f findCentroid(Vector2f[] vertices) {
         float x = 0, y = 0;
         float area = 0;
 
@@ -50,4 +50,18 @@ final class ShapeUtil {
         return new Vector2f(x, y);
     }
 
+    /**
+     * Generates the edge normals from the given vertices which make up a polygon
+     * @param vertices The vertices which make up the polygon
+     * @return The edge normals
+     */
+    static Vector2f[] calculateNormals(Vector2f[] vertices) {
+        Vector2f[] normals = new Vector2f[vertices.length];
+        for(int i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+            Vector2f nor = Vector2f.sub(vertices[i], vertices[j]);
+            normals[i] = MathUtil.normalise(new Vector2f(nor.y, -nor.x));
+        }
+
+        return normals;
+    }
 }

@@ -11,6 +11,7 @@ import org.jsfml.system.Vector2f;
 
 /**
  * Represents a single particle inside the particle system
+ * @author James Bulman
  */
 class Particle implements Initialisable<ParticleConfig>, Updateable, EntityRenderable {
 

@@ -11,7 +11,7 @@ import org.jsfml.system.Vector2f;
 import java.util.ArrayList;
 
 /**
- * Created by matt on 22/01/17.
+ * @author Matthew Threlfall
  */
 public class PlayState extends State {
 
@@ -20,20 +20,23 @@ public class PlayState extends State {
     private float accum;
     private Player player;
 
-    public PlayState(GameStateManager csm) {
-        super(csm);
+    public PlayState(GameStateManager gsm) {
+        super(gsm);
+
         world = new World(new Vector2f(0,0));
+        World.DRAW_VELOCITIES = true;
+
         asteroids = new ArrayList<>();
         asteroids.add(new Asteroid(world));
         player = new Player(world);
-        accum=0;
+        accum = 0;
     }
 
     @Override
     public void update(float dt) {
-        accum+=dt;
+        accum += dt;
         world.update(dt);
-        if(MathUtil.isZero(accum%5,0.05f)){
+        if(MathUtil.isZero(accum % 5, 0.05f)){
             asteroids.add(new Asteroid(world));
         }
         player.update(dt);
@@ -41,10 +44,12 @@ public class PlayState extends State {
 
     @Override
     public void render() {
-        for(Asteroid a: asteroids){
+        for(Asteroid a : asteroids){
             a.render(window);
         }
+
         player.render(window);
+        world.render(window);
     }
 
     @Override
