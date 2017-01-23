@@ -1,6 +1,6 @@
 package com.teamtwo.aerolites;
 
-import com.teamtwo.aerolites.States.ExampleState;
+import com.teamtwo.aerolites.States.MenuState;
 import com.teamtwo.engine.Game;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import org.jsfml.graphics.Color;
@@ -13,7 +13,8 @@ public class ExampleGame extends Game {
     /** This method is called once before the game begins running */
     public void initialise() {
         stateManager = new GameStateManager(this);
-        stateManager.addState(new ExampleState(stateManager));
+   //     stateManager.addState(new ExampleState(stateManager));
+        stateManager.addState(new MenuState(stateManager));
     }
 
     /**
