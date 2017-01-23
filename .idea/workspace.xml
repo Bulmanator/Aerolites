@@ -10,21 +10,8 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e1a6a382-2b49-4248-b02a-05840dd60c00" name="Default" comment="Changes:&#10;Engine&#10;-- Made the Particle class package-private as no one really needs to use it&#10;-- Moved Particle.Configuration to ParticleConfig to allow Particle to be package-private&#10;-- Changed the Configuration to LauncherConfig for clarity&#10;-- Placeholder Physics classes (RigidBody, World, Pair, Polygon, BodyConfig etc.)&#10;Game&#10;-- Added some controller testing code to ExampleInput&#10;&#10;Bugs:&#10;-- Cannot find monitor refresh rate properly for some reason&#10;-- Wouldn't really call this a bug, but the title gets overwritten by the FPS counter">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Game/Content/Fonts/PlayerMove.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Game/Content/Fonts/Space.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/MenuState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Graphics/Particles/Particle.class" afterPath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Graphics/Particles/Particle.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Utilities/ContentManager.class" afterPath="$PROJECT_DIR$/Engine/out/com/teamtwo/engine/Utilities/ContentManager.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/out/com/teamtwo/aerolites/Launcher.class" afterPath="$PROJECT_DIR$/Game/out/com/teamtwo/aerolites/Launcher.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+    <list default="true" id="e1a6a382-2b49-4248-b02a-05840dd60c00" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/ContentManager.java" afterPath="$PROJECT_DIR$/Engine/src/com/teamtwo/engine/Utilities/ContentManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleGame.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleGame.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Launcher.java" afterPath="$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/Launcher.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -55,7 +42,7 @@
         <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/MenuState.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="166">
-              <caret line="145" column="0" selection-start-line="145" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
+              <caret line="142" column="0" selection-start-line="142" selection-start-column="0" selection-end-line="142" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -99,8 +86,10 @@
         <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleGame.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="251">
-              <caret line="20" column="7" selection-start-line="20" selection-start-column="3" selection-end-line="23" selection-end-column="7" />
-              <folding />
+              <caret line="19" column="7" selection-start-line="19" selection-start-column="3" selection-end-line="22" selection-end-column="7" />
+              <folding>
+                <element signature="imports" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -1023,7 +1012,14 @@
       <option name="project" value="LOCAL" />
       <updated>1484613338950</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="90% finished Menu, Just need to change origin of spinning squares and talk about font with everyone as well as colours.">
+      <created>1485169323864</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1485169323864</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -1093,7 +1089,8 @@
     <MESSAGE value="Changes:&#10;-- Content Manager now returns the content is has loaded when using the load methods&#10;   this is opposed to using load then get&#10;-- Physics stuff has gone, I will work on this properly&#10;-- Some documentation clean up&#10;-- Example game, input handler and state have been made&#10;-- The example state shows loading content, the particle system and input handling&#10;-- Removed controller stuff, this will be revised at a later date&#10;-- Removed reference to the Input handler in states (can be retrieved via &#10;   game.getEngine().getInputHandler()&#10;-- Changed the Animation constructor to take a texture rather than a String key&#10;-- Various cleanups" />
     <MESSAGE value="Removed the Shapes class as for some reason it wasn't deleted before&#10;I am rewriting this" />
     <MESSAGE value="Changes:&#10;Engine&#10;-- Made the Particle class package-private as no one really needs to use it&#10;-- Moved Particle.Configuration to ParticleConfig to allow Particle to be package-private&#10;-- Changed the Configuration to LauncherConfig for clarity&#10;-- Placeholder Physics classes (RigidBody, World, Pair, Polygon, BodyConfig etc.)&#10;Game&#10;-- Added some controller testing code to ExampleInput&#10;&#10;Bugs:&#10;-- Cannot find monitor refresh rate properly for some reason&#10;-- Wouldn't really call this a bug, but the title gets overwritten by the FPS counter" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changes:&#10;Engine&#10;-- Made the Particle class package-private as no one really needs to use it&#10;-- Moved Particle.Configuration to ParticleConfig to allow Particle to be package-private&#10;-- Changed the Configuration to LauncherConfig for clarity&#10;-- Placeholder Physics classes (RigidBody, World, Pair, Polygon, BodyConfig etc.)&#10;Game&#10;-- Added some controller testing code to ExampleInput&#10;&#10;Bugs:&#10;-- Cannot find monitor refresh rate properly for some reason&#10;-- Wouldn't really call this a bug, but the title gets overwritten by the FPS counter" />
+    <MESSAGE value="90% finished Menu, Just need to change origin of spinning squares and talk about font with everyone as well as colours." />
+    <option name="LAST_COMMIT_MESSAGE" value="90% finished Menu, Just need to change origin of spinning squares and talk about font with everyone as well as colours." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -1382,8 +1379,10 @@
     <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/ExampleGame.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="251">
-          <caret line="20" column="7" selection-start-line="20" selection-start-column="3" selection-end-line="23" selection-end-column="7" />
-          <folding />
+          <caret line="19" column="7" selection-start-line="19" selection-start-column="3" selection-end-line="22" selection-end-column="7" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1428,7 +1427,7 @@
     <entry file="file://$PROJECT_DIR$/Game/src/com/teamtwo/aerolites/States/MenuState.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="166">
-          <caret line="145" column="0" selection-start-line="145" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
+          <caret line="142" column="0" selection-start-line="142" selection-start-column="0" selection-end-line="142" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
