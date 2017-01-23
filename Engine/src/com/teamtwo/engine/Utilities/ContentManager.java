@@ -166,7 +166,8 @@ public class ContentManager {
         }
 
         // If it succeeds then put it into the hash map
-        return fonts.put(name, f);
+        fonts.put(name, f);
+        return f;
     }
 
     /**
@@ -201,7 +202,8 @@ public class ContentManager {
         }
 
         // If it succeeds then put it into the hash map
-        return sounds.put(name, s);
+        sounds.put(name, s);
+        return s;
     }
 
     /**
@@ -233,6 +235,7 @@ public class ContentManager {
         }
 
         // If it succeeds then put it into the hash map
-        return music.put(name, m);
+        music.put(name, m);
+        return m;
     }
 }
