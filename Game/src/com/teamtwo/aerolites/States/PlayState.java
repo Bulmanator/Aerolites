@@ -36,11 +36,22 @@ public class PlayState extends State {
     public void update(float dt) {
         accum += dt;
         world.update(dt);
-        if(MathUtil.isZero(accum % 5, 0.05f)){
+        if(MathUtil.isZero(accum % 2, 0.05f)){
             entities.add(new Asteroid(world));
         }
+        ArrayList<Asteroid> removeAsteroids = new ArrayList<>();
         for(Entity a : entities){
+            if(a instanceof Asteroid){
+                if(!((Asteroid) a).isOnScreen()) {
+                    removeAsteroids.add((Asteroid) a);
+                }
+            }
+
             a.update(dt);
+        }
+        for(Asteroid a : removeAsteroids){
+            entities.remove(a);
+            world.removeBody(a.getBody());
         }
     }
 
@@ -49,7 +60,6 @@ public class PlayState extends State {
         for(Entity a : entities){
             a.render(window);
         }
-
         world.render(window);
     }
 

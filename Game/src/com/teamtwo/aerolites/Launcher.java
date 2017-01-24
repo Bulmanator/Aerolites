@@ -11,7 +11,7 @@ public class Launcher {
         config.width = 1280;
         config.height = 720;
         config.title = "Aerolites";
-        config.fpsLimit = 60;
+        config.fpsLimit = 120;
 
         new Engine(new Aerolites(), config);
     }
