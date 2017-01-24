@@ -4,13 +4,10 @@ import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
-import com.teamtwo.engine.Physics.RigidBody;
 import com.teamtwo.engine.Physics.World;
-import com.teamtwo.engine.Utilities.Interfaces.EntityRenderable;
 import com.teamtwo.engine.Utilities.Interfaces.Updateable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import org.jsfml.graphics.Color;
-import org.jsfml.graphics.ConvexShape;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
@@ -18,12 +15,11 @@ import org.jsfml.window.Keyboard;
 /**
  * @author Matthew Threlfall
  */
-public class Player implements EntityRenderable, Updateable {
+public class Player extends Entity{
 
     private final float ROTATION_SPEED = MathUtil.PI;
     private final float FORCE_FROM_JET = 75000;
 
-    private RigidBody body;
     private ParticleEmitter jet;
 
     public Player(World w){
@@ -64,6 +60,8 @@ public class Player implements EntityRenderable, Updateable {
 
         pConfig.position = body.getTransform().getPosition();
         jet = new ParticleEmitter(pConfig, 20f, 400);
+
+        renderColour = Color.GREEN;
     }
 
     @Override
@@ -105,11 +103,7 @@ public class Player implements EntityRenderable, Updateable {
 
     @Override
     public void render(RenderWindow renderer) {
-        ConvexShape player = new ConvexShape(body.getShape().getVertices());
-        player.setPosition(body.getTransform().getPosition());
-        player.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
-        player.setFillColor(Color.BLUE);
-        renderer.draw(player);
         jet.render(renderer);
+        super.render(renderer);
     }
 }

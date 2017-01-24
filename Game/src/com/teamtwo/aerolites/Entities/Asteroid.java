@@ -4,7 +4,6 @@ import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.RigidBody;
 import com.teamtwo.engine.Physics.World;
-import com.teamtwo.engine.Utilities.Interfaces.EntityRenderable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import org.jsfml.graphics.ConvexShape;
 import org.jsfml.graphics.RenderWindow;
@@ -13,12 +12,7 @@ import org.jsfml.system.Vector2f;
 /**
  * @author Matthew Threlfall
  */
-public class Asteroid implements EntityRenderable {
-
-    /** The physics body which represents this asteroid */
-    private RigidBody body;
-    /** The display which is drawn to the screen */
-    private ConvexShape display;
+public class Asteroid extends Entity {
 
     /**
      * Constructs a new procedurally generated asteroid
@@ -37,14 +31,12 @@ public class Asteroid implements EntityRenderable {
         config.density = 0.6f;
         body = world.createBody(config);
 
-        display = new ConvexShape(body.getShape().getVertices());
     }
 
     @Override
     public void render(RenderWindow renderer) {
-        display.setPosition(body.getTransform().getPosition());
-        display.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
-        renderer.draw(display);
+        /** Simply runs the body renderer from the entity class it extends from */
+        super.render(renderer);
     }
 
     public Polygon getShape(){
