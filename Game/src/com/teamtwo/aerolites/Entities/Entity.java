@@ -1,7 +1,6 @@
 package com.teamtwo.aerolites.Entities;
 
 import com.teamtwo.engine.Physics.RigidBody;
-import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.Interfaces.EntityRenderable;
 import com.teamtwo.engine.Utilities.Interfaces.Updateable;
 import com.teamtwo.engine.Utilities.MathUtil;
@@ -32,5 +31,8 @@ public class Entity implements EntityRenderable, Updateable {
     @Override
     public void update(float dt) {
 
+    }
+    public RigidBody getBody(){
+        return body;
     }
 }

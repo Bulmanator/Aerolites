@@ -5,7 +5,6 @@ import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
-import com.teamtwo.engine.Utilities.Interfaces.Updateable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
@@ -19,8 +18,11 @@ public class Player extends Entity{
 
     private final float ROTATION_SPEED = MathUtil.PI;
     private final float FORCE_FROM_JET = 75000;
+    private final float TIME_BETWEEN_SHOTS = 0.2f;
 
     private ParticleEmitter jet;
+    private float shootCooldown;
+    private boolean shoot;
 
     public Player(World w){
         BodyConfig config = new BodyConfig();
@@ -46,22 +48,23 @@ public class Player extends Entity{
         pConfig.minAngle = 0;
         pConfig.maxAngle = 0;
         pConfig.speed = 70;
-        pConfig.rotationalSpeed = 2;
-        pConfig.pointCount = 6;
+        pConfig.rotationalSpeed = 40;
+        pConfig.pointCount = 3;
         pConfig.colours[0] = Color.RED;
         pConfig.colours[1] = Color.YELLOW;
         pConfig.colours[2] = Color.MAGENTA;
         pConfig.fadeOut = true;
-        pConfig.startSize = 9;
+        pConfig.startSize = 14;
         pConfig.endSize = 4;
         pConfig.minLifetime = 1.5f;
-        pConfig.maxLifetime = 2;
+        pConfig.maxLifetime = 9;
 
 
         pConfig.position = body.getTransform().getPosition();
-        jet = new ParticleEmitter(pConfig, 20f, 400);
+        jet = new ParticleEmitter(pConfig, 40f, 400);
 
         renderColour = Color.GREEN;
+        shoot = false;
     }
 
     @Override
@@ -69,6 +72,7 @@ public class Player extends Entity{
 
         // Update the particle emitter
         jet.update(dt);
+        shootCooldown += dt;
 
         if(Keyboard.isKeyPressed(Keyboard.Key.W)) {
 
@@ -99,11 +103,25 @@ public class Player extends Entity{
         else {
             body.setAngularVelocity(0);
         }
+        if(Keyboard.isKeyPressed(Keyboard.Key.SPACE)) {
+            if(shootCooldown > TIME_BETWEEN_SHOTS){
+                shootCooldown = 0;
+                shoot = true;
+            }
+        }
     }
 
     @Override
     public void render(RenderWindow renderer) {
         jet.render(renderer);
         super.render(renderer);
+    }
+
+    public boolean shooting(){
+        if(shoot){
+            shoot = false;
+            return true;
+        }
+        return false;
     }
 }

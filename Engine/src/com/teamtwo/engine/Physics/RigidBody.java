@@ -218,4 +218,5 @@ public class RigidBody implements Updateable {
      * @param angularVelocity The new angular velocity to ser
      */
     public void setAngularVelocity(float angularVelocity) { this.angularVelocity = angularVelocity; }
+
 }
