@@ -5,6 +5,7 @@ import org.jsfml.system.Vector2f;
 
 /**
  * Represents a physics body within the world
+ * @author James Bulman
  */
 public class RigidBody implements Updateable {
 
@@ -61,9 +62,12 @@ public class RigidBody implements Updateable {
      * @param dt The amount of time passed since last frame
      */
     public void update(float dt) {
+
+        float dth = dt * 0.5f;
+
         Vector2f acceleration = Vector2f.mul(force, invMass);
 
-        Vector2f dv = new Vector2f(acceleration.x * dt, acceleration.y * dt);
+        Vector2f dv = new Vector2f(acceleration.x * dth, acceleration.y * dth);
         velocity = Vector2f.add(velocity, dv);
 
         float omega = torque * invInertia;
@@ -73,6 +77,9 @@ public class RigidBody implements Updateable {
         transform.setPosition(Vector2f.add(transform.getPosition(), dx));
 
         transform.setAngle(transform.getAngle() + (angularVelocity * dt));
+
+        dv = new Vector2f(acceleration.x * dth, acceleration.y * dth);
+        velocity = Vector2f.add(velocity, dv);
     }
 
     /**
@@ -81,6 +88,7 @@ public class RigidBody implements Updateable {
     public void resetForces() {
         force = Vector2f.ZERO;
         torque = 0;
+        shape.reset();
     }
 
     /**

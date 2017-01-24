@@ -13,10 +13,17 @@ public class Polygon implements Initialisable<RigidBody> {
     /**
      * The maximum number of vertices a polygon can have for performance reasons
      */
-    private static final int MAX_VERTICES = 16;
+    private static final int MAX_VERTICES = 8;
 
     /** The vertices which make up the polygon */
     private Vector2f[] vertices;
+    /** A cache array for the transformed vertices */
+    private Vector2f[] transformedVertices;
+    /** The edge normals of the polygon */
+    private Vector2f[] normals;
+    /** A cache array for the transformed edge normals */
+    private Vector2f[] transformedNormals;
+
     /** The body associated with the polygon */
     private RigidBody body;
 
@@ -43,17 +50,21 @@ public class Polygon implements Initialisable<RigidBody> {
             tmp[vertexCount] = new Vector2f(MathUtil.cos(angle) * radius, MathUtil.sin(angle) * radius);
 
             vertexCount++;
-            angle += MathUtil.randomFloat(20, 80) * MathUtil.DEG_TO_RAD;
+            if(vertexCount == MAX_VERTICES) break;
+            angle += MathUtil.randomFloat(40, 80) * MathUtil.DEG_TO_RAD;
         }
 
         // Check vertex count
-        if(vertexCount >= MAX_VERTICES) {
+        if(vertexCount > MAX_VERTICES) {
             throw new IllegalStateException("Error: A Polygon cannot have more than " + MAX_VERTICES + " vertices");
         }
 
         // Resize the vertex array so it's not taking up more space
         vertices = new Vector2f[vertexCount];
         System.arraycopy(tmp, 0, vertices, 0, vertexCount);
+
+        // Calculate the edge normals
+        normals = ShapeUtil.calculateNormals(vertices);
 
         // Set the body to be null as it isn't attached to one
         body = null;
@@ -65,7 +76,7 @@ public class Polygon implements Initialisable<RigidBody> {
      */
     public Polygon(Vector2f[] vertices) {
         // Check vertex count
-        if(vertices.length >= MAX_VERTICES) {
+        if(vertices.length > MAX_VERTICES) {
             throw new IllegalStateException("Error: A Polygon cannot have more than " + MAX_VERTICES + " vertices");
         }
 
@@ -77,6 +88,9 @@ public class Polygon implements Initialisable<RigidBody> {
         for(int i = 0; i < vertices.length; i++) {
             this.vertices[i] = Vector2f.sub(vertices[i], centroid);
         }
+
+        // Calculate the edge normals
+        normals = ShapeUtil.calculateNormals(vertices);
 
         // Set body to be null because it isn't attached
         body = null;
@@ -114,18 +128,35 @@ public class Polygon implements Initialisable<RigidBody> {
      * @return The transformed vertices
      */
     public Vector2f[] getTransformed() {
-        Vector2f[] transformed = new Vector2f[vertices.length];
-        float sin = MathUtil.sin(body.getTransform().getAngle());
-        float cos = MathUtil.cos(body.getTransform().getAngle());
+        if(transformedVertices != null) return transformedVertices;
 
+        transformedVertices = new Vector2f[vertices.length];
         for(int i = 0; i < vertices.length; i++) {
-            Vector2f vertex = vertices[i];
-            float x = (vertex.x * cos) - (vertex.y * sin);
-            float y = (vertex.x * sin) + (vertex.y * cos);
-
-            transformed[i] = Vector2f.add(new Vector2f(x, y), body.getTransform().getPosition());
+            transformedVertices[i] = body.getTransform().apply(vertices[i]);
         }
 
-        return transformed;
+        return transformedVertices;
+    }
+
+    /**
+     * Gets the transformed edge normals of the polygon
+     * @return The transformed edge normals
+     */
+    public Vector2f[] getNormals() {
+        if(transformedNormals != null) return transformedNormals;
+
+        transformedNormals = new Vector2f[normals.length];
+        for(int i = 0; i < normals.length; i++) {
+            transformedNormals[i] = body.getTransform().applyRotation(normals[i]);
+        }
+        return transformedNormals;
+    }
+
+    /**
+     * Resets the transformed vertex and normal cache
+     */
+    void reset() {
+        transformedVertices = null;
+        transformedNormals = null;
     }
 }

@@ -72,14 +72,14 @@ public class ParticleEmitter implements Updateable, EntityRenderable {
      * @param dt The amount of time passed since last frame
      */
     public void update(float dt) {
-        if(!active || pause) return;
+        if((!active && particleCount == 0) || pause) return;
 
         // Work out the particles per second
         float rate = 1f / emissionRate;
         accumulator += dt;
 
         // Add particles until the pool is full or surpass the emission rate
-        while (particleCount != particlePool.length && accumulator > rate) {
+        while (active && particleCount != particlePool.length && accumulator > rate) {
             addParticle();
             accumulator -= rate;
         }
@@ -104,7 +104,7 @@ public class ParticleEmitter implements Updateable, EntityRenderable {
      * @param renderer The {@link RenderWindow} to draw the entity to
      */
     public void render(RenderWindow renderer) {
-        if(!active) return;
+        if(!active && particleCount == 0) return;
 
         // Draw all of the active particles
         for(int i = 0; i < particleCount; i++) {
@@ -169,19 +169,23 @@ public class ParticleEmitter implements Updateable, EntityRenderable {
      * Sets whether or not the emitter is active
      * @param active True for the emitter to be active, False for the emitter to be inactive
      */
-    public void setActive(boolean active) { this.active = active; }
+    public void setActive(boolean active) {
+        if(!active) accumulator = 0;
+        this.active = active;
+    }
 
     /**
      * Sets whether or not the emitter is paused, the emitter will still render while paused
      * @param pause True to pause the emitter, False to un-pause it
      */
-    public void setPause(boolean pause) { this.pause = pause; }
+    public void setPause(boolean pause) {
+        if(pause) accumulator = 0;
+        this.pause = pause;
+    }
 
     /**
      * Sets the emission rate of the emitter
      * @param emissionRate The new emission rate, in particles per second
      */
     public void setEmissionRate(float emissionRate) { this.emissionRate = emissionRate; }
-
-    public void setConfig(ParticleConfig config) { this.config = config; }
 }

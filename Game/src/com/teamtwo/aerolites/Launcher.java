@@ -10,9 +10,9 @@ public class Launcher {
 
         config.width = 1280;
         config.height = 720;
-        config.title = "ExampleGame";
+        config.title = "Aerolites";
         config.fpsLimit = 60;
 
-        new Engine(new ExampleGame(), config);
+        new Engine(new Aerolites(), config);
     }
 }
