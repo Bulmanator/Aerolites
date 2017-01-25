@@ -15,12 +15,13 @@ public class Button implements EntityRenderable{
 
     RectangleShape shape;
     Text text;
-
+    RectangleShape testShape;
 
     @Override
     public void render(RenderWindow renderer) {
         renderer.draw(shape);
         renderer.draw(text);
+        renderer.draw(testShape);
     }
 
    public Button(int centerX, int centerY, int width, int height, String label)
@@ -31,6 +32,21 @@ public class Button implements EntityRenderable{
        shape.setSize(new Vector2f(width,height));
        text = new Text(label, ContentManager.instance.getFont("Ubuntu"));
        text.setColor(Color.BLACK);
-       text.setPosition(centerX, centerY); //TODO center text correctly
+       text.setPosition(centerX- text.getLocalBounds().width/2, centerY- text.getLocalBounds().height); //TODO center text correctly
+
+       /*testShape = new RectangleShape(new Vector2f(text.getLocalBounds().width, text.getLocalBounds().height));
+       testShape.setPosition(text.getPosition());
+       testShape.setFillColor(Color.RED);*/
    }
+
+   public int getXStartPosition()
+   {
+
+   }
+
+   public int getYStartPosition(){
+
+   }
+
+   
 }

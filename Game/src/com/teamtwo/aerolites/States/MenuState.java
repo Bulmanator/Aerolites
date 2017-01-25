@@ -5,16 +5,16 @@ import com.teamtwo.aerolites.UI.Button;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
+import org.jsfml.graphics.Color;
+import org.jsfml.graphics.RectangleShape;
+import org.jsfml.graphics.Text;
+import org.jsfml.system.Vector2f;
 
 
 public class MenuState extends State {
-    Button MenuButton;
-    Button NewGameButton;
-    Button ContinueGameButton;
-    Button OptionsButton;
-    Button Credits;
-
     Button[] Buttons = new Button[4];
+    Text text;
+
 
 
 
@@ -23,10 +23,16 @@ public class MenuState extends State {
 
 
     public void render() {
-        //spaceAnimation.render(window);
-        MenuButton.render(window);
-        NewGameButton.render(window);
-        ContinueGameButton.render(window);
+        for(int i = 0; i < Buttons.length; i++)
+        {
+           Buttons[i].render(window);
+        }
+        //Buttons[2].render(window);
+        RectangleShape shape = new RectangleShape(new Vector2f(1, window.getSize().y));
+        shape.setPosition(window.getSize().x/2,0);
+        window.draw(shape);
+        //window.draw(text);
+
     }
 
     @Override
@@ -43,14 +49,16 @@ public class MenuState extends State {
     public MenuState(GameStateManager gsm) {
         super(gsm);
         ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
-        /*hoverBoxChoices = new ExampleInput();
-        game.getEngine().setInputHandler(hoverBoxChoices);*/
 
-        MenuButton = new Button(window.getSize().x/2, window.getSize().y/10, window.getSize().x/4, window.getSize().y/10, "Menu"); //TODO replace this button with actual text
-
-        NewGameButton = new Button(window.getSize().x/2, window.getSize().y/10*4, window.getSize().x/4, window.getSize().y/10, "New Game");
+        text = new Text("Aerolites", ContentManager.instance.getFont("Ubuntu"));
+        text.setPosition(window.getSize().x/2 - text.getLocalBounds().width/2, window.getSize().y/2);
+        text.setColor(Color.BLACK);
 
 
+        Buttons[0] = new Button(window.getSize().x/2, window.getSize().y/20*4, window.getSize().x/4, window.getSize().y/10, "New Game");
+        Buttons[1] = new Button(window.getSize().x/2, window.getSize().y/20*8, window.getSize().x/4, window.getSize().y/10, "Continue Game");
+        Buttons[2] = new Button(window.getSize().x/2, window.getSize().y/20*12, window.getSize().x/4, window.getSize().y/10, "Options");
+        Buttons[3] = new Button(window.getSize().x/2, window.getSize().y/20*16, window.getSize().x/4, window.getSize().y/10, "Credits");
 
     }
 
