@@ -11,42 +11,56 @@ import org.jsfml.system.Vector2f;
 /**
  * Created by janneht on 25/01/2017.
  */
-public class Button implements EntityRenderable{
+public class Button implements EntityRenderable {
 
     RectangleShape shape;
     Text text;
-    RectangleShape testShape;
+    int centerX, centerY;
+    //RectangleShape testShape;
 
     @Override
     public void render(RenderWindow renderer) {
         renderer.draw(shape);
         renderer.draw(text);
-        renderer.draw(testShape);
+        //renderer.draw(testShape);
     }
 
-   public Button(int centerX, int centerY, int width, int height, String label)
-   {
-       shape = new RectangleShape();
-       //shape.setOrigin(centerX, centerY);
-       shape.setPosition(centerX-width/2, centerY-height/2);
-       shape.setSize(new Vector2f(width,height));
-       text = new Text(label, ContentManager.instance.getFont("Ubuntu"));
-       text.setColor(Color.BLACK);
-       text.setPosition(centerX- text.getLocalBounds().width/2, centerY- text.getLocalBounds().height); //TODO center text correctly
+    public Button(int centerX, int centerY, int width, int height, String label) {
+        this.centerX = centerX;
+        this.centerY = centerY;
+
+        shape = new RectangleShape();
+        //shape.setOrigin(centerX, centerY);
+        shape.setPosition(centerX - width / 2, centerY - height / 2);
+        shape.setSize(new Vector2f(width, height));
+        text = new Text(label, ContentManager.instance.getFont("Ubuntu"));
+        text.setColor(Color.BLACK);
+        text.setPosition(centerX - text.getLocalBounds().width / 2, centerY - text.getLocalBounds().height); //TODO center text correctly
 
        /*testShape = new RectangleShape(new Vector2f(text.getLocalBounds().width, text.getLocalBounds().height));
        testShape.setPosition(text.getPosition());
        testShape.setFillColor(Color.RED);*/
-   }
+    }
 
-   public int getXStartPosition()
-   {
+    public int getCenterX(){
+        return centerX;
+    }
 
-   }
+    public int getCenterY(){
+        return centerY;
+    }
 
-   public int getYStartPosition(){
+    public boolean checkInBox(Vector2f mouse){
+        if(mouse.x > centerX - shape.getSize().x/2 && mouse.x < centerX + shape.getSize().x/2)
+        {
+            if(mouse.y > centerY - shape.getSize().y/2 && mouse.y < centerY + shape.getSize().y/2)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
-   }
 
-   
+
 }

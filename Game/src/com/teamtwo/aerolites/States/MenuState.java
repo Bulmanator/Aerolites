@@ -6,33 +6,19 @@ import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.Color;
-import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
-
+import org.jsfml.window.Mouse;
 
 public class MenuState extends State {
     Button[] Buttons = new Button[4];
     Text text;
-
-
-
-
     private ExampleInput hoverBoxChoices;
 
-
-
     public void render() {
-        for(int i = 0; i < Buttons.length; i++)
-        {
-           Buttons[i].render(window);
+        for (int i = 0; i < Buttons.length; i++) {
+            Buttons[i].render(window);
         }
-        //Buttons[2].render(window);
-        RectangleShape shape = new RectangleShape(new Vector2f(1, window.getSize().y));
-        shape.setPosition(window.getSize().x/2,0);
-        window.draw(shape);
-        //window.draw(text);
-
     }
 
     @Override
@@ -51,14 +37,15 @@ public class MenuState extends State {
         ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
 
         text = new Text("Aerolites", ContentManager.instance.getFont("Ubuntu"));
-        text.setPosition(window.getSize().x/2 - text.getLocalBounds().width/2, window.getSize().y/2);
+        text.setPosition(window.getSize().x / 2 - text.getLocalBounds().width / 2, window.getSize().y / 2);
         text.setColor(Color.BLACK);
 
 
-        Buttons[0] = new Button(window.getSize().x/2, window.getSize().y/20*4, window.getSize().x/4, window.getSize().y/10, "New Game");
-        Buttons[1] = new Button(window.getSize().x/2, window.getSize().y/20*8, window.getSize().x/4, window.getSize().y/10, "Continue Game");
-        Buttons[2] = new Button(window.getSize().x/2, window.getSize().y/20*12, window.getSize().x/4, window.getSize().y/10, "Options");
-        Buttons[3] = new Button(window.getSize().x/2, window.getSize().y/20*16, window.getSize().x/4, window.getSize().y/10, "Credits");
+        Buttons[0] = new Button(window.getSize().x / 2, window.getSize().y / 20 * 4, window.getSize().x / 4, window.getSize().y / 10, "New Game");
+        Buttons[1] = new Button(window.getSize().x / 2, window.getSize().y / 20 * 8, window.getSize().x / 4, window.getSize().y / 10, "Continue Game");
+        Buttons[2] = new Button(window.getSize().x / 2, window.getSize().y / 20 * 12, window.getSize().x / 4, window.getSize().y / 10, "Options");
+        Buttons[3] = new Button(window.getSize().x / 2, window.getSize().y / 20 * 16, window.getSize().x / 4, window.getSize().y / 10, "Credits");
+
 
     }
 
@@ -68,6 +55,10 @@ public class MenuState extends State {
      * @param dt The amount of time passed since last frame
      */
     public void update(float dt) {
+        for(int i = 0; i < Buttons.length; i++)
+        {
+            if(Buttons[i].checkInBox(new Vector2f(Mouse.getPosition(window))))System.out.println("it worked");
+        }
 
     }
 
