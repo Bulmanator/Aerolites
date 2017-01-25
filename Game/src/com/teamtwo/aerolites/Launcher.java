@@ -14,4 +14,7 @@ public class Launcher {
 
         new Engine(new ExampleGame(), config);
     }
+
+    //Multiples of 16 * 9s
+
 }

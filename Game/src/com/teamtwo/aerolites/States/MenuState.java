@@ -26,7 +26,7 @@ public class MenuState extends State {
         //spaceAnimation.render(window);
         MenuButton.render(window);
         NewGameButton.render(window);
-//        ContinueGameButton.render(window);
+        ContinueGameButton.render(window);
     }
 
     @Override

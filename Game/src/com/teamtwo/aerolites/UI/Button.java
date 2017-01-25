@@ -29,8 +29,12 @@ public class Button implements EntityRenderable{
        //shape.setOrigin(centerX, centerY);
        shape.setPosition(centerX-width/2, centerY-height/2);
        shape.setSize(new Vector2f(width,height));
-       text = new Text(label, ContentManager.instance.getFont("Ubuntu"));
+       text = new Text(label, ContentManager.instance.getFont("Ubuntu"), 30);
+    //   text = new Text(label, )
+
        text.setColor(Color.BLACK);
-       text.setPosition(centerX, centerY); //TODO center text correctly
+
+       text.setPosition(centerX- text.getLocalBounds().width/2, centerY- text.getLocalBounds().height); //TODO center text correctly
+    //   text.setPosition(centerX, centerY); //TODO center text correctly
    }
 }

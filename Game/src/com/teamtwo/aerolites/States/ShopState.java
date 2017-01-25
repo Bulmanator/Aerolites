@@ -21,20 +21,20 @@ import com.teamtwo.engine.Utilities.State.State;
         Button fasterTurning;
         Button AlTurrets;
 
-        Button[] Buttons = new Button[4];
+        Button[] Buttons = new Button[5];
 
 
         private ExampleInput hoverBoxChoices;
 
 
         public void render() {
-            //spaceAnimation.render(window);
-            shopMenuButton.render(window);
-            shield.render(window);
-//            fireRateUp.render(window);
- //           newShip.render(window);
-  //          buyANewLife.render(window);
+
+            for (int i = 0; i < Buttons.length; i++) {
+
+                Buttons[i].render(window);
+            }
         }
+
 
         @Override
         public void dispose() {
@@ -49,15 +49,20 @@ import com.teamtwo.engine.Utilities.State.State;
         //
         public ShopState(GameStateManager gsm) {
             super(gsm);
-            ContentManager.instance.loadFont("Ubuntu", "Blazed.ttf");
+            ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
 
         /*hoverBoxChoices = new ExampleInput();
         game.getEngine().setInputHandler(hoverBoxChoices);*/
 
-            shopMenuButton = new Button(window.getSize().x / 2, window.getSize().y / 10, window.getSize().x / 4, window.getSize().y / 10, "Menu"); //TODO replace this button with actual text
+           Buttons[0] = new Button(window.getSize().x / 2, window.getSize().y / 30*8, window.getSize().x / 4, window.getSize().y / 10, "Shield"); //TODO replace this button with actual text
 
-            shield = new Button(window.getSize().x / 2, window.getSize().y / 10 * 4, window.getSize().x / 4, window.getSize().y / 10, "New Game");
+           Buttons[1] = new Button(window.getSize().x / 2, window.getSize().y / 30*12, window.getSize().x / 4, window.getSize().y / 10, "Fire Rateup");
 
+           Buttons[2] = new Button(window.getSize().x / 2, window.getSize().y / 30*16, window.getSize().x / 4, window.getSize().y / 10, "Buy A New Life");
+           Buttons[3] = new Button(window.getSize().x / 2, window.getSize().y / 30*20, window.getSize().x / 4, window.getSize().y / 10, "Al Friendly Ship");
+
+           Buttons[4] = new Button(window.getSize().x / 2, window.getSize().y / 30*24, window.getSize().x / 4, window.getSize().y / 10, "Laser Cannon");
+        //   Buttons[5] = new Button(window.getSize().x / 2, window.getSize().y / 30*28, window.getSize().x / 4, window.getSize().y / 10, "Laser Cannon");
 
         }
 
