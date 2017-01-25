@@ -107,9 +107,16 @@ public class MenuState extends State {
         ReserveBox.setFillColor(new Color(100, 100, 100));
 
         rotateNewGameBox.setFillColor(new Color(0, 0, 0));
+        rotateNewGameBox.setOrigin(10, 10);
+
         rotateContinueGameBox.setFillColor(new Color(0, 0, 0));
+        rotateContinueGameBox.setOrigin(10, 10);
+
         rotateOptionsBox.setFillColor(new Color(0, 0, 0));
+        rotateOptionsBox.setOrigin(10, 10);
+
         rotateReserveBox.setFillColor(new Color(0, 0, 0));
+        rotateReserveBox.setOrigin(10, 10);
 
 
         ContentManager.instance.loadFont("Blazed", "Blazed.ttf");    // Using get instead of loading directly
