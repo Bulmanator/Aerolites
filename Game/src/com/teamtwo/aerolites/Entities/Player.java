@@ -18,7 +18,7 @@ public class Player extends Entity{
 
     private final float ROTATION_SPEED = MathUtil.PI;
     private final float FORCE_FROM_JET = 75000;
-    private final float TIME_BETWEEN_SHOTS = 0.2f;
+    private final float TIME_BETWEEN_SHOTS = 0.4f;
 
     private ParticleEmitter jet;
     private float shootCooldown;
@@ -50,14 +50,15 @@ public class Player extends Entity{
         pConfig.speed = 70;
         pConfig.rotationalSpeed = 40;
         pConfig.pointCount = 3;
-        pConfig.colours[0] = Color.RED;
-        pConfig.colours[1] = Color.YELLOW;
-        pConfig.colours[2] = Color.MAGENTA;
+        pConfig.colours[0] = new Color(104,255,237);
+        pConfig.colours[1] = new Color(104,255,162);
+        pConfig.colours[2] = new Color(66,255,97);
+        pConfig.colours[3] = new Color(66,255,97);
         pConfig.fadeOut = true;
         pConfig.startSize = 14;
         pConfig.endSize = 4;
         pConfig.minLifetime = 1.5f;
-        pConfig.maxLifetime = 9;
+        pConfig.maxLifetime = 6;
 
 
         pConfig.position = body.getTransform().getPosition();
@@ -73,6 +74,7 @@ public class Player extends Entity{
         // Update the particle emitter
         jet.update(dt);
         shootCooldown += dt;
+        super.update(dt);
 
         if(Keyboard.isKeyPressed(Keyboard.Key.W)) {
 
@@ -124,4 +126,5 @@ public class Player extends Entity{
         }
         return false;
     }
+
 }

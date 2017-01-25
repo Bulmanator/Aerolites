@@ -50,6 +50,9 @@ public class Engine implements Updateable, Renderable, Disposable {
     // The Keyboard handler the engine is currently using
     private InputProcessor input;
 
+    // The fps of the game
+    private float fps;
+
     /**
      * Creates an Runnable Engine which will run the main Game loop
      * @param game The Game instance used for updating and rendering
@@ -104,6 +107,7 @@ public class Engine implements Updateable, Renderable, Disposable {
 
         // Shouldn't close and start main loop if instructed to do so
         shouldClose = false;
+        fps = 0;
         if(config.autoStart) mainLoop();
     }
 
@@ -124,7 +128,7 @@ public class Engine implements Updateable, Renderable, Disposable {
             accumulator += elapsed;
             clock.restart();
 
-            window.setTitle("FPS: " + Math.round(1 / elapsed));
+            fps = Math.round(1 / elapsed);
 
             // Clamps the accumulator
             accumulator = MathUtil.clamp(accumulator, 0, 0.2f);
@@ -318,5 +322,9 @@ public class Engine implements Updateable, Renderable, Disposable {
         Debug.log("Window Settings: " + window.getSize().x + "x" + window.getSize().y + "_" + Math.round(1 / deltaTime));
 
         System.out.println();
+    }
+
+    public float getFps(){
+        return fps;
     }
 }

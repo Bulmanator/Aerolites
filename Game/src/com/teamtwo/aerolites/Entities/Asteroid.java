@@ -5,6 +5,7 @@ import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.RigidBody;
 import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.MathUtil;
+import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 
@@ -14,13 +15,13 @@ import org.jsfml.system.Vector2f;
 public class Asteroid extends Entity {
 
     private boolean onScreen;
-    private boolean hasBeenOnScreen;
 
     /**
      * Constructs a new procedurally generated asteroid
      * @param world The world which is used to create the body
      */
     public Asteroid(World world) {
+        this.onScreen = true;
         BodyConfig config = new BodyConfig();
 
         int screenSide = MathUtil.randomInt(0,4);
@@ -58,24 +59,19 @@ public class Asteroid extends Entity {
         config.position = new Vector2f(x,y);
         config.shape = new Polygon();
 
-        config.restitution = 0.3f;
+        config.restitution = 1.4f;//0.3f;
         config.velocity = new Vector2f(velocityX,velocityY);
         config.angularVelocity = MathUtil.randomFloat(0, MathUtil.PI / 4f);
 
         config.density = 0.6f;
         body = world.createBody(config);
-        onScreen = true;
+        offScreenAllowance = new Vector2f(body.getShape().getRadius()*4,body.getShape().getRadius()*4);
     }
 
     @Override
     public void render(RenderWindow renderer) {
         /** Simply runs the body renderer from the entity class it extends from */
         super.render(renderer);
-    }
-
-    @Override
-    public void update(float dt){
-        checkOffScreen();
     }
 
     public Polygon getShape(){
@@ -86,12 +82,18 @@ public class Asteroid extends Entity {
         return body;
     }
 
-    private void checkOffScreen(){
-        if(body.getTransform().getPosition().x < -100 || body.getTransform().getPosition().x > 1920+100){
-            onScreen = false;
+    @Override
+    public void update(float dt){
+        checkOffScreen();
+    }
+
+    @Override
+    public void checkOffScreen(){ //TODO Make window pass in the window size so that the asteroids de-spawn at the correct location
+        if(body.getTransform().getPosition().x < -offScreenAllowance.x || body.getTransform().getPosition().x > State.WORLD_SIZE.x + offScreenAllowance.x){
+            this.onScreen = false;
         }
-        else if(body.getTransform().getPosition().y < -100 || body.getTransform().getPosition().y > 1080+100){
-            onScreen = false;
+        else if(body.getTransform().getPosition().y < -offScreenAllowance.y || body.getTransform().getPosition().y > State.WORLD_SIZE.y + offScreenAllowance.y){
+            this.onScreen = false;
         }
         else
         {
@@ -99,7 +101,8 @@ public class Asteroid extends Entity {
         }
     }
 
-    public boolean isOnScreen() {
+    @Override
+    public boolean isOnScreen(){
         return onScreen;
     }
 }
