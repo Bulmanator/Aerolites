@@ -10,8 +10,8 @@ import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Mouse;
 
-public class MenuState extends State {
-    Button[] Buttons = new Button[4];
+public class MultiplayerMenuState extends State {
+    Button[] Buttons = new Button[3];
     Text text;
     private ExampleInput hoverBoxChoices;
 
@@ -32,7 +32,7 @@ public class MenuState extends State {
     // Such as levels, menus etc.
     // Just extend the State class to make a new State and you can add/ remove states from the Game State Manager
     //
-    public MenuState(GameStateManager gsm) {
+    public MultiplayerMenuState(GameStateManager gsm) {
         super(gsm);
         ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
 
@@ -41,10 +41,10 @@ public class MenuState extends State {
         text.setColor(Color.BLACK);
 
 
-        Buttons[0] = new Button(window.getSize().x / 2, window.getSize().y / 20 * 4, window.getSize().x / 4, window.getSize().y / 10, "Singleplayer");
-        Buttons[1] = new Button(window.getSize().x / 2, window.getSize().y / 20 * 8, window.getSize().x / 4, window.getSize().y / 10, "Multiplayer");
-        Buttons[2] = new Button(window.getSize().x / 2, window.getSize().y / 20 * 12, window.getSize().x / 4, window.getSize().y / 10, "Options");
-        Buttons[3] = new Button(window.getSize().x / 2, window.getSize().y / 20 * 16, window.getSize().x / 4, window.getSize().y / 10, "Credits");
+        Buttons[0] = new Button(window.getSize().x / 2, window.getSize().y / 10 * 3, window.getSize().x / 4, window.getSize().y / 10, "2 Players");
+        Buttons[1] = new Button(window.getSize().x / 2, window.getSize().y / 10 * 5, window.getSize().x / 4, window.getSize().y / 10, "3 Players");
+        Buttons[2] = new Button(window.getSize().x / 2, window.getSize().y / 10 * 7, window.getSize().x / 4, window.getSize().y / 10, "4 Players");
+
 
 
     }
