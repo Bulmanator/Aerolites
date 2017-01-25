@@ -1,6 +1,6 @@
 package com.teamtwo.aerolites;
 
-import com.teamtwo.aerolites.States.PlayState;
+import com.teamtwo.aerolites.States.Physics;
 import com.teamtwo.engine.Game;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 
@@ -12,7 +12,7 @@ public class Aerolites extends Game {
     /** This method is called once before the game begins running */
     public void initialise() {
         stateManager = new GameStateManager(this);
-        stateManager.addState(new PlayState(stateManager));
+        stateManager.addState(new Physics(stateManager));
     }
 
     /**
