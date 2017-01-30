@@ -1,7 +1,5 @@
 package com.teamtwo.aerolites.States;
 
-import com.teamtwo.engine.Input.Controllers.Controller;
-import com.teamtwo.engine.Input.Controllers.Controllers;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.RigidBody;
@@ -57,9 +55,9 @@ public class Physics extends State {
 
 
         for(int i = 0; i < 10; i++) {
-            config.shape = new Polygon(100);
+            config.shape = new Polygon();
             config.velocity = Vector2f.ZERO;
-            config.angularVelocity = 1;
+            config.angularVelocity = 0;
             config.density = MathUtil.randomFloat(0.1f, 1f);
             config.position = new Vector2f(MathUtil.randomFloat(5, 1275), MathUtil.randomFloat(0, 100));
             config.restitution = MathUtil.randomFloat(0, 1);
@@ -72,36 +70,23 @@ public class Physics extends State {
     }
 
     public void update(float dt) {
-
-        if(Controllers.isButtonPressed(Controller.Player.One, Controller.Button.RB)) {
-            System.out.println("RB Pressed!");
-        }
-
-        if(Controllers.isButtonPressed(Controller.Player.Two, Controller.Button.A)) {
-            System.out.println("A Pressed!");
-        }
-
         world.update(dt);
     }
 
     public void render() {
-
-        world.render(window);
 
         ConvexShape shape = new ConvexShape(body.getShape().getVertices());
         shape.setPosition(body.getTransform().getPosition());
         shape.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
         shape.setTexture(texture);
 
-
         window.draw(shape);
-
-
 
         Text t = new Text("Press R to generate bodies", font, 20);
         t.setPosition(100, 50);
-
         window.draw(t);
+
+        world.render(window);
     }
 
     public void dispose() {}
