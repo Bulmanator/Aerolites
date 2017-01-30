@@ -34,6 +34,7 @@ public class Bullet extends Entity {
 
         this.body = world.createBody(config);
         this.body.setVelocity(new Vector2f(0,-350));
+        this.setMaxSpeed(350);
         this.body.rotateVelocity(angle);
         this.body.setTransform(position,angle);
 

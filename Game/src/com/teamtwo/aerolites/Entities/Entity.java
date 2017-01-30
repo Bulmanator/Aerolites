@@ -18,6 +18,7 @@ public class Entity implements EntityRenderable, Updateable {
     protected Color renderColour;
     protected boolean onScreen;
     protected Vector2f offScreenAllowance;
+    private float maxSpeed = 200;
 
     public Entity(){
         renderColour = Color.WHITE;
@@ -37,6 +38,7 @@ public class Entity implements EntityRenderable, Updateable {
     @Override
     public void update(float dt) {
         checkOffScreen();
+        limitSpeed();
     }
     public RigidBody getBody(){
         return body;
@@ -76,5 +78,20 @@ public class Entity implements EntityRenderable, Updateable {
 
     public boolean isOnScreen() {
         return onScreen;
+    }
+
+    public void limitSpeed(){
+        float x = body.getVelocity().x;
+        float y = body.getVelocity().y;
+        x = MathUtil.clamp(x, -maxSpeed, maxSpeed);
+        y = MathUtil.clamp(y, -maxSpeed, maxSpeed);
+        body.setVelocity(new Vector2f(x, y));
+    }
+    public void setMaxSpeed(float speed){
+        maxSpeed = speed;
+    }
+
+    public float getMaxSpeed() {
+        return maxSpeed;
     }
 }

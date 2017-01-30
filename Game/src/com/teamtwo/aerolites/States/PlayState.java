@@ -29,20 +29,21 @@ public class PlayState extends State {
     private float spawnRate;
     private long startTime;
 
+
     public PlayState(GameStateManager gsm) {
         super(gsm);
 
         world = new World(new Vector2f(0,0));
-        World.DRAW_VELOCITIES = true;
-        World.DRAW_BODIES = true;
-        World.DRAW_AABB = true;
+        World.DRAW_VELOCITIES = false;
+        World.DRAW_BODIES = false;
+        World.DRAW_AABB = false;
 
         entities = new ArrayList<>();
         //entities.add(new Asteroid(world));
         entities.add(new Player(world));
         entities.add(new StandardAI(world, new Vector2f(700,150)));
-        entities.add(new StandardAI(world, new Vector2f(900,150)));
-        entities.add(new StandardAI(world, new Vector2f(1100,150)));
+        //entities.add(new StandardAI(world, new Vector2f(900,150)));
+        //entities.add(new StandardAI(world, new Vector2f(1100,150)));
         accum = 0;
         spawnRate = 2f;
         ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");
@@ -77,6 +78,12 @@ public class PlayState extends State {
                     }
                 } else if(entities.get(i) instanceof AI) {
                     ((AI) entities.get(i)).setEntities(entities);
+                    if(((AI) entities.get(i)).isShooting()){
+                        float x = entities.get(i).getBody().getShape().getTransformed()[0].x;
+                        float y = entities.get(i).getBody().getShape().getTransformed()[0].y;
+                        Vector2f pos = new Vector2f(x, y);
+                        entities.add(new Bullet(4, pos, entities.get(i).getBody().getTransform().getAngle(), world));
+                    }
                 }
                 entities.get(i).update(dt);
             }

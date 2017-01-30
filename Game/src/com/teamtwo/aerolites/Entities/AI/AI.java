@@ -10,6 +10,19 @@ import java.util.ArrayList;
  */
 public class AI extends Entity{
     protected ArrayList<Entity> entities;
+    protected boolean shooting;
+
+    public AI(){
+        shooting = false;
+    }
+
+    public boolean isShooting() {
+        return shooting;
+    }
+
+    protected void setShooting(boolean shooting) {
+        this.shooting = shooting;
+    }
 
     public void setEntities(ArrayList<Entity> entities){
         this.entities = entities;

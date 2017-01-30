@@ -19,14 +19,15 @@ public class StandardAI extends AI {
 
     private float planTime;
     private final float PLAN_EXECUTE_TIME;
-    private final float FORCE_FROM_JET = 40000;
+    private final float FORCE_FROM_JET = 20000;
     private final float rotationSpeed = MathUtil.PI*30;
     private ParticleEmitter jet;
     private Entity target;
+    private boolean shouldShoot;
 
     public StandardAI(World world, Vector2f position){
         this.onScreen = true;
-        PLAN_EXECUTE_TIME = 0.2f;
+        PLAN_EXECUTE_TIME = 0.5f;
         BodyConfig config = new BodyConfig();
 
         config.position = position;
@@ -61,7 +62,7 @@ public class StandardAI extends AI {
         pConfig.startSize = 14;
         pConfig.endSize = 4;
         pConfig.minLifetime = 1.5f;
-        pConfig.maxLifetime = 6;
+        pConfig.maxLifetime = 3;
 
 
         pConfig.position = body.getTransform().getPosition();
@@ -69,6 +70,7 @@ public class StandardAI extends AI {
     }
     @Override
     public void update(float dt){
+        setShooting(false);
         jet.getConfig().position = body.getTransform().apply(new Vector2f(0, 15));
         jet.setActive(true);
 
@@ -78,18 +80,20 @@ public class StandardAI extends AI {
         planTime+=dt;
         if(planTime>PLAN_EXECUTE_TIME){
             planTime = 0;
+            setShooting(shouldShoot);
             chooseTarget();
         }
         if(target!=null){
-            checkInDegree(target.getBody().getTransform().getPosition(), dt);
+            trackToTarget(target.getBody().getTransform().getPosition(), dt);
             float x = target.getBody().getTransform().getPosition().x;
             float y = target.getBody().getTransform().getPosition().y;
 
             float xAI = getBody().getTransform().getPosition().x;
             float yAI = getBody().getTransform().getPosition().y;
             float distanceTo= MathUtil.squared(x - xAI) + MathUtil.squared(y - yAI);
+            shouldShoot = true;
             if(distanceTo>MathUtil.squared(200)){
-                move(0,-FORCE_FROM_JET*2);
+                move(0,-FORCE_FROM_JET*6);
                 jet.setActive(true);
             }
             else
@@ -97,17 +101,19 @@ public class StandardAI extends AI {
         }
         else{
             move(0,-FORCE_FROM_JET);
+            body.setAngularVelocity(0);
             jet.setActive(true);
+            shouldShoot=false;
         }
         checkOffScreen();
+        super.update(dt);
     }
-    public void checkInDegree(Vector2f pos, float dt){
+    public void trackToTarget(Vector2f pos, float dt){
         float x = body.getTransform().getPosition().x;
         float y = body.getTransform().getPosition().y;
 
         float degreeBetween =  (float)Math.atan2(pos.y - y, pos.x - x) - body.getTransform().getAngle() + MathUtil.PI/2;
         body.setAngularVelocity(rotationSpeed*dt*MathUtil.normalizeAngle(degreeBetween)/MathUtil.abs(MathUtil.normalizeAngle(degreeBetween)));
-
     }
 
     public void chooseTarget(){
@@ -122,14 +128,13 @@ public class StandardAI extends AI {
                 float xAI = getBody().getTransform().getPosition().x;
                 float yAI = getBody().getTransform().getPosition().y;
                 float distanceTo= MathUtil.squared(x - xAI) + MathUtil.squared(y - yAI);
-                if ( distanceTo < lowestDistance && distanceTo < MathUtil.squared(600)) {
+                if ( distanceTo < lowestDistance && distanceTo < MathUtil.squared(1200)) {
                     lowestDistance = MathUtil.squared(x - xAI) + MathUtil.squared(y - yAI);
                     target = e;
                 }
             }
         }
     }
-
 
     @Override
     public void render(RenderWindow renderer) {

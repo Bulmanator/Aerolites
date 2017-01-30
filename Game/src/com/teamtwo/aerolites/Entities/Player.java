@@ -2,6 +2,8 @@ package com.teamtwo.aerolites.Entities;
 
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
+import com.teamtwo.engine.Input.Controllers.Controller;
+import com.teamtwo.engine.Input.Controllers.Controllers;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
@@ -78,7 +80,7 @@ public class Player extends Entity {
         shootCooldown += dt;
         super.update(dt);
 
-        if(Keyboard.isKeyPressed(Keyboard.Key.W)) {
+        if(Keyboard.isKeyPressed(Keyboard.Key.W) || Controllers.isButtonPressed(Controller.Player.One, Controller.Button.RB)) {
 
             // Apply force to move the ship
             move(0,-FORCE_FROM_JET);
@@ -97,16 +99,16 @@ public class Player extends Entity {
         }
 
         // If A or D are pressed then set the rotational speed accordingly
-        if(Keyboard.isKeyPressed(Keyboard.Key.D)) {
+        if(Keyboard.isKeyPressed(Keyboard.Key.D) ||  Controllers.isButtonPressed(Controller.Player.One, Controller.Button.DPad_Right) ||  Controllers.getThumbstickValues(Controller.Player.One, Controller.Thumbstick.Left).x > 0) {
             body.setAngularVelocity(ROTATION_SPEED);
         }
-        else if(Keyboard.isKeyPressed(Keyboard.Key.A)) {
+        else if(Keyboard.isKeyPressed(Keyboard.Key.A) ||  Controllers.isButtonPressed(Controller.Player.One, Controller.Button.DPad_Left)  ||  Controllers.getThumbstickValues(Controller.Player.One, Controller.Thumbstick.Left).x < 0) {
             body.setAngularVelocity(-ROTATION_SPEED);
         }
         else {
             body.setAngularVelocity(0);
         }
-        if(Keyboard.isKeyPressed(Keyboard.Key.SPACE)) {
+        if(Keyboard.isKeyPressed(Keyboard.Key.SPACE) || Controllers.isButtonPressed(Controller.Player.One, Controller.Button.A)) {
             if(shootCooldown > TIME_BETWEEN_SHOTS){
                 shootCooldown = 0;
                 shoot = true;
