@@ -1,5 +1,6 @@
 package com.teamtwo.engine;
 
+import com.teamtwo.engine.Input.Controllers.Controllers;
 import com.teamtwo.engine.Input.InputHandler;
 import com.teamtwo.engine.Input.InputProcessor;
 import com.teamtwo.engine.Launcher.LauncherConfig;
@@ -218,6 +219,7 @@ public class Engine implements Updateable, Renderable, Disposable {
      */
     public void update(float dt) {
         if(isDisposed) throw new IllegalStateException("Error: The game instance has been disposed and therefore cannot be updated");
+        Controllers.instance.update();
         game.update(dt);
     }
 
