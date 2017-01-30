@@ -1,11 +1,14 @@
 package com.teamtwo.aerolites.States;
 
+import com.teamtwo.aerolites.Entities.AI.AI;
+import com.teamtwo.aerolites.Entities.AI.StandardAI;
 import com.teamtwo.aerolites.Entities.Asteroid;
 import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.aerolites.Entities.Player;
 import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.ContentManager;
+import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.Color;
@@ -24,7 +27,7 @@ public class PlayState extends State {
     private ArrayList<Entity> entities;
     private float accum;
     private float spawnRate;
-    private float rateEffect;
+    private long startTime;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
@@ -32,14 +35,19 @@ public class PlayState extends State {
         world = new World(new Vector2f(0,0));
         World.DRAW_VELOCITIES = true;
         World.DRAW_BODIES = true;
+        World.DRAW_AABB = true;
 
         entities = new ArrayList<>();
-        entities.add(new Asteroid(world));
+        //entities.add(new Asteroid(world));
         entities.add(new Player(world));
+        entities.add(new StandardAI(world, new Vector2f(700,150)));
+        entities.add(new StandardAI(world, new Vector2f(900,150)));
+        entities.add(new StandardAI(world, new Vector2f(1100,150)));
         accum = 0;
-        spawnRate = 4;
-        rateEffect = 1;
+        spawnRate = 2f;
         ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");
+        loadContent();
+        startTime = System.nanoTime();
     }
 
     @Override
@@ -48,36 +56,32 @@ public class PlayState extends State {
         world.update(dt);
         if(accum>spawnRate){
             entities.add(new Asteroid(world));
-            accum=0;
-            spawnRate= 4/rateEffect;
-            rateEffect++;
+            spawnRate = MathUtil.clamp(0.99f*spawnRate, 0.4f,3);
+            accum = 0;
         }
-        ArrayList<Entity> removeEntities = new ArrayList<>();
-        ArrayList<Bullet> addBullets = new ArrayList<>();
-        for(Entity e : entities){ //TODO change this to a normal for loop to remove the concurrent exception
-            if(!e.isOnScreen()){
-                removeEntities.add(e);
+
+
+        for(int i = 0; i < entities.size(); i++){
+            if(!entities.get(i).isOnScreen()){
+                world.removeBody(entities.get(i).getBody());
+                entities.remove(i);
+                i--;
             }
-            if(e instanceof Bullet && !((Bullet)e).isAlive()){
-                removeEntities.add(e);
-            }
-            if(e instanceof Player){
-                if(((Player) e).shooting()){
-                    float x = e.getBody().getShape().getTransformed()[0].x;
-                    float y = e.getBody().getShape().getTransformed()[0].y;
-                    Vector2f pos = new Vector2f(x, y);
-                    addBullets.add(new Bullet(4,pos,e.getBody().getTransform().getAngle(),world));
+            else {
+                if (entities.get(i) instanceof Player) {
+                    if (((Player) entities.get(i)).shooting()) {
+                        float x = entities.get(i).getBody().getShape().getTransformed()[0].x;
+                        float y = entities.get(i).getBody().getShape().getTransformed()[0].y;
+                        Vector2f pos = new Vector2f(x, y);
+                        entities.add(new Bullet(4, pos, entities.get(i).getBody().getTransform().getAngle(), world));
+                    }
+                } else if(entities.get(i) instanceof AI) {
+                    ((AI) entities.get(i)).setEntities(entities);
                 }
+                entities.get(i).update(dt);
             }
-            e.update(dt);
         }
-        for(Entity e : removeEntities){
-            entities.remove(e);
-            world.removeBody(e.getBody());
-        }
-        for(Bullet b: addBullets)
-            entities.add(b);
-        window.setTitle("Entities: " + entities.size());
+       window.setTitle("Entities: " + entities.size());
         if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)){
             window.close();
             System.exit(0);
@@ -103,5 +107,8 @@ public class PlayState extends State {
     @Override
     public void dispose() {
 
+    }
+    public void loadContent(){
+        ContentManager.instance.loadTexture("Asteroid", "Asteroid.png");
     }
 }

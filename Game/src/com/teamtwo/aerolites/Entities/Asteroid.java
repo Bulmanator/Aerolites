@@ -4,8 +4,10 @@ import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.RigidBody;
 import com.teamtwo.engine.Physics.World;
+import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
+import org.jsfml.graphics.ConvexShape;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 
@@ -59,7 +61,7 @@ public class Asteroid extends Entity {
         config.position = new Vector2f(x,y);
         config.shape = new Polygon();
 
-        config.restitution = 1.4f;//0.3f;
+        config.restitution = 0.3f;
         config.velocity = new Vector2f(velocityX,velocityY);
         config.angularVelocity = MathUtil.randomFloat(0, MathUtil.PI / 4f);
 
@@ -71,7 +73,13 @@ public class Asteroid extends Entity {
     @Override
     public void render(RenderWindow renderer) {
         /** Simply runs the body renderer from the entity class it extends from */
-        super.render(renderer);
+        ConvexShape bodyShape = new ConvexShape(body.getShape().getVertices());
+        bodyShape.setPosition(body.getTransform().getPosition());
+        bodyShape.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
+        bodyShape.setFillColor(renderColour);
+        bodyShape.setTexture(ContentManager.instance.getTexture("Asteroid"));
+        renderer.draw(bodyShape);
+
     }
 
     public Polygon getShape(){
@@ -88,7 +96,7 @@ public class Asteroid extends Entity {
     }
 
     @Override
-    public void checkOffScreen(){ //TODO Make window pass in the window size so that the asteroids de-spawn at the correct location
+    public void checkOffScreen(){
         if(body.getTransform().getPosition().x < -offScreenAllowance.x || body.getTransform().getPosition().x > State.WORLD_SIZE.x + offScreenAllowance.x){
             this.onScreen = false;
         }

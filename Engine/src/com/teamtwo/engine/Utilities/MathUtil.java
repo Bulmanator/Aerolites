@@ -197,4 +197,28 @@ public final class MathUtil {
     public static float cross(Vector2f a, Vector2f b) {
         return (a.x * b.y) - (a.y * b.x);
     }
+
+    /**
+     * Calculates the absolute value of the given value (removes the negative part)
+     * @param input The number which is to be modulated
+     * @return The modulated input
+     */
+    public static float abs(float input){
+        if(input>0)
+            return input;
+        return input*-1;
+    }
+
+    /**
+     * Will change an angles range to be between 180 and -179 degrees, all input is in radians
+     * @param angle the angle you wish to normalize in radians
+     * @return the angle in radians between 180 degrees and -179 degrees
+     */
+    public static float normalizeAngle(float angle)
+    {
+        float newAngle = angle;
+        while (newAngle <= -MathUtil.PI) newAngle += MathUtil.PI2;
+        while (newAngle > MathUtil.PI) newAngle -= MathUtil.PI2;
+        return newAngle;
+    }
 }

@@ -29,7 +29,7 @@ public abstract class State implements Renderable, Updateable, Disposable {
     /** A Vector2 used for converting mouse coordinates from screen to world */
     protected Vector2i mouse;
 
-    public static final Vector2f WORLD_SIZE = new Vector2f(1920, 1080);
+    public static final Vector2f WORLD_SIZE = new Vector2f(2560, 1440);
 
 
     /**

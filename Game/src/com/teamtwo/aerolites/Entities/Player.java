@@ -14,7 +14,7 @@ import org.jsfml.window.Keyboard;
 /**
  * @author Matthew Threlfall
  */
-public class Player extends Entity{
+public class Player extends Entity {
 
     private final float ROTATION_SPEED = MathUtil.PI;
     private final float FORCE_FROM_JET = 75000;
@@ -32,6 +32,8 @@ public class Player extends Entity{
         vertices[1] = new Vector2f(15, 30);
         vertices[2] = new Vector2f(0, 35);
         vertices[3] = new Vector2f(-15, 30);
+
+        offScreenAllowance = new Vector2f(15,15);
 
         config.position = new Vector2f(500, 150);
         config.shape = new Polygon(vertices);
@@ -79,8 +81,7 @@ public class Player extends Entity{
         if(Keyboard.isKeyPressed(Keyboard.Key.W)) {
 
             // Apply force to move the ship
-            Vector2f force = body.getTransform().applyRotation( new Vector2f(0, -FORCE_FROM_JET));
-            body.applyForce(force);
+            move(0,-FORCE_FROM_JET);
 
             // Move the particle emitter to be at the bottom of the ship
             jet.getConfig().position = body.getTransform().apply(new Vector2f(0, 15));
@@ -126,5 +127,7 @@ public class Player extends Entity{
         }
         return false;
     }
+
+
 
 }
