@@ -20,7 +20,7 @@ public class Player extends Entity {
 
     private final float ROTATION_SPEED = MathUtil.PI;
     private final float FORCE_FROM_JET = 75000;
-    private final float TIME_BETWEEN_SHOTS = 0.4f;
+    private final float TIME_BETWEEN_SHOTS = 0.0f;
 
     private ParticleEmitter jet;
     private float shootCooldown;
