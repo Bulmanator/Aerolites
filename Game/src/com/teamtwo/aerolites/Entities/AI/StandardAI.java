@@ -20,17 +20,20 @@ public class StandardAI extends AI {
     private float planTime;
     private final float PLAN_EXECUTE_TIME;
     private final float FORCE_FROM_JET = 20000;
-    private final float rotationSpeed = MathUtil.PI*30;
+    private final float rotationSpeed = MathUtil.PI*35;
     private ParticleEmitter jet;
     private Entity target;
     private boolean shouldShoot;
+    private final float shootTime;
+    private float shootCooldown;
 
-    public StandardAI(World world, Vector2f position){
+    public StandardAI(World world){
         this.onScreen = true;
-        PLAN_EXECUTE_TIME = 0.5f;
+        PLAN_EXECUTE_TIME = 0.2f;
+        shootCooldown = 0;
+        shootTime = 0.7f;
         BodyConfig config = new BodyConfig();
 
-        config.position = position;
 
         Vector2f[] vertices = new Vector2f[5];
         vertices[0] = new Vector2f(0, 0);
@@ -42,6 +45,33 @@ public class StandardAI extends AI {
         renderColour = Color.RED;
 
         config.shape = new Polygon(vertices);
+
+        int x = 0, y = 0;
+        int screenSide = MathUtil.randomInt(0,4);
+        switch(screenSide) {
+            case 0:
+                x = MathUtil.randomInt(0, 1920);
+                y = 0;
+                break;
+            case 1:
+                x = MathUtil.randomInt(0, 1920);
+                y = 1080;
+
+                break;
+            case 2:
+                x = 0;
+                y = MathUtil.randomInt(0, 1080);
+                break;
+            case 3:
+                x = 1920;
+                y = MathUtil.randomInt(0, 1080);
+
+                break;
+            default:
+                System.out.println("WHAT?!");
+        }
+
+        config.position = new Vector2f(x,y);
 
         body = world.createBody(config);
         planTime = 0;
@@ -77,21 +107,24 @@ public class StandardAI extends AI {
         jet.getConfig().maxAngle = -body.getTransform().getAngle()*MathUtil.RAD_TO_DEG - 60;
         jet.getConfig().minAngle = -body.getTransform().getAngle()*MathUtil.RAD_TO_DEG -120;
         jet.update(dt);
-        planTime+=dt;
+        planTime += dt;
+        shootCooldown += dt;
         if(planTime>PLAN_EXECUTE_TIME){
             planTime = 0;
-            setShooting(shouldShoot);
             chooseTarget();
         }
         if(target!=null){
             trackToTarget(target.getBody().getTransform().getPosition(), dt);
             float x = target.getBody().getTransform().getPosition().x;
             float y = target.getBody().getTransform().getPosition().y;
-
+            if(shootCooldown>shootTime){
+                shouldShoot = true;
+                setShooting(shouldShoot);
+                shootCooldown=0;
+            }
             float xAI = getBody().getTransform().getPosition().x;
             float yAI = getBody().getTransform().getPosition().y;
             float distanceTo= MathUtil.squared(x - xAI) + MathUtil.squared(y - yAI);
-            shouldShoot = true;
             if(distanceTo>MathUtil.squared(200)){
                 move(0,-FORCE_FROM_JET*6);
                 jet.setActive(true);

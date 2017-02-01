@@ -2,6 +2,8 @@ package com.teamtwo.aerolites.States;
 
 import com.teamtwo.aerolites.Entities.AI.AI;
 import com.teamtwo.aerolites.Entities.AI.StandardAI;
+import com.teamtwo.aerolites.Entities.AI.Swarmer;
+import com.teamtwo.aerolites.Entities.AI.SwarmerBase;
 import com.teamtwo.aerolites.Entities.Asteroid;
 import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.Entity;
@@ -26,9 +28,13 @@ public class PlayState extends State {
     private World world;
     private ArrayList<Entity> entities;
     private float accum;
-    private float spawnRate;
+    private float asteroidSpawnRate;
+    private float swarmerSpawnRate;
+    private float lastSwarmer;
     private long startTime;
 
+    private float lastStandard;
+    private float standardTime;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
@@ -41,11 +47,16 @@ public class PlayState extends State {
         entities = new ArrayList<>();
         //entities.add(new Asteroid(world));
         entities.add(new Player(world));
-        entities.add(new StandardAI(world, new Vector2f(700,150)));
+        //entities.add(new StandardAI(world, new Vector2f(700,150)));
         //entities.add(new StandardAI(world, new Vector2f(900,150)));
         //entities.add(new StandardAI(world, new Vector2f(1100,150)));
+        //entities.add(new SwarmerBase(world));
         accum = 0;
-        spawnRate = 2f;
+        asteroidSpawnRate = 2f;
+        swarmerSpawnRate = 80f;
+        standardTime = 39f;
+        lastSwarmer = 0;
+
         ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");
         loadContent();
         startTime = System.nanoTime();
@@ -54,15 +65,25 @@ public class PlayState extends State {
     @Override
     public void update(float dt) {
         accum += dt;
+        lastSwarmer += dt;
+        lastStandard += dt;
         world.update(dt);
-        if(accum>spawnRate){
+        if(accum>asteroidSpawnRate){
             entities.add(new Asteroid(world));
-            spawnRate = MathUtil.clamp(0.99f*spawnRate, 0.4f,3);
+            asteroidSpawnRate = MathUtil.clamp(0.99f*asteroidSpawnRate, 0.4f,3);
             accum = 0;
         }
-
+        if(lastSwarmer>swarmerSpawnRate){
+            entities.add(new SwarmerBase(world));
+            lastSwarmer = 0;
+        }
+        if(lastStandard>standardTime){
+            entities.add(new StandardAI(world));
+            lastStandard = 0;
+        }
 
         for(int i = 0; i < entities.size(); i++){
+            boolean alive = true;
             if(!entities.get(i).isOnScreen()){
                 world.removeBody(entities.get(i).getBody());
                 entities.remove(i);
@@ -74,17 +95,28 @@ public class PlayState extends State {
                         float x = entities.get(i).getBody().getShape().getTransformed()[0].x;
                         float y = entities.get(i).getBody().getShape().getTransformed()[0].y;
                         Vector2f pos = new Vector2f(x, y);
-                        entities.add(new Bullet(4, pos, entities.get(i).getBody().getTransform().getAngle(), world));
+                        entities.add(new Bullet(2, pos, entities.get(i).getBody().getTransform().getAngle(), world));
+                        ContentManager.instance.getSound("pew").play();
                     }
                 } else if(entities.get(i) instanceof AI) {
                     ((AI) entities.get(i)).setEntities(entities);
-                    if(((AI) entities.get(i)).isShooting()){
+                    if(entities.get(i) instanceof SwarmerBase && ((SwarmerBase) entities.get(i)).isShooting()){
+                        for(int j = 0; j < 6; j++)
+                            entities.add(new Swarmer(world,entities.get(i).getBody().getTransform().getPosition()));
+                        world.removeBody(entities.get(i).getBody());
+                        entities.remove(i);
+                        alive = false;
+                    }
+                    else if(((AI) entities.get(i)).isShooting()){
                         float x = entities.get(i).getBody().getShape().getTransformed()[0].x;
                         float y = entities.get(i).getBody().getShape().getTransformed()[0].y;
                         Vector2f pos = new Vector2f(x, y);
-                        entities.add(new Bullet(4, pos, entities.get(i).getBody().getTransform().getAngle(), world));
+                        entities.add(new Bullet(2, pos, entities.get(i).getBody().getTransform().getAngle(), world));
                     }
                 }
+            }
+
+            if(alive){
                 entities.get(i).update(dt);
             }
         }
@@ -117,5 +149,6 @@ public class PlayState extends State {
     }
     public void loadContent(){
         ContentManager.instance.loadTexture("Asteroid", "Asteroid.png");
+        ContentManager.instance.loadSound("pew", "pew.wav");
     }
 }

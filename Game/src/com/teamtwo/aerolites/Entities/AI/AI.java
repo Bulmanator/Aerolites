@@ -30,7 +30,8 @@ public class AI extends Entity{
 
     @Override
     public void update(float dt) {
-
+        checkOffScreen();
+        limitSpeed();
     }
 
     @Override

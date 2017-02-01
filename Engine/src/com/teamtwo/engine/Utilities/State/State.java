@@ -29,7 +29,7 @@ public abstract class State implements Renderable, Updateable, Disposable {
     /** A Vector2 used for converting mouse coordinates from screen to world */
     protected Vector2i mouse;
 
-    public static final Vector2f WORLD_SIZE = new Vector2f(2560, 1440);
+    public static final Vector2f WORLD_SIZE = new Vector2f(1920, 1080);
 
 
     /**
@@ -47,7 +47,7 @@ public abstract class State implements Renderable, Updateable, Disposable {
         window = game.getWindow();
 
         // Creates a new View and applies it
-        view = new View(new Vector2f(0, 0), new Vector2f(1920, 1080));
+        view = new View(new Vector2f(0, 0), WORLD_SIZE);
         view.move(1920/2, 1080/2);
 
 

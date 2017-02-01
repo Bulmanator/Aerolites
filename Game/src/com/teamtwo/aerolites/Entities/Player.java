@@ -101,9 +101,17 @@ public class Player extends Entity {
         // If A or D are pressed then set the rotational speed accordingly
         if(Keyboard.isKeyPressed(Keyboard.Key.D) ||  Controllers.isButtonPressed(Controller.Player.One, Controller.Button.DPad_Right) ||  Controllers.getThumbstickValues(Controller.Player.One, Controller.Thumbstick.Left).x > 0) {
             body.setAngularVelocity(ROTATION_SPEED);
+            float thumbStick = Controllers.getThumbstickValues(Controller.Player.One, Controller.Thumbstick.Left).x;
+            if(thumbStick>0){
+                body.setAngularVelocity(ROTATION_SPEED*thumbStick/100);
+            }
         }
         else if(Keyboard.isKeyPressed(Keyboard.Key.A) ||  Controllers.isButtonPressed(Controller.Player.One, Controller.Button.DPad_Left)  ||  Controllers.getThumbstickValues(Controller.Player.One, Controller.Thumbstick.Left).x < 0) {
             body.setAngularVelocity(-ROTATION_SPEED);
+            float thumbStick = Controllers.getThumbstickValues(Controller.Player.One, Controller.Thumbstick.Left).x;
+            if(thumbStick<0){
+                body.setAngularVelocity(ROTATION_SPEED*thumbStick/100);
+            }
         }
         else {
             body.setAngularVelocity(0);
