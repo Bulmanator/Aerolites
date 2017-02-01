@@ -8,8 +8,13 @@ import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
+import org.jsfml.window.Keyboard;
 import org.jsfml.window.Mouse;
 
+
+/**
+ * @author Tijan Weir
+ */
 public class MenuState extends State {
     Button[] Buttons = new Button[4];
     Text text;
@@ -55,6 +60,15 @@ public class MenuState extends State {
      * @param dt The amount of time passed since last frame
      */
     public void update(float dt) {
+
+        //closes the window when you press escape
+        if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE))
+        {
+            game.getEngine().close();
+        }
+
+
+        //checks if the mouse is inside a box
         for(int i = 0; i < Buttons.length; i++)
         {
             if(Buttons[i].checkInBox(new Vector2f(Mouse.getPosition(window))))System.out.println("it worked");

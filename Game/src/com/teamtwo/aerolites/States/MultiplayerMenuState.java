@@ -10,6 +10,10 @@ import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Mouse;
 
+
+/**
+ * @author Tijan Weir
+ */
 public class MultiplayerMenuState extends State {
     Button[] Buttons = new Button[3];
     Text text;

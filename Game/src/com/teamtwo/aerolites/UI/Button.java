@@ -8,8 +8,9 @@ import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
 
+
 /**
- * Created by janneht on 25/01/2017.
+ * @author Tijan Weir
  */
 public class Button implements EntityRenderable {
 
