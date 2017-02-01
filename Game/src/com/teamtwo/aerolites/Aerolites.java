@@ -1,11 +1,10 @@
 package com.teamtwo.aerolites;
 
-import com.teamtwo.aerolites.States.MultiplayerMenuState;
+import com.teamtwo.aerolites.States.PlayState;
 import com.teamtwo.engine.Game;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
-import org.jsfml.graphics.Color;
 
-public class ExampleGame extends Game {
+public class Aerolites extends Game {
 
     /** A manager for all of the game states */
     private GameStateManager stateManager;
@@ -13,8 +12,7 @@ public class ExampleGame extends Game {
     /** This method is called once before the game begins running */
     public void initialise() {
         stateManager = new GameStateManager(this);
-   //     stateManager.addState(new ExampleState(stateManager));
-        stateManager.addState(new MultiplayerMenuState(stateManager));
+        stateManager.addState(new PlayState(stateManager));
     }
 
     /**
@@ -27,7 +25,7 @@ public class ExampleGame extends Game {
 
     /** This is also called once per frame, used to draw anything needed */
     public void render() {
-        window.clear(new Color(100, 149, 237));
+        window.clear();
         stateManager.render();
     }
 

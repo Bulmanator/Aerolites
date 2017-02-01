@@ -1,7 +1,5 @@
 package com.teamtwo.engine.Utilities.State;
 
-import com.teamtwo.engine.Engine;
-import com.teamtwo.engine.Input.InputProcessor;
 import com.teamtwo.engine.Game;
 import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.Interfaces.Renderable;
@@ -31,6 +29,9 @@ public abstract class State implements Renderable, Updateable, Disposable {
     /** A Vector2 used for converting mouse coordinates from screen to world */
     protected Vector2i mouse;
 
+    public static final Vector2f WORLD_SIZE = new Vector2f(1920, 1080);
+
+
     /**
      * Creates a new State
      * @param gsm The {@link GameStateManager} which this State belongs to
@@ -46,10 +47,13 @@ public abstract class State implements Renderable, Updateable, Disposable {
         window = game.getWindow();
 
         // Creates a new View and applies it
-        view = new View(new Vector2f(0, 0), new Vector2f(window.getSize().x, window.getSize().y));
+        view = new View(new Vector2f(0, 0), WORLD_SIZE);
+        view.move(1920/2, 1080/2);
+
 
         // Initialises the Vector to 0, 0
         mouse = new Vector2i(0, 0);
+        window.setView(view);
     }
 
     /**
@@ -67,4 +71,5 @@ public abstract class State implements Renderable, Updateable, Disposable {
      * Runs once the State is removed from the {@link GameStateManager}, used to delete unused objects
      */
     public abstract void dispose();
+
 }

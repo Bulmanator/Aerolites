@@ -32,7 +32,7 @@ public class ExampleState extends State {
     public ExampleState(GameStateManager gsm) {
         super(gsm);
 
-        // This method is like the initialise method from the ExampleGame class
+        // This method is like the initialise method from the Aerolites class
 
         // Changing the Input handler
         input = new ExampleInput();
@@ -129,7 +129,6 @@ public class ExampleState extends State {
                 (input.lastKeyReleased == null ? "None" : input.lastKeyReleased.toString()), font, 15);
         text.setPosition(330, (window.getSize().y / 2) + 10);
         window.draw(text);
-
     }
 
     public void dispose() {}
