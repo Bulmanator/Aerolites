@@ -122,8 +122,7 @@ public class PlayState extends State {
         }
        window.setTitle("Entities: " + entities.size());
         if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)){
-            window.close();
-            System.exit(0);
+            gsm.popState();
         }
     }
 

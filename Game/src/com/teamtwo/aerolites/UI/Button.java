@@ -62,6 +62,6 @@ public class Button implements EntityRenderable {
         return false;
     }
 
-
+    public String getLabel() { return text.getString(); }
 
 }

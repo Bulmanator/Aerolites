@@ -61,7 +61,11 @@ public class MultiplayerMenuState extends State {
     public void update(float dt) {
         for(int i = 0; i < Buttons.length; i++)
         {
-            if(Buttons[i].checkInBox(new Vector2f(Mouse.getPosition(window))))System.out.println("it worked");
+            Vector2f pos = window.mapPixelToCoords(Mouse.getPosition(window));
+
+
+            if(Buttons[i].checkInBox(pos) && Mouse.isButtonPressed(Mouse.Button.LEFT))
+                System.out.println("Currently Not Implemented");
         }
 
     }

@@ -8,7 +8,6 @@ import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
-import org.jsfml.window.Keyboard;
 import org.jsfml.window.Mouse;
 
 
@@ -61,17 +60,18 @@ public class MenuState extends State {
      */
     public void update(float dt) {
 
-        //closes the window when you press escape
-        if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE))
-        {
-            game.getEngine().close();
-        }
-
-
+        
         //checks if the mouse is inside a box
-        for(int i = 0; i < Buttons.length; i++)
-        {
-            if(Buttons[i].checkInBox(new Vector2f(Mouse.getPosition(window))))System.out.println("it worked");
+        for (int i = 0; i < Buttons.length; i++) {
+            Vector2f pos = window.mapPixelToCoords(Mouse.getPosition(window));
+
+            if (Buttons[i].checkInBox(pos) && Mouse.isButtonPressed(Mouse.Button.LEFT)) {
+                if (Buttons[i].getLabel().equals("Singleplayer")) {
+                    gsm.addState(new PlayState(gsm));
+                } else if (Buttons[i].getLabel().equals("Multiplayer")) {
+                    gsm.addState(new MultiplayerMenuState(gsm));
+                }
+            }
         }
 
     }
