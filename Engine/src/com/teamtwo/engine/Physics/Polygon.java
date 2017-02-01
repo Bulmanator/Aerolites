@@ -28,6 +28,10 @@ public class Polygon implements Initialisable<RigidBody> {
     private RigidBody body;
 
     /**
+     *
+     */
+    private float radius;
+    /**
      * Creates a randomly generated polygon
      */
     public Polygon() {
@@ -42,7 +46,7 @@ public class Polygon implements Initialisable<RigidBody> {
     public Polygon(float radius) {
         // Temporary vertex array with MAX_VERTICES
         Vector2f[] tmp = new Vector2f[MAX_VERTICES];
-
+        this.radius = radius;
         // Generate all of the vertices needed
         int vertexCount = 0;
         for(float angle = 0; angle < MathUtil.PI2;) {
@@ -158,5 +162,9 @@ public class Polygon implements Initialisable<RigidBody> {
     void reset() {
         transformedVertices = null;
         transformedNormals = null;
+    }
+
+    public float getRadius() {
+        return radius;
     }
 }

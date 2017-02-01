@@ -144,6 +144,9 @@ public class Pair {
      * This applies the impulse to make bodies repel from each other if they collide
      */
     public void apply() {
+        if (axis == null)
+            return;
+
 
         Vector2f centre = Vector2f.sub(A.getTransform().getPosition(), B.getTransform().getPosition());
         if(MathUtil.dot(centre, axis) > 0) {
@@ -178,6 +181,8 @@ public class Pair {
      * More visible when dealing with very small bodies colliding with very large bodies, or bodies resting on static ones
      */
     public void correctPosition() {
+        if(axis == null)
+            return;
         float correctionVal = (Math.max(overlap - 0.05f, 0.0f) / (A.getInvMass() + B.getInvMass())) * 0.2f;
 
         Vector2f correction = new Vector2f(correctionVal * axis.x, correctionVal * axis.y);

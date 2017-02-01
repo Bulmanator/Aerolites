@@ -2,15 +2,13 @@ package com.teamtwo.aerolites.Entities;
 
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
+import com.teamtwo.engine.Input.Controllers.Controller;
+import com.teamtwo.engine.Input.Controllers.Controllers;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
-import com.teamtwo.engine.Physics.RigidBody;
 import com.teamtwo.engine.Physics.World;
-import com.teamtwo.engine.Utilities.Interfaces.EntityRenderable;
-import com.teamtwo.engine.Utilities.Interfaces.Updateable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import org.jsfml.graphics.Color;
-import org.jsfml.graphics.ConvexShape;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
@@ -18,13 +16,15 @@ import org.jsfml.window.Keyboard;
 /**
  * @author Matthew Threlfall
  */
-public class Player implements EntityRenderable, Updateable {
+public class Player extends Entity {
 
     private final float ROTATION_SPEED = MathUtil.PI;
     private final float FORCE_FROM_JET = 75000;
+    private final float TIME_BETWEEN_SHOTS = 0.0f;
 
-    private RigidBody body;
     private ParticleEmitter jet;
+    private float shootCooldown;
+    private boolean shoot;
 
     public Player(World w){
         BodyConfig config = new BodyConfig();
@@ -34,6 +34,8 @@ public class Player implements EntityRenderable, Updateable {
         vertices[1] = new Vector2f(15, 30);
         vertices[2] = new Vector2f(0, 35);
         vertices[3] = new Vector2f(-15, 30);
+
+        offScreenAllowance = new Vector2f(15,15);
 
         config.position = new Vector2f(500, 150);
         config.shape = new Polygon(vertices);
@@ -50,20 +52,24 @@ public class Player implements EntityRenderable, Updateable {
         pConfig.minAngle = 0;
         pConfig.maxAngle = 0;
         pConfig.speed = 70;
-        pConfig.rotationalSpeed = 2;
-        pConfig.pointCount = 6;
-        pConfig.colours[0] = Color.RED;
-        pConfig.colours[1] = Color.YELLOW;
-        pConfig.colours[2] = Color.MAGENTA;
+        pConfig.rotationalSpeed = 40;
+        pConfig.pointCount = 3;
+        pConfig.colours[0] = new Color(104,255,237);
+        pConfig.colours[1] = new Color(104,255,162);
+        pConfig.colours[2] = new Color(66,255,97);
+        pConfig.colours[3] = new Color(66,255,97);
         pConfig.fadeOut = true;
-        pConfig.startSize = 9;
+        pConfig.startSize = 14;
         pConfig.endSize = 4;
         pConfig.minLifetime = 1.5f;
-        pConfig.maxLifetime = 2;
+        pConfig.maxLifetime = 6;
 
 
         pConfig.position = body.getTransform().getPosition();
-        jet = new ParticleEmitter(pConfig, 20f, 400);
+        jet = new ParticleEmitter(pConfig, 40f, 400);
+
+        renderColour = Color.GREEN;
+        shoot = false;
     }
 
     @Override
@@ -71,12 +77,13 @@ public class Player implements EntityRenderable, Updateable {
 
         // Update the particle emitter
         jet.update(dt);
+        shootCooldown += dt;
+        super.update(dt);
 
-        if(Keyboard.isKeyPressed(Keyboard.Key.W)) {
+        if(Keyboard.isKeyPressed(Keyboard.Key.W) || Controllers.isButtonPressed(Controller.Player.One, Controller.Button.RB)) {
 
             // Apply force to move the ship
-            Vector2f force = body.getTransform().applyRotation( new Vector2f(0, -FORCE_FROM_JET));
-            body.applyForce(force);
+            move(0,-FORCE_FROM_JET);
 
             // Move the particle emitter to be at the bottom of the ship
             jet.getConfig().position = body.getTransform().apply(new Vector2f(0, 15));
@@ -92,24 +99,45 @@ public class Player implements EntityRenderable, Updateable {
         }
 
         // If A or D are pressed then set the rotational speed accordingly
-        if(Keyboard.isKeyPressed(Keyboard.Key.D)) {
+        if(Keyboard.isKeyPressed(Keyboard.Key.D) ||  Controllers.isButtonPressed(Controller.Player.One, Controller.Button.DPad_Right) ||  Controllers.getThumbstickValues(Controller.Player.One, Controller.Thumbstick.Left).x > 0) {
             body.setAngularVelocity(ROTATION_SPEED);
+            float thumbStick = Controllers.getThumbstickValues(Controller.Player.One, Controller.Thumbstick.Left).x;
+            if(thumbStick>0){
+                body.setAngularVelocity(ROTATION_SPEED*thumbStick/100);
+            }
         }
-        else if(Keyboard.isKeyPressed(Keyboard.Key.A)) {
+        else if(Keyboard.isKeyPressed(Keyboard.Key.A) ||  Controllers.isButtonPressed(Controller.Player.One, Controller.Button.DPad_Left)  ||  Controllers.getThumbstickValues(Controller.Player.One, Controller.Thumbstick.Left).x < 0) {
             body.setAngularVelocity(-ROTATION_SPEED);
+            float thumbStick = Controllers.getThumbstickValues(Controller.Player.One, Controller.Thumbstick.Left).x;
+            if(thumbStick<0){
+                body.setAngularVelocity(ROTATION_SPEED*thumbStick/100);
+            }
         }
         else {
             body.setAngularVelocity(0);
+        }
+        if(Keyboard.isKeyPressed(Keyboard.Key.SPACE) || Controllers.isButtonPressed(Controller.Player.One, Controller.Button.A)) {
+            if(shootCooldown > TIME_BETWEEN_SHOTS){
+                shootCooldown = 0;
+                shoot = true;
+            }
         }
     }
 
     @Override
     public void render(RenderWindow renderer) {
-        ConvexShape player = new ConvexShape(body.getShape().getVertices());
-        player.setPosition(body.getTransform().getPosition());
-        player.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
-        player.setFillColor(Color.BLUE);
-        renderer.draw(player);
         jet.render(renderer);
+        super.render(renderer);
     }
+
+    public boolean shooting(){
+        if(shoot){
+            shoot = false;
+            return true;
+        }
+        return false;
+    }
+
+
+
 }

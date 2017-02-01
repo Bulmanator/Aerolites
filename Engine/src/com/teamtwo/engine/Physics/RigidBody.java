@@ -1,6 +1,7 @@
 package com.teamtwo.engine.Physics;
 
 import com.teamtwo.engine.Utilities.Interfaces.Updateable;
+import com.teamtwo.engine.Utilities.MathUtil;
 import org.jsfml.system.Vector2f;
 
 /**
@@ -118,6 +119,26 @@ public class RigidBody implements Updateable {
     }
 
     /**
+     * takes the current resultant speed of the body and rotates it by the given angle
+     * @param angle the angle to rotate the velocity by
+     */
+    public void rotateVelocity(float angle){
+        float x = 0, y = 0 , total;
+        total = (float)Math.sqrt(MathUtil.lengthSq(velocity));
+        x = total*(float)Math.cos(angle-MathUtil.PI/2);
+        y = total*(float)Math.sin(angle-MathUtil.PI/2);
+        velocity = new Vector2f(x,y);
+    }
+
+    /**
+     * Will return the speed of the body
+     * @return the resultant speed of the body
+     */
+    public float getSpeed(){
+        return (float)Math.sqrt(MathUtil.lengthSq(velocity));
+    }
+
+    /**
      * Gets the shape which represents the body
      * @return The shape
      */
@@ -218,4 +239,5 @@ public class RigidBody implements Updateable {
      * @param angularVelocity The new angular velocity to ser
      */
     public void setAngularVelocity(float angularVelocity) { this.angularVelocity = angularVelocity; }
+
 }
