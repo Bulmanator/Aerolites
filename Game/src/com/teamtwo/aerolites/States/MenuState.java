@@ -8,7 +8,9 @@ import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
+import org.jsfml.window.Keyboard;
 import org.jsfml.window.Mouse;
+import org.jsfml.window.Window;
 
 
 /**
@@ -71,8 +73,12 @@ public class MenuState extends State {
                 } else if (Buttons[i].getLabel().equals("Multiplayer")) {
                     gsm.addState(new MultiplayerMenuState(gsm));
                 }
+                else if(Buttons[i].getLabel().equals("Credits")){
+                    gsm.addState(new CreditState(gsm));
+                }
             }
         }
+
 
     }
 

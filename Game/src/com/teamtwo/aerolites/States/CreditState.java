@@ -15,8 +15,8 @@ import org.jsfml.window.Mouse;
 /**
  * @author Tijan Weir
  */
-public class MultiplayerMenuState extends State {
-    Button[] Buttons = new Button[3];
+public class CreditState extends State {
+    Button[] Buttons = new Button[6];
     Text text;
     private ExampleInput hoverBoxChoices;
 
@@ -37,18 +37,21 @@ public class MultiplayerMenuState extends State {
     // Such as levels, menus etc.
     // Just extend the State class to make a new State and you can add/ remove states from the Game State Manager
     //
-    public MultiplayerMenuState(GameStateManager gsm) {
+    public CreditState(GameStateManager gsm) {
         super(gsm);
-        ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
+        //ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
 
         text = new Text("Aerolites", ContentManager.instance.getFont("Ubuntu"));
         text.setPosition(window.getSize().x / 2 - text.getLocalBounds().width / 2, window.getSize().y / 2);
         text.setColor(Color.BLACK);
 
 
-        Buttons[0] = new Button(window.getSize().x / 2, window.getSize().y / 10 * 3, window.getSize().x / 4, window.getSize().y / 10, "2 Players");
-        Buttons[1] = new Button(window.getSize().x / 2, window.getSize().y / 10 * 5, window.getSize().x / 4, window.getSize().y / 10, "3 Players");
-        Buttons[2] = new Button(window.getSize().x / 2, window.getSize().y / 10 * 7, window.getSize().x / 4, window.getSize().y / 10, "4 Players");
+        Buttons[0] = new Button(window.getSize().x / 2, window.getSize().y / 36 * 6, window.getSize().x / 4, window.getSize().y / 10, "James Bulman");
+        Buttons[1] = new Button(window.getSize().x / 2, window.getSize().y / 36 * 12, window.getSize().x / 4, window.getSize().y / 10, "Matt Threlfall");
+        Buttons[2] = new Button(window.getSize().x / 2, window.getSize().y / 36 * 18, window.getSize().x / 4, window.getSize().y / 10, "Ayo Olutobi");
+        Buttons[3] = new Button(window.getSize().x / 2, window.getSize().y / 36 * 24, window.getSize().x / 4, window.getSize().y / 10, "Tijan Weir");
+        Buttons[4] = new Button(window.getSize().x / 2, window.getSize().y / 36 * 30, window.getSize().x / 4, window.getSize().y / 10, "Pavlos Anastasiadis");
+        Buttons[5] = new Button(window.getSize().x / 2, window.getSize().y / 36 * 36, window.getSize().x / 4, window.getSize().y / 10, "Lewis Linaker");
 
 
     }
@@ -59,17 +62,9 @@ public class MultiplayerMenuState extends State {
      * @param dt The amount of time passed since last frame
      */
     public void update(float dt) {
-        for (int i = 0; i < Buttons.length; i++) {
-            Vector2f pos = window.mapPixelToCoords(Mouse.getPosition(window));
-
-
-            if (Buttons[i].checkInBox(pos) && Mouse.isButtonPressed(Mouse.Button.LEFT))
-                System.out.println("Currently Not Implemented");
-        }
         if (Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)) {
             gsm.popState();
         }
-
     }
 
 }
