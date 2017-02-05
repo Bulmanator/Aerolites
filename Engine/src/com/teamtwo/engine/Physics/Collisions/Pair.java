@@ -1,5 +1,6 @@
 package com.teamtwo.engine.Physics.Collisions;
 
+import com.teamtwo.engine.Physics.Collisions.AABB;
 import com.teamtwo.engine.Physics.RigidBody;
 import com.teamtwo.engine.Utilities.MathUtil;
 import org.jsfml.system.Vector2f;
@@ -40,6 +41,9 @@ public class Pair {
     public boolean evaluate() {
 
         // Separating Axis Theorem Collision Detection
+
+        // If they are both sensors don't resolve
+        if(A.isSensor() && B.isSensor()) return false;
 
         // If they are both static then don't resolve
         if(MathUtil.isZero(A.getInvMass() + B.getInvMass()))

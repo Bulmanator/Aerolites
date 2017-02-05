@@ -74,6 +74,7 @@ public class StandardAI extends AI {
         config.position = new Vector2f(x,y);
 
         body = world.createBody(config);
+        body.setData(this);
         planTime = 0;
 
         ParticleConfig pConfig = new ParticleConfig();
@@ -99,7 +100,7 @@ public class StandardAI extends AI {
         jet = new ParticleEmitter(pConfig, 40f, 400);
     }
     @Override
-    public void update(float dt){
+    public void update(float dt) {
         setShooting(false);
         jet.getConfig().position = body.getTransform().apply(new Vector2f(0, 15));
         jet.setActive(true);
@@ -120,12 +121,12 @@ public class StandardAI extends AI {
             if(shootCooldown>shootTime){
                 shouldShoot = true;
                 setShooting(shouldShoot);
-                shootCooldown=0;
+                shootCooldown = 0;
             }
             float xAI = getBody().getTransform().getPosition().x;
             float yAI = getBody().getTransform().getPosition().y;
-            float distanceTo= MathUtil.squared(x - xAI) + MathUtil.squared(y - yAI);
-            if(distanceTo>MathUtil.squared(200)){
+            float distanceTo= MathUtil.square(x - xAI) + MathUtil.square(y - yAI);
+            if(distanceTo>MathUtil.square(200)){
                 move(0,-FORCE_FROM_JET*6);
                 jet.setActive(true);
             }
@@ -146,7 +147,7 @@ public class StandardAI extends AI {
         float y = body.getTransform().getPosition().y;
 
         float degreeBetween =  (float)Math.atan2(pos.y - y, pos.x - x) - body.getTransform().getAngle() + MathUtil.PI/2;
-        body.setAngularVelocity(rotationSpeed*dt*MathUtil.normalizeAngle(degreeBetween)/MathUtil.abs(MathUtil.normalizeAngle(degreeBetween)));
+        body.setAngularVelocity(rotationSpeed * dt * MathUtil.normalizeAngle(degreeBetween) / Math.abs(MathUtil.normalizeAngle(degreeBetween)));
     }
 
     public void chooseTarget(){
@@ -154,15 +155,15 @@ public class StandardAI extends AI {
         target = null;
 
         for(Entity e: entities){
-            if(!(e instanceof AI )&& !(e instanceof Bullet)) {
+            if(!(e instanceof AI) && !(e instanceof Bullet)) {
                 float x = e.getBody().getTransform().getPosition().x;
                 float y = e.getBody().getTransform().getPosition().y;
 
                 float xAI = getBody().getTransform().getPosition().x;
                 float yAI = getBody().getTransform().getPosition().y;
-                float distanceTo= MathUtil.squared(x - xAI) + MathUtil.squared(y - yAI);
-                if ( distanceTo < lowestDistance && distanceTo < MathUtil.squared(1200)) {
-                    lowestDistance = MathUtil.squared(x - xAI) + MathUtil.squared(y - yAI);
+                float distanceTo= MathUtil.square(x - xAI) + MathUtil.square(y - yAI);
+                if ( distanceTo < lowestDistance && distanceTo < MathUtil.square(1200)) {
+                    lowestDistance = MathUtil.square(x - xAI) + MathUtil.square(y - yAI);
                     target = e;
                 }
             }
@@ -175,4 +176,6 @@ public class StandardAI extends AI {
         super.render(renderer);
     }
 
+    @Override
+    public Type getType() { return Type.StandardAI; }
 }

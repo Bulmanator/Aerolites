@@ -21,6 +21,8 @@ public class BodyConfig {
     public float restitution;
     /** The density of the body, default = 0.5 */
     public float density;
+    /** Whether or not the body is a sensor, default = false */
+    public boolean sensor;
 
     /**
      * Creates a default body configuration
@@ -37,6 +39,9 @@ public class BodyConfig {
         // Material
         restitution = 0.2f;
         density = 0.5f;
+
+        // Other
+        sensor = false;
     }
 
 }

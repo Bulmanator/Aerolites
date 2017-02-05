@@ -9,9 +9,8 @@ public class Launcher {
     public static void main(String[] args) {
         LauncherConfig config = new LauncherConfig();
 
-        config.width = 1920;
-        config.height = 1080;
-        config.style |= Window.FULLSCREEN;
+        config.width = 1280;
+        config.height = 720;
         config.title = "Aerolites";
         config.fpsLimit = 60;
 
