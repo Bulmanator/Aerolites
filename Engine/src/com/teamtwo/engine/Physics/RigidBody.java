@@ -1,14 +1,22 @@
 package com.teamtwo.engine.Physics;
 
+import com.teamtwo.engine.Messages.Listener;
+import com.teamtwo.engine.Messages.Message;
+import com.teamtwo.engine.Messages.Observer;
+import com.teamtwo.engine.Utilities.Interfaces.Typeable;
 import com.teamtwo.engine.Utilities.Interfaces.Updateable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import org.jsfml.system.Vector2f;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Represents a physics body within the world
  * @author James Bulman
  */
-public class RigidBody implements Updateable {
+public class RigidBody implements Updateable, Listener {
 
     // Positional
     private Polygon shape;
@@ -33,6 +41,14 @@ public class RigidBody implements Updateable {
     private Vector2f force;
     private float torque;
 
+    // Others
+    private boolean alive;
+    private Typeable data;
+    private boolean sensor;
+
+    // Messages
+    private HashMap<Message.Type, List<Observer>> observers;
+
     /**
      * Creates a new rigid body from the config given
      * @param config The configuration to make to body from
@@ -56,6 +72,12 @@ public class RigidBody implements Updateable {
 
         force = Vector2f.ZERO;
         torque = 0;
+
+        data = null;
+        alive = false;
+        sensor = config.sensor;
+
+        observers = new HashMap<>();
     }
 
     /**
@@ -63,6 +85,7 @@ public class RigidBody implements Updateable {
      * @param dt The amount of time passed since last frame
      */
     public void update(float dt) {
+        if(!alive) return;
 
         float dth = dt * 0.5f;
 
@@ -119,15 +142,56 @@ public class RigidBody implements Updateable {
     }
 
     /**
-     * takes the current resultant speed of the body and rotates it by the given angle
+     * Takes the current resultant speed of the body and rotates it by the given angle
      * @param angle the angle to rotate the velocity by
      */
     public void rotateVelocity(float angle){
-        float x = 0, y = 0 , total;
+        float x, y, total;
+
         total = (float)Math.sqrt(MathUtil.lengthSq(velocity));
-        x = total*(float)Math.cos(angle-MathUtil.PI/2);
-        y = total*(float)Math.sin(angle-MathUtil.PI/2);
-        velocity = new Vector2f(x,y);
+        x = total * (float)Math.cos(angle - MathUtil.PI / 2);
+        y = total * (float)Math.sin(angle - MathUtil.PI / 2);
+        velocity = new Vector2f(x, y);
+    }
+
+    @Override
+    public void registerObserver(Observer observer, Message.Type type) {
+        if(observers.containsKey(type)) {
+            observers.get(type).add(observer);
+        }
+        else {
+            ArrayList<Observer> list = new ArrayList<>();
+            list.add(observer);
+            observers.put(type, list);
+        }
+    }
+
+    @Override
+    public boolean removeObserver(Observer observer, Message.Type type) {
+        if(!observers.containsKey(type)) return false;
+
+        List<Observer> list = observers.get(type);
+        if(list == null) return false;
+
+        boolean result = list.remove(observer);
+
+        if(list.isEmpty()) {
+            observers.remove(type);
+        }
+
+        return result;
+    }
+
+    @Override
+    public void postMessage(Message message) {
+        if(!observers.containsKey(message.getType())) return;
+
+        List<Observer> list = observers.get(message.getType());
+        if(list == null) return;
+
+        for(Observer observer : list) {
+            observer.receiveMessage(message);
+        }
     }
 
     /**
@@ -199,6 +263,24 @@ public class RigidBody implements Updateable {
     public float getInvInertia() { return invInertia; }
 
     /**
+     * Whether or not the body is alive
+     * @return True if the body is alive, otherwise false
+     */
+    public boolean isAlive() { return alive; }
+
+    /**
+     * Gets whether or not the body is a sensor
+     * @return True if the body is a sensor, otherwise false
+     */
+    public boolean isSensor() { return sensor; }
+
+    /**
+     * Gets the data attached to the body, this can be anything
+     * @return The data of the body
+     */
+    public Typeable getData() { return data; }
+
+    /**
      * Sets the mass of the body to the value specified
      * @param mass The new mass to set
      */
@@ -239,5 +321,23 @@ public class RigidBody implements Updateable {
      * @param angularVelocity The new angular velocity to ser
      */
     public void setAngularVelocity(float angularVelocity) { this.angularVelocity = angularVelocity; }
+
+    /**
+     * Sets whether or not the body is alive, does nothing if the data has not been set
+     * @param alive True to set the body to alive, false for not alive
+     */
+    public void setAlive(boolean alive) {
+        if(data == null) return;
+        this.alive = alive;
+    }
+
+    /**
+     * Sets the data to the supplied object
+     * @param data The object to set the data to
+     */
+    public void setData(Typeable data) {
+        this.data = data;
+        if(data != null) alive = true;
+    }
 
 }

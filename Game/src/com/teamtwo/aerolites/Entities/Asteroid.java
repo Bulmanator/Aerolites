@@ -1,5 +1,7 @@
 package com.teamtwo.aerolites.Entities;
 
+import com.teamtwo.engine.Messages.Message;
+import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.RigidBody;
@@ -67,6 +69,8 @@ public class Asteroid extends Entity {
 
         config.density = 0.6f;
         body = world.createBody(config);
+        body.setData(this);
+        body.registerObserver(this, Message.Type.Collision);
         offScreenAllowance = new Vector2f(body.getShape().getRadius()*4,body.getShape().getRadius()*4);
     }
 
@@ -80,6 +84,15 @@ public class Asteroid extends Entity {
         bodyShape.setTexture(ContentManager.instance.getTexture("Asteroid"));
         renderer.draw(bodyShape);
 
+    }
+
+
+    @Override
+    public void receiveMessage(Message message) {
+        if(message.getType() == Message.Type.Collision) {
+            CollisionMessage cm = (CollisionMessage) message;
+            System.out.println(cm.getBodyA().getData().getType() + " collided with " + cm.getBodyB().getData().getType());
+        }
     }
 
     public Polygon getShape(){
@@ -100,17 +113,16 @@ public class Asteroid extends Entity {
         if(body.getTransform().getPosition().x < -offScreenAllowance.x || body.getTransform().getPosition().x > State.WORLD_SIZE.x + offScreenAllowance.x){
             this.onScreen = false;
         }
-        else if(body.getTransform().getPosition().y < -offScreenAllowance.y || body.getTransform().getPosition().y > State.WORLD_SIZE.y + offScreenAllowance.y){
-            this.onScreen = false;
-        }
         else
-        {
-            onScreen = true;
-        }
+            this.onScreen = !(body.getTransform().getPosition().y < -offScreenAllowance.y
+                    || body.getTransform().getPosition().y > State.WORLD_SIZE.y + offScreenAllowance.y);
     }
 
     @Override
     public boolean isOnScreen(){
         return onScreen;
     }
+
+    @Override
+    public Type getType() { return Type.Asteroid; }
 }

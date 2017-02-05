@@ -1,5 +1,6 @@
 package com.teamtwo.aerolites.Entities.AI;
 
+import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
 import com.teamtwo.engine.Physics.BodyConfig;
@@ -38,6 +39,7 @@ public class Swarmer extends AI {
         config.density = 0.01f;
 
         body = world.createBody(config);
+        body.setData(this);
 
         ParticleConfig pConfig = new ParticleConfig();
 
@@ -84,4 +86,6 @@ public class Swarmer extends AI {
         jet.render(window);
     }
 
+    @Override
+    public Type getType() { return Type.Swamer; }
 }

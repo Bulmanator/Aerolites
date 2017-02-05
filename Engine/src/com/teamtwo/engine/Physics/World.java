@@ -1,5 +1,6 @@
 package com.teamtwo.engine.Physics;
 
+import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.Collisions.AABB;
 import com.teamtwo.engine.Physics.Collisions.Pair;
 import com.teamtwo.engine.Utilities.Debug.Debug;
@@ -59,13 +60,20 @@ public class World implements Updateable, EntityRenderable {
         // Evaluate pairs of bodies to test for collisions
         for(int i = 0; i < bodies.size(); i++) {
             RigidBody A = bodies.get(i);
+            if(!A.isAlive()) continue;
+
             for(int j = i + 1; j < bodies.size(); j++) {
                 RigidBody B = bodies.get(j);
+                if(!B.isAlive()) continue;
 
                 Pair pair = new Pair(A, B);
 
                 if(pair.evaluate()) {
                     pairs.add(pair);
+
+                    CollisionMessage message = new CollisionMessage(this, A, B);
+                    A.postMessage(message);
+                    B.postMessage(message);
                 }
             }
         }

@@ -53,8 +53,8 @@ public class PlayState extends State {
         //entities.add(new SwarmerBase(world));
         accum = 0;
         asteroidSpawnRate = 2f;
-        swarmerSpawnRate = 80f;
-        standardTime = 39f;
+        swarmerSpawnRate = 10f;
+        standardTime = 10f;
         lastSwarmer = 0;
 
         ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");
@@ -68,12 +68,12 @@ public class PlayState extends State {
         lastSwarmer += dt;
         lastStandard += dt;
         world.update(dt);
-        if(accum>asteroidSpawnRate){
+        if(accum > asteroidSpawnRate) {
             entities.add(new Asteroid(world));
-            asteroidSpawnRate = MathUtil.clamp(0.99f*asteroidSpawnRate, 0.4f,3);
+            asteroidSpawnRate = MathUtil.clamp(0.99f * asteroidSpawnRate, 0.4f, 3);
             accum = 0;
         }
-        if(lastSwarmer>swarmerSpawnRate){
+        if(lastSwarmer > swarmerSpawnRate) {
             entities.add(new SwarmerBase(world));
             lastSwarmer = 0;
         }
@@ -82,7 +82,7 @@ public class PlayState extends State {
             lastStandard = 0;
         }
 
-        for(int i = 0; i < entities.size(); i++){
+        for(int i = 0; i < entities.size(); i++) {
             boolean alive = true;
             if(!entities.get(i).isOnScreen()){
                 world.removeBody(entities.get(i).getBody());
@@ -90,28 +90,33 @@ public class PlayState extends State {
                 i--;
             }
             else {
-                if (entities.get(i) instanceof Player) {
-                    if (((Player) entities.get(i)).shooting()) {
-                        float x = entities.get(i).getBody().getShape().getTransformed()[0].x;
-                        float y = entities.get(i).getBody().getShape().getTransformed()[0].y;
+                if (entities.get(i).getType() == Entity.Type.Player) {
+                    Player player = (Player)entities.get(i);
+                    if (player.shooting()) {
+                        float x = player.getBody().getShape().getTransformed()[0].x;
+                        float y = player.getBody().getShape().getTransformed()[0].y;
                         Vector2f pos = new Vector2f(x, y);
-                        entities.add(new Bullet(2, pos, entities.get(i).getBody().getTransform().getAngle(), world));
+                        entities.add(new Bullet(2, pos, player.getBody().getTransform().getAngle(), world));
                         ContentManager.instance.getSound("pew").play();
                     }
-                } else if(entities.get(i) instanceof AI) {
-                    ((AI) entities.get(i)).setEntities(entities);
-                    if(entities.get(i) instanceof SwarmerBase && ((SwarmerBase) entities.get(i)).isShooting()){
-                        for(int j = 0; j < 6; j++)
-                            entities.add(new Swarmer(world,entities.get(i).getBody().getTransform().getPosition()));
-                        world.removeBody(entities.get(i).getBody());
-                        entities.remove(i);
-                        alive = false;
-                    }
-                    else if(((AI) entities.get(i)).isShooting()){
-                        float x = entities.get(i).getBody().getShape().getTransformed()[0].x;
-                        float y = entities.get(i).getBody().getShape().getTransformed()[0].y;
-                        Vector2f pos = new Vector2f(x, y);
-                        entities.add(new Bullet(2, pos, entities.get(i).getBody().getTransform().getAngle(), world));
+                }
+                else if(entities.get(i) instanceof AI) {
+                    AI ai = (AI)entities.get(i);
+                    ai.setEntities(entities);
+                    if(ai.isShooting()) {
+                        if(ai.getType() == Entity.Type.SwamerBase) {
+                            for(int j = 0; j < 6; j++)
+                                entities.add(new Swarmer(world,entities.get(i).getBody().getTransform().getPosition()));
+                            world.removeBody(entities.get(i).getBody());
+                            entities.remove(i);
+                            alive = false;
+                        }
+                        else {
+                            float x = entities.get(i).getBody().getShape().getTransformed()[0].x;
+                            float y = entities.get(i).getBody().getShape().getTransformed()[0].y;
+                            Vector2f pos = new Vector2f(x, y);
+                            entities.add(new Bullet(2, pos, entities.get(i).getBody().getTransform().getAngle(), world));
+                        }
                     }
                 }
             }
@@ -120,10 +125,10 @@ public class PlayState extends State {
                 entities.get(i).update(dt);
             }
         }
-       window.setTitle("Entities: " + entities.size());
-        if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)){
-            window.close();
-            System.exit(0);
+
+        window.setTitle("Entities: " + entities.size());
+        if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)) {
+            game.getEngine().close();
         }
     }
 

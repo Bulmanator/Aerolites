@@ -1,5 +1,6 @@
 package com.teamtwo.aerolites.Entities.AI;
 
+import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
@@ -59,12 +60,13 @@ public class SwarmerBase extends AI {
         config.shape = new Polygon(MathUtil.randomFloat(40,45));
 
         body = world.createBody(config);
+        body.setData(this);
     }
 
     @Override
     public void update(float dt){
         super.update(dt);
-        if(playerDistance()<MathUtil.squared(400)){
+        if(playerDistance()<MathUtil.square(400)){
             setShooting(true);
         }
     }
@@ -77,12 +79,15 @@ public class SwarmerBase extends AI {
         bodyShape.setTexture(ContentManager.instance.getTexture("Asteroid"));
         window.draw(bodyShape);
     }
-    public float playerDistance(){
+    public float playerDistance() {
         float x = entities.get(0).getBody().getTransform().getPosition().x;
         float y = entities.get(0).getBody().getTransform().getPosition().y;
 
         float xAI = getBody().getTransform().getPosition().x;
         float yAI = getBody().getTransform().getPosition().y;
-        return MathUtil.squared(x - xAI) + MathUtil.squared(y - yAI);
+        return MathUtil.square(x - xAI) + MathUtil.square(y - yAI);
     }
+
+    @Override
+    public Type getType() { return Type.SwamerBase; }
 }

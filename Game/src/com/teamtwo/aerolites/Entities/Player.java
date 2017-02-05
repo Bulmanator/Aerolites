@@ -4,6 +4,10 @@ import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
 import com.teamtwo.engine.Input.Controllers.Controller;
 import com.teamtwo.engine.Input.Controllers.Controllers;
+import com.teamtwo.engine.Messages.Listener;
+import com.teamtwo.engine.Messages.Message;
+import com.teamtwo.engine.Messages.Observer;
+import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
@@ -12,6 +16,10 @@ import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Matthew Threlfall
@@ -26,7 +34,7 @@ public class Player extends Entity {
     private float shootCooldown;
     private boolean shoot;
 
-    public Player(World w){
+    public Player(World world) {
         BodyConfig config = new BodyConfig();
 
         Vector2f[] vertices = new Vector2f[4];
@@ -45,7 +53,10 @@ public class Player extends Entity {
         config.angularVelocity = 0;
 
         config.density = 0.6f;
-        body = w.createBody(config);
+        body = world.createBody(config);
+        body.setData(this);
+        body.registerObserver(this, Message.Type.Collision);
+
         ParticleConfig pConfig = new ParticleConfig();
 
 
@@ -99,7 +110,7 @@ public class Player extends Entity {
         }
 
         // If A or D are pressed then set the rotational speed accordingly
-        if(Keyboard.isKeyPressed(Keyboard.Key.D) ||  Controllers.isButtonPressed(Controller.Player.One, Controller.Button.DPad_Right) ||  Controllers.getThumbstickValues(Controller.Player.One, Controller.Thumbstick.Left).x > 0) {
+        if(Keyboard.isKeyPressed(Keyboard.Key.D) || Controllers.isButtonPressed(Controller.Player.One, Controller.Button.DPad_Right) || Controllers.getThumbstickValues(Controller.Player.One, Controller.Thumbstick.Left).x > 0) {
             body.setAngularVelocity(ROTATION_SPEED);
             float thumbStick = Controllers.getThumbstickValues(Controller.Player.One, Controller.Thumbstick.Left).x;
             if(thumbStick>0){
@@ -109,7 +120,7 @@ public class Player extends Entity {
         else if(Keyboard.isKeyPressed(Keyboard.Key.A) ||  Controllers.isButtonPressed(Controller.Player.One, Controller.Button.DPad_Left)  ||  Controllers.getThumbstickValues(Controller.Player.One, Controller.Thumbstick.Left).x < 0) {
             body.setAngularVelocity(-ROTATION_SPEED);
             float thumbStick = Controllers.getThumbstickValues(Controller.Player.One, Controller.Thumbstick.Left).x;
-            if(thumbStick<0){
+            if(thumbStick < 0){
                 body.setAngularVelocity(ROTATION_SPEED*thumbStick/100);
             }
         }
@@ -130,6 +141,14 @@ public class Player extends Entity {
         super.render(renderer);
     }
 
+    @Override
+    public void receiveMessage(Message message) {
+        if(message.getType() == Message.Type.Collision) {
+            CollisionMessage cm = (CollisionMessage) message;
+            System.out.println(cm.getBodyA().getData().getType() + " collided with " + cm.getBodyB().getData().getType());
+        }
+    }
+
     public boolean shooting(){
         if(shoot){
             shoot = false;
@@ -139,5 +158,6 @@ public class Player extends Entity {
     }
 
 
-
+    @Override
+    public Type getType() { return Type.Player; }
 }

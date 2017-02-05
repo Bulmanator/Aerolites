@@ -1,5 +1,6 @@
 package com.teamtwo.aerolites.Entities;
 
+import com.teamtwo.engine.Messages.Message;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
@@ -11,6 +12,7 @@ import org.jsfml.system.Vector2f;
  * Created by matt on 24/01/17.
  */
 public class Bullet extends Entity {
+
     private float lifeTime;
     private final float MAX_LIFE_TIME;
 
@@ -28,12 +30,16 @@ public class Bullet extends Entity {
         this.offScreenAllowance = new Vector2f(0,0);
 
         config.shape = new Polygon(shape);
+        config.sensor = true;
 
         this.body = world.createBody(config);
+
         this.body.setVelocity(new Vector2f(0,-350));
         this.setMaxSpeed(350);
         this.body.rotateVelocity(angle);
         this.body.setTransform(position,angle);
+
+        body.setData(this);
 
         this.renderColour = Color.RED;
 
@@ -44,6 +50,8 @@ public class Bullet extends Entity {
     public void render(RenderWindow window){
         super.render(window);
     }
+
+
     @Override
     public void update(float dt){
         super.update(dt);
@@ -53,7 +61,16 @@ public class Bullet extends Entity {
         }
     }
 
-    public float getMAX_LIFE_TIME() {
+    @Override
+    public void receiveMessage(Message message) {
+        if(message.getType() == Message.Type.Collision) {
+            System.out.println(this.toString() + " Detected Collision!");
+        }
+    }
+
+    public float getMaxLifeTime() {
         return MAX_LIFE_TIME;
     }
+
+    public Type getType() { return Type.Bullet; }
 }
