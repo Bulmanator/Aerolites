@@ -1,8 +1,7 @@
 package com.teamtwo.aerolites.Entities.AI;
 
-import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
+import com.teamtwo.aerolites.Entities.CollisionMask;
 import com.teamtwo.aerolites.Entities.Entity;
-import com.teamtwo.aerolites.Entities.Player;
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
 import com.teamtwo.engine.Messages.Message;
@@ -28,6 +27,9 @@ public class Swarmer extends AI {
     public Swarmer(World world, Vector2f pos){
         this.onScreen = true;
         BodyConfig config = new BodyConfig();
+
+        config.mask = CollisionMask.SWARMER;
+        config.category = CollisionMask.ALL;
 
         setMaxSpeed(130);
         config.angularVelocity = MathUtil.PI2;

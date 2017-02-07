@@ -44,7 +44,10 @@ public class RigidBody implements Updateable, Listener {
     // Others
     private boolean alive;
     private Typeable data;
-    private boolean sensor;
+
+    // Collision Data
+    private int mask;
+    private int category;
 
     // Messages
     private HashMap<Message.Type, List<Observer>> observers;
@@ -75,7 +78,9 @@ public class RigidBody implements Updateable, Listener {
 
         data = null;
         alive = false;
-        sensor = config.sensor;
+
+        mask = config.mask;
+        category = config.category;
 
         observers = new HashMap<>();
     }
@@ -269,10 +274,16 @@ public class RigidBody implements Updateable, Listener {
     public boolean isAlive() { return alive; }
 
     /**
-     * Gets whether or not the body is a sensor
-     * @return True if the body is a sensor, otherwise false
+     * Gets the mask which defines what can collide with this
+     * @return The bit mask
      */
-    public boolean isSensor() { return sensor; }
+    public int getMask() { return mask; }
+
+    /**
+     * Gets the mask which defines what this can collide with
+     * @return The category
+     */
+    public int getCategory() { return category; }
 
     /**
      * Gets the data attached to the body, this can be anything
