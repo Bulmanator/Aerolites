@@ -41,6 +41,9 @@ public class Player extends Entity {
         lives = 0;
         immuneTime = 0;
 
+        config.mask = CollisionMask.PLAYER;
+        config.category = (CollisionMask.ALL & ~CollisionMask.BULLET);
+
         Vector2f[] vertices = new Vector2f[4];
         vertices[0] = new Vector2f(0, -15);
         vertices[1] = new Vector2f(15, 30);

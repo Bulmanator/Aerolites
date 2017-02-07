@@ -1,6 +1,7 @@
 package com.teamtwo.aerolites.Entities.AI;
 
 import com.teamtwo.aerolites.Entities.Bullet;
+import com.teamtwo.aerolites.Entities.CollisionMask;
 import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
@@ -36,6 +37,8 @@ public class StandardAI extends AI {
         shootTime = 0.8f;
         BodyConfig config = new BodyConfig();
 
+        config.mask = CollisionMask.STANDARD_AI;
+        config.category = CollisionMask.ALL & (~CollisionMask.ENEMY_BULLET);
 
         Vector2f[] vertices = new Vector2f[5];
         vertices[0] = new Vector2f(0, 0);
@@ -88,7 +91,6 @@ public class StandardAI extends AI {
         pConfig.rotationalSpeed = 40;
         pConfig.pointCount = 6;
         pConfig.colours[0] = Color.RED;
-        //pConfig.colours[0] = Color.MAGENTA;
         pConfig.colours[1] = Color.YELLOW;
         pConfig.colours[2] = Color.YELLOW;
         pConfig.fadeOut = true;

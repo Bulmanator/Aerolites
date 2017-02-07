@@ -25,6 +25,7 @@ public class Bullet extends Entity {
         this.owner = owner;
 
         BodyConfig config = new BodyConfig();
+
         Vector2f shape[] = new Vector2f[4];
         shape[0] = new Vector2f(-7.5f, 0);
         shape[1] = new Vector2f(0f, -5);
@@ -34,7 +35,19 @@ public class Bullet extends Entity {
         this.offScreenAllowance = new Vector2f(0,0);
 
         config.shape = new Polygon(shape);
-        config.sensor = true;
+
+        switch (owner){
+            case Bullet:
+                this.renderColour = Color.YELLOW;
+                config.mask = CollisionMask.BULLET;
+                break;
+            case EnemyBullet:
+                this.renderColour = Color.RED;
+                config.mask = CollisionMask.ENEMY_BULLET;
+                break;
+        }
+
+        config.category = CollisionMask.AI | CollisionMask.ASTEROID;
 
         this.body = world.createBody(config);
 
@@ -44,14 +57,6 @@ public class Bullet extends Entity {
         this.body.setTransform(position,angle);
 
         body.setData(this);
-        switch (owner){
-            case Bullet:
-                this.renderColour = Color.YELLOW;
-                break;
-            case EnemyBullet:
-                this.renderColour = Color.RED;
-                break;
-        }
 
         body.registerObserver(this, Message.Type.Collision);
 
