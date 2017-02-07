@@ -29,17 +29,24 @@ public class PlayState extends State {
     private World world;
     private ArrayList<Entity> entities;
     private ArrayList<Player> players;
+    private ArrayList<Player> deadPlayers;
     private float accum;
     private float asteroidSpawnRate;
     private float swarmerSpawnRate;
     private float lastSwarmer;
-    private boolean gameOver;;
+    private boolean gameOver;
     private long startTime;
 
     private float lastStandard;
     private float standardTime;
     private int playerCount;
 
+    /**
+     * Creates a new Play state, the player count is negative if only controllers are used. -1 will create 1 player, -4 will create 4 players, controllers only.
+     * 0 will create a single player using the keyboard, 4 will create 5 players, one using the keyboard
+     * @param gsm the game state manager for the entire game
+     * @param playerCount the amount of players to be in the game, key highlighted above
+     */
     public PlayState(GameStateManager gsm, int playerCount) {
         super(gsm);
 
@@ -52,6 +59,7 @@ public class PlayState extends State {
 
         entities = new ArrayList<>();
         players = new ArrayList<>();
+        deadPlayers = new ArrayList<>();
         //entities.add(new Asteroid(world));
         players.add(new Player(world));
         int keyboard = 0;
@@ -96,6 +104,8 @@ public class PlayState extends State {
             entities.get(i).update(dt);
             if(!entities.get(i).isOnScreen()) {
                 world.removeBody(entities.get(i).getBody());
+                if(entities.get(i).getType() == Entity.Type.Player)
+                    deadPlayers.add((Player)entities.get(i));
                 entities.remove(i);
                 i--;
             }

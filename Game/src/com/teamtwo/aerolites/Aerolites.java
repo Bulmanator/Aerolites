@@ -12,7 +12,7 @@ public class Aerolites extends Game {
     /** This method is called once before the game begins running */
     public void initialise() {
         stateManager = new GameStateManager(this);
-        stateManager.addState(new PlayState(stateManager,-1));
+        stateManager.addState(new PlayState(stateManager,-3));
     }
 
     /**

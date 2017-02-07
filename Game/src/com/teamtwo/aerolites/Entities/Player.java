@@ -34,12 +34,14 @@ public class Player extends Entity {
     private Color defaultColour;
 
     private float immuneTime;
+    private float timeAlive;
 
     public Player(World world) {
         BodyConfig config = new BodyConfig();
         controller = false;
-        lives = 0;
+        lives = -1;
         immuneTime = 0;
+        timeAlive = 0;
 
         config.mask = CollisionMask.PLAYER;
         config.category = (CollisionMask.ALL & ~CollisionMask.BULLET);
@@ -97,6 +99,7 @@ public class Player extends Entity {
         // Update the particle emitter
         jet.update(dt);
         shootCooldown += dt;
+        timeAlive += dt;
         if(immuneTime>0) {
             immuneTime -= dt;
             if (MathUtil.round(immuneTime % 0.3f, 1)== 0)
