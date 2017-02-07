@@ -1,8 +1,9 @@
 package com.teamtwo.aerolites.Entities.AI;
 
-import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
+import com.teamtwo.engine.Messages.Message;
+import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
@@ -12,7 +13,7 @@ import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 
 /**
- * @Author Matthew Threlfall
+ * @author Matthew Threlfall
  */
 public class Swarmer extends AI {
     private final float MAX_FORCE = 800;
@@ -58,6 +59,7 @@ public class Swarmer extends AI {
         pConfig.endSize = 1;
         pConfig.minLifetime = 0.5f;
         pConfig.maxLifetime = 1;
+        body.registerObserver(this, Message.Type.Collision);
 
 
         pConfig.position = body.getTransform().getPosition();
@@ -84,6 +86,16 @@ public class Swarmer extends AI {
     public void render(RenderWindow window){
         super.render(window);
         jet.render(window);
+    }
+
+    @Override
+    public void receiveMessage(Message message) {
+        if (message.getType() == Message.Type.Collision) {
+            CollisionMessage cm = (CollisionMessage) message;
+            if (cm.getBodyB().getData().getType() == Type.Bullet || cm.getBodyA().getData().getType() == Type.Bullet) {
+                onScreen = false;
+            }
+        }
     }
 
     @Override

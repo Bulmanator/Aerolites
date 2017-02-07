@@ -4,6 +4,8 @@ import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
+import com.teamtwo.engine.Messages.Message;
+import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
@@ -13,14 +15,14 @@ import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 
 /**
- * @Author Matthew Threlfall
+ * @author Matthew Threlfall
  */
 public class StandardAI extends AI {
 
     private float planTime;
     private final float PLAN_EXECUTE_TIME;
-    private final float FORCE_FROM_JET = 20000;
-    private final float rotationSpeed = MathUtil.PI*35;
+    private final float FORCE_FROM_JET = 3000;
+    private final float rotationSpeed = MathUtil.PI*40;
     private ParticleEmitter jet;
     private Entity target;
     private boolean shouldShoot;
@@ -31,16 +33,16 @@ public class StandardAI extends AI {
         this.onScreen = true;
         PLAN_EXECUTE_TIME = 0.2f;
         shootCooldown = 0;
-        shootTime = 0.7f;
+        shootTime = 0.4f;
         BodyConfig config = new BodyConfig();
 
 
         Vector2f[] vertices = new Vector2f[5];
         vertices[0] = new Vector2f(0, 0);
-        vertices[1] = new Vector2f(30, 70);
-        vertices[2] = new Vector2f(20, 90);
-        vertices[3] = new Vector2f(-20, 90);
-        vertices[4] = new Vector2f(-30, 70);
+        vertices[1] = new Vector2f(20, 40);
+        vertices[2] = new Vector2f(10, 45);
+        vertices[3] = new Vector2f(-10, 45);
+        vertices[4] = new Vector2f(-20, 40);
 
         renderColour = Color.RED;
 
@@ -90,11 +92,12 @@ public class StandardAI extends AI {
         pConfig.colours[1] = Color.YELLOW;
         pConfig.colours[2] = Color.YELLOW;
         pConfig.fadeOut = true;
-        pConfig.startSize = 14;
+        pConfig.startSize = 8;
         pConfig.endSize = 4;
         pConfig.minLifetime = 1.5f;
         pConfig.maxLifetime = 3;
 
+        body.registerObserver(this, Message.Type.Collision);
 
         pConfig.position = body.getTransform().getPosition();
         jet = new ParticleEmitter(pConfig, 40f, 400);
@@ -174,6 +177,14 @@ public class StandardAI extends AI {
     public void render(RenderWindow renderer) {
         jet.render(renderer);
         super.render(renderer);
+    }
+
+    @Override
+    public void receiveMessage(Message message) {
+        if (message.getType() == Message.Type.Collision) {
+            CollisionMessage cm = (CollisionMessage) message;
+            onScreen = cm.getBodyB().getData().getType() == Type.EnemyBullet || cm.getBodyB().getData().getType() == Type.Swamer;
+        }
     }
 
     @Override

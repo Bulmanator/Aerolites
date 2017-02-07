@@ -1,6 +1,7 @@
 package com.teamtwo.aerolites.Entities;
 
 import com.teamtwo.engine.Messages.Message;
+import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
@@ -9,16 +10,18 @@ import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 
 /**
- * Created by matt on 24/01/17.
+ * @author Matthew Threlfall
  */
 public class Bullet extends Entity {
 
     private float lifeTime;
     private final float MAX_LIFE_TIME;
+    private Type owner;
 
-    public Bullet(float lifeTime, Vector2f position, float angle, World world){
+    public Bullet(float lifeTime, Vector2f position,Type owner, float angle, World world){
         MAX_LIFE_TIME = lifeTime;
         this.lifeTime = 0;
+        this.owner = owner;
 
         BodyConfig config = new BodyConfig();
         Vector2f shape[] = new Vector2f[4];
@@ -40,8 +43,16 @@ public class Bullet extends Entity {
         this.body.setTransform(position,angle);
 
         body.setData(this);
+        switch (owner){
+            case Bullet:
+                this.renderColour = Color.YELLOW;
+                break;
+            case EnemyBullet:
+                this.renderColour = Color.RED;
+                break;
+        }
 
-        this.renderColour = Color.RED;
+        body.registerObserver(this, Message.Type.Collision);
 
         onScreen = true;
     }
@@ -64,7 +75,16 @@ public class Bullet extends Entity {
     @Override
     public void receiveMessage(Message message) {
         if(message.getType() == Message.Type.Collision) {
-            System.out.println(this.toString() + " Detected Collision!");
+            CollisionMessage cm = (CollisionMessage) message;
+            if(owner == Type.EnemyBullet) {
+                if (cm.getBodyA().getData().getType() != Type.StandardAI)
+                    onScreen = false;
+            }
+            else {
+                if (cm.getBodyA().getData().getType() != Type.Player)
+                    onScreen = false;
+            }
+
         }
     }
 
@@ -72,5 +92,8 @@ public class Bullet extends Entity {
         return MAX_LIFE_TIME;
     }
 
-    public Type getType() { return Type.Bullet; }
+    public Type getType() { return owner; }
+
+    public void setType(Type type) { owner = type; }
+
 }

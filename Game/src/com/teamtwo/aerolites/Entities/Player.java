@@ -4,9 +4,7 @@ import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
 import com.teamtwo.engine.Input.Controllers.Controller;
 import com.teamtwo.engine.Input.Controllers.Controllers;
-import com.teamtwo.engine.Messages.Listener;
 import com.teamtwo.engine.Messages.Message;
-import com.teamtwo.engine.Messages.Observer;
 import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
@@ -17,10 +15,6 @@ import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 /**
  * @author Matthew Threlfall
  */
@@ -28,7 +22,7 @@ public class Player extends Entity {
 
     private final float ROTATION_SPEED = MathUtil.PI;
     private final float FORCE_FROM_JET = 75000;
-    private final float TIME_BETWEEN_SHOTS = 0.0f;
+    private final float TIME_BETWEEN_SHOTS = 0.3f;
 
     private ParticleEmitter jet;
     private float shootCooldown;
@@ -78,6 +72,7 @@ public class Player extends Entity {
 
         pConfig.position = body.getTransform().getPosition();
         jet = new ParticleEmitter(pConfig, 40f, 400);
+        body.registerObserver(this, Message.Type.Collision);
 
         renderColour = Color.GREEN;
         shoot = false;
@@ -145,7 +140,10 @@ public class Player extends Entity {
     public void receiveMessage(Message message) {
         if(message.getType() == Message.Type.Collision) {
             CollisionMessage cm = (CollisionMessage) message;
-            System.out.println(cm.getBodyA().getData().getType() + " collided with " + cm.getBodyB().getData().getType());
+            ///System.out.println(cm.getBodyA().getData().getType() + " collided with " + cm.getBodyB().getData().getType());
+            if(cm.getBodyB().getData().getType() != Type.Bullet){
+                System.exit(0);
+            }
         }
     }
 
@@ -156,6 +154,7 @@ public class Player extends Entity {
         }
         return false;
     }
+
 
 
     @Override

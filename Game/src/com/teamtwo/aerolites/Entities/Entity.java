@@ -22,6 +22,7 @@ public abstract class Entity implements EntityRenderable, Updateable, Observer, 
         Player,
         Asteroid,
         Bullet,
+        EnemyBullet,
         StandardAI,
         Swamer,
         SwamerBase
@@ -30,12 +31,14 @@ public abstract class Entity implements EntityRenderable, Updateable, Observer, 
     protected RigidBody body;
     protected Color renderColour;
     protected boolean onScreen;
+    protected boolean alive;
     protected Vector2f offScreenAllowance;
     private float maxSpeed = 200;
 
     public Entity() {
         renderColour = Color.WHITE;
         onScreen = true;
+        alive = true;
         offScreenAllowance = new Vector2f(0, 0);
     }
 

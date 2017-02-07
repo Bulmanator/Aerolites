@@ -2,13 +2,12 @@ package com.teamtwo.aerolites.Entities.AI;
 
 import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.engine.Messages.Message;
-import org.jsfml.graphics.RenderWindow;
 
 import java.util.ArrayList;
 
 /**
  * A class to represent the base AI
- * @Author Matthew Threlfall
+ * @author Matthew Threlfall
  */
 public abstract class AI extends Entity {
 

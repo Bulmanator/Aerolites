@@ -19,13 +19,16 @@ import org.jsfml.system.Vector2f;
 public class Asteroid extends Entity {
 
     private boolean onScreen;
+    private boolean expload;
 
     /**
      * Constructs a new procedurally generated asteroid
      * @param world The world which is used to create the body
      */
     public Asteroid(World world) {
-        this.onScreen = true;
+        super();
+        expload = false;
+        onScreen = true;
         BodyConfig config = new BodyConfig();
 
         int screenSide = MathUtil.randomInt(0,4);
@@ -55,13 +58,10 @@ public class Asteroid extends Entity {
                 velocityX = MathUtil.randomInt(-100,-10);
                 velocityY = MathUtil.randomInt(-30,30);
                 break;
-            default:
-                System.out.println("WHAT?!");
         }
 
-
-        config.position = new Vector2f(x,y);
-        config.shape = new Polygon();
+        config.position = new Vector2f(x, y);
+        config.shape = new Polygon(MathUtil.randomFloat(40,60));
 
         config.restitution = 0.3f;
         config.velocity = new Vector2f(velocityX,velocityY);
@@ -74,9 +74,28 @@ public class Asteroid extends Entity {
         offScreenAllowance = new Vector2f(body.getShape().getRadius()*4,body.getShape().getRadius()*4);
     }
 
+    public Asteroid(World world, Vector2f pos, Vector2f vel, float radius) {
+        super();
+        this.onScreen = true;
+        this.expload = false;
+        BodyConfig config = new BodyConfig();
+
+        config.position = pos;
+        config.shape = new Polygon(radius);
+
+        config.restitution = 0.3f;
+        config.velocity = vel;
+        config.angularVelocity = MathUtil.randomFloat(0, MathUtil.PI / 4f);
+
+        config.density = 0.6f;
+        body = world.createBody(config);
+        body.setData(this);
+        body.registerObserver(this, Message.Type.Collision);
+        offScreenAllowance = new Vector2f(body.getShape().getRadius()*4,body.getShape().getRadius()*4);
+    }
+
     @Override
     public void render(RenderWindow renderer) {
-        /** Simply runs the body renderer from the entity class it extends from */
         ConvexShape bodyShape = new ConvexShape(body.getShape().getVertices());
         bodyShape.setPosition(body.getTransform().getPosition());
         bodyShape.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
@@ -91,7 +110,9 @@ public class Asteroid extends Entity {
     public void receiveMessage(Message message) {
         if(message.getType() == Message.Type.Collision) {
             CollisionMessage cm = (CollisionMessage) message;
-            System.out.println(cm.getBodyA().getData().getType() + " collided with " + cm.getBodyB().getData().getType());
+            Type typeA = (Type)cm.getBodyA().getData().getType();
+            Type typeB = (Type)cm.getBodyB().getData().getType();
+            expload = typeB == Type.Bullet || typeB == Type.EnemyBullet || typeA == Type.Bullet || typeA == Type.EnemyBullet;
         }
     }
 
@@ -125,4 +146,8 @@ public class Asteroid extends Entity {
 
     @Override
     public Type getType() { return Type.Asteroid; }
+
+    public boolean shouldExpload() {
+        return expload;
+    }
 }

@@ -1,6 +1,7 @@
 package com.teamtwo.aerolites.Entities.AI;
 
-import com.teamtwo.aerolites.Entities.Entity;
+import com.teamtwo.engine.Messages.Message;
+import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
@@ -12,7 +13,7 @@ import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 
 /**
- * @Aurthor Matthew Threlfall
+ * @author Matthew Threlfall
  */
 public class SwarmerBase extends AI {
 
@@ -66,7 +67,7 @@ public class SwarmerBase extends AI {
     @Override
     public void update(float dt){
         super.update(dt);
-        if(playerDistance()<MathUtil.square(400)){
+        if(playerDistance()<MathUtil.square(550)){
             setShooting(true);
         }
     }
@@ -86,6 +87,19 @@ public class SwarmerBase extends AI {
         float xAI = getBody().getTransform().getPosition().x;
         float yAI = getBody().getTransform().getPosition().y;
         return MathUtil.square(x - xAI) + MathUtil.square(y - yAI);
+    }
+
+    @Override
+    public void receiveMessage(Message message) {
+        if(message.getType() == Message.Type.Collision) {
+            CollisionMessage cm = (CollisionMessage) message;
+            if(cm.getBodyB().getData().getType() == Type.Bullet) {
+                setShooting(true);
+            }
+            else if(cm.getBodyA().getData().getType() == Type.Bullet) {
+                setShooting(true);
+            }
+        }
     }
 
     @Override
