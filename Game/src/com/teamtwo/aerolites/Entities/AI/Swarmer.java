@@ -1,8 +1,6 @@
 package com.teamtwo.aerolites.Entities.AI;
 
-import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
 import com.teamtwo.aerolites.Entities.Entity;
-import com.teamtwo.aerolites.Entities.Player;
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
 import com.teamtwo.engine.Messages.Message;
@@ -80,14 +78,19 @@ public class Swarmer extends AI {
         float x = body.getTransform().getPosition().x;
         float y = body.getTransform().getPosition().y;
         jet.getConfig().position = body.getShape().getTransformed()[0];
+        if(target != null) {
+            Vector2f pos = target.getBody().getTransform().getPosition();
 
-        Vector2f pos = target.getBody().getTransform().getPosition();
+            float degreeBetween = (float) Math.atan2(pos.y - y, pos.x - x) + MathUtil.PI / 2;
 
-        float degreeBetween =  (float)Math.atan2(pos.y - y, pos.x - x) + MathUtil.PI/2;
-
-        float xForce = MathUtil.sin(degreeBetween)*MAX_FORCE;
-        float yForce = MathUtil.cos(degreeBetween)*-MAX_FORCE;
-        body.applyForce(new Vector2f(xForce,yForce));
+            float xForce = MathUtil.sin(degreeBetween) * MAX_FORCE;
+            float yForce = MathUtil.cos(degreeBetween) * -MAX_FORCE;
+            body.applyForce(new Vector2f(xForce, yForce));
+        }
+        else
+        {
+            body.applyForce(new Vector2f(MathUtil.randomInt(-1,1)*MAX_FORCE, MathUtil.randomInt(-1,1)*MAX_FORCE));
+        }
     }
 
     public void findTarget(){

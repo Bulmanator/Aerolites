@@ -33,7 +33,7 @@ public class StandardAI extends AI {
         this.onScreen = true;
         PLAN_EXECUTE_TIME = 0.2f;
         shootCooldown = 0;
-        shootTime = 0.4f;
+        shootTime = 0.8f;
         BodyConfig config = new BodyConfig();
 
 
@@ -184,6 +184,8 @@ public class StandardAI extends AI {
         if (message.getType() == Message.Type.Collision) {
             CollisionMessage cm = (CollisionMessage) message;
             onScreen = cm.getBodyB().getData().getType() == Type.EnemyBullet || cm.getBodyB().getData().getType() == Type.Swamer;
+            onScreen |= cm.getBodyA().getData().getType() == Type.EnemyBullet || cm.getBodyA().getData().getType() == Type.Swamer;
+            onScreen |= cm.getBodyA().getData().getType() == Type.Player || cm.getBodyB().getData().getType() == Type.Player;
         }
     }
 

@@ -8,13 +8,13 @@ import com.teamtwo.aerolites.Entities.Asteroid;
 import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.aerolites.Entities.Player;
+import com.teamtwo.engine.Physics.RigidBody;
 import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
-import org.jsfml.graphics.Color;
-import org.jsfml.graphics.Text;
+import org.jsfml.graphics.ConvexShape;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
 
@@ -32,35 +32,48 @@ public class PlayState extends State {
     private float asteroidSpawnRate;
     private float swarmerSpawnRate;
     private float lastSwarmer;
+    private boolean gameOver;;
     private long startTime;
 
     private float lastStandard;
     private float standardTime;
+    private int playerCount;
 
-    public PlayState(GameStateManager gsm) {
+    public PlayState(GameStateManager gsm, int playerCount) {
         super(gsm);
 
+        gameOver = false;
         world = new World(new Vector2f(0,0));
         World.DRAW_VELOCITIES = false;
         World.DRAW_BODIES = false;
         World.DRAW_AABB = false;
+        this.playerCount = playerCount;
 
         entities = new ArrayList<>();
         players = new ArrayList<>();
         //entities.add(new Asteroid(world));
         players.add(new Player(world));
-        players.add(new Player(world));
-        ((Player)players.get(1)).setControllerNum(0);
-        players.add(new Player(world));
-        ((Player)players.get(2)).setControllerNum(1);
-        players.add(new Player(world));
-        ((Player)players.get(3)).setControllerNum(2);
-        players.add(new Player(world));
-        ((Player)players.get(4)).setControllerNum(3);
+        int keyboard = 0;
+        if(playerCount < 0){
+            players.get(0).setControllerNum(0);
+            keyboard = 1;
+            playerCount = -(playerCount) -1;
+        }
+        for(int i = 0; i < playerCount; i++){
+            players.add(new Player(world));
+            ((Player)players.get(i+1)).setControllerNum(i+keyboard);
+        }
         accum = 0;
-        asteroidSpawnRate = 1f;
-        swarmerSpawnRate = 6f;
-        standardTime = 10f;
+        if(playerCount<=0) {
+            asteroidSpawnRate = 1f;
+            swarmerSpawnRate = 6f;
+            standardTime = 10f;
+        }
+        else {
+            asteroidSpawnRate = 1/playerCount*1.4f;
+            swarmerSpawnRate = 6/playerCount;
+            standardTime = 10f/playerCount;
+        }
         lastSwarmer = 0;
 
         ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");
@@ -73,6 +86,10 @@ public class PlayState extends State {
 
         world.update(dt);
         spawnEntities(dt);
+        if(players.size() == 0 && !gameOver) {
+            gameOver = true;
+            gsm.addState(new GameOver(gsm, this, playerCount));
+        }
 
         for(int i = 0; i < entities.size(); i++) {
             entities.get(i).update(dt);
@@ -95,9 +112,14 @@ public class PlayState extends State {
                 }
             }
         }
-        for(Player p: players){
-            p.update(dt);
-            updatePlayer(p);
+        for(int i = 0 ; i < players.size(); i++){
+            players.get(i).update(dt);
+            updatePlayer(players.get(i));
+             if(!players.get(i).isOnScreen()){
+                world.removeBody(players.get(i).getBody());
+                players.remove(i);
+                i--;
+            }
         }
         if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)) {
             game.getEngine().close();
@@ -193,21 +215,15 @@ public class PlayState extends State {
         for(Player p: players)
             p.render(window);
 
-
-        Text entitiyCount = new Text("Entities: "+entities.size(),ContentManager.instance.getFont("Ubuntu"));
-        entitiyCount.setPosition(new Vector2f(0,0));
-        entitiyCount.setColor(Color.BLUE);
-        window.draw(entitiyCount);
-        entitiyCount = new Text("FPS: "+ gsm.game.getEngine().getFps(),ContentManager.instance.getFont("Ubuntu"));
-        entitiyCount.setPosition(new Vector2f(0,50));
-        entitiyCount.setColor(Color.BLUE);
-        window.draw(entitiyCount);
-
-        entitiyCount = new Text("Time Alive: "+ (System.nanoTime()-startTime)/1000000000,ContentManager.instance.getFont("Ubuntu"));
-        entitiyCount.setPosition(new Vector2f(0,100));
-        entitiyCount.setColor(Color.BLUE);
-        window.draw(entitiyCount);
-        world.render(window);
+        for(Player p: players) {
+            for(int i = 0; i < p.getLives()+1; i++) {
+                RigidBody body = p.getBody();
+                ConvexShape bodyShape = new ConvexShape(body.getShape().getVertices());
+                bodyShape.setPosition(20+i*30, 50+ players.indexOf(p)*60);
+                bodyShape.setFillColor(p.getDefaultColuor());
+                window.draw(bodyShape);
+            }
+        }
     }
 
     @Override

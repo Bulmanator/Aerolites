@@ -10,7 +10,6 @@ import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.MathUtil;
-import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
@@ -24,17 +23,23 @@ public class Player extends Entity {
 
     private final float ROTATION_SPEED = MathUtil.PI*1.2f;
     private final float FORCE_FROM_JET = 100000;
-    private final float TIME_BETWEEN_SHOTS = 0.15f;
+    private final float TIME_BETWEEN_SHOTS = 0.3f;
     private boolean controller;
     private Controller.Player controllerNum;
+    private int lives;
 
     private ParticleEmitter jet;
     private float shootCooldown;
     private boolean shoot;
+    private Color defaultColour;
+
+    private float immuneTime;
 
     public Player(World world) {
         BodyConfig config = new BodyConfig();
         controller = false;
+        lives = 0;
+        immuneTime = 0;
 
         Vector2f[] vertices = new Vector2f[4];
         vertices[0] = new Vector2f(0, -15);
@@ -67,11 +72,6 @@ public class Player extends Entity {
         pConfig.colours[0] = Color.RED;
         pConfig.colours[1] = Color.MAGENTA;
         pConfig.colours[2] = Color.YELLOW;
-        pConfig.colours[3] = Color.WHITE;
-        pConfig.colours[4] = Color.BLUE;
-        pConfig.colours[5] = Color.RED;
-        pConfig.colours[6] = Color.GREEN;
-        pConfig.colours[7] = Color.YELLOW;
         pConfig.fadeOut = false;
         pConfig.startSize = 14;
         pConfig.endSize = 4;
@@ -84,6 +84,7 @@ public class Player extends Entity {
         body.registerObserver(this, Message.Type.Collision);
 
         renderColour = Color.GREEN;
+        defaultColour = Color.GREEN;
         shoot = false;
     }
 
@@ -93,8 +94,19 @@ public class Player extends Entity {
         // Update the particle emitter
         jet.update(dt);
         shootCooldown += dt;
+        if(immuneTime>0) {
+            immuneTime -= dt;
+            if (MathUtil.round(immuneTime % 0.3f, 1)== 0)
+                renderColour = Color.WHITE;
+            else
+                renderColour = defaultColour;
+        }
+        else
+            renderColour = defaultColour;
         super.update(dt);
-
+        if(lives<0){
+            onScreen = false;
+        }
         input();
     }
 
@@ -110,8 +122,13 @@ public class Player extends Entity {
             CollisionMessage cm = (CollisionMessage) message;
             ///System.out.println(cm.getBodyA().getData().getType() + " collided with " + cm.getBodyB().getData().getType());
             if(cm.getBodyB().getData().getType() != Type.Bullet && cm.getBodyA().getData().getType() != Type.Bullet){
-                if(cm.getBodyB().getData().getType() != Type.Player && cm.getBodyA().getData().getType() != Type.Player)
-                    System.exit(0);
+                if(cm.getBodyB().getData().getType() != Type.Player || cm.getBodyA().getData().getType() != Type.Player) {
+                    if(immuneTime<=0){
+                        lives--;
+                        immuneTime = 3;
+                    }
+                }
+
             }
         }
     }
@@ -135,7 +152,7 @@ public class Player extends Entity {
             }
         }
         else{
-            if (Controllers.isButtonPressed(controllerNum, Controller.Button.RT)) {
+            if (Controllers.isButtonPressed(controllerNum, Controller.Button.RB)) {
                 boost();
             } else {
                 jet.setActive(false);
@@ -199,18 +216,22 @@ public class Player extends Entity {
             case 0:
                 this.controllerNum = Controller.Player.One;
                 renderColour = Color.BLUE;
+                defaultColour = Color.BLUE;
                 break;
             case 1:
                 this.controllerNum = Controller.Player.Two;
                 renderColour = Color.YELLOW;
+                defaultColour = Color.YELLOW;
                 break;
             case 2:
                 this.controllerNum = Controller.Player.Three;
+                defaultColour = Color.MAGENTA;
                 renderColour = Color.MAGENTA;
                 break;
             case 3:
                 this.controllerNum = Controller.Player.Four;
                 renderColour = Color.CYAN;
+                defaultColour = Color.CYAN;
                 break;
         }
     }
@@ -219,4 +240,12 @@ public class Player extends Entity {
 
     @Override
     public Type getType() { return Type.Player; }
+
+    public int getLives() { return lives; }
+
+    public void setLives(int lives) { this.lives = lives; }
+
+    public Color getDefaultColuor() {
+        return defaultColour;
+    }
 }

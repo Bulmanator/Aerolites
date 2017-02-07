@@ -75,7 +75,7 @@ public class SwarmerBase extends AI {
     public void update(float dt){
         super.update(dt);
         findTarget();
-        if(playerDistance()<MathUtil.square(500)){
+        if(target != null && playerDistance()<MathUtil.square(500)){
             setShooting(true);
         }
     }
