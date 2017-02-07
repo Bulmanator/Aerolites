@@ -37,26 +37,26 @@ public class Asteroid extends Entity {
             case 0:
                 x = MathUtil.randomInt(0, 1920);
                 y = 0;
-                velocityX = MathUtil.randomInt(-30,30);
-                velocityY = MathUtil.randomInt(10,100);
+                velocityX = MathUtil.randomInt(-60,60);
+                velocityY = MathUtil.randomInt(90,200);
                 break;
             case 1:
                 x = MathUtil.randomInt(0, 1920);
                 y = 1080;
-                velocityX = MathUtil.randomInt(-30,30);
-                velocityY = MathUtil.randomInt(-100,-10);
+                velocityX = MathUtil.randomInt(-60,60);
+                velocityY = MathUtil.randomInt(-200,-90);
                 break;
             case 2:
                 x = 0;
                 y = MathUtil.randomInt(0, 1080);
-                velocityX = MathUtil.randomInt(10,100);
-                velocityY = MathUtil.randomInt(-30,30);
+                velocityX = MathUtil.randomInt(90,200);
+                velocityY = MathUtil.randomInt(-60,60);
                 break;
             case 3:
                 x = 1920;
                 y = MathUtil.randomInt(0, 1080);
-                velocityX = MathUtil.randomInt(-100,-10);
-                velocityY = MathUtil.randomInt(-30,30);
+                velocityX = MathUtil.randomInt(-200,-90);
+                velocityY = MathUtil.randomInt(-60,60);
                 break;
         }
 

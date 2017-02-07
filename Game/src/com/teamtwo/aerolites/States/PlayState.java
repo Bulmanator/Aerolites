@@ -13,6 +13,7 @@ import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
+import org.jsfml.audio.Sound;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
@@ -47,13 +48,9 @@ public class PlayState extends State {
         entities = new ArrayList<>();
         //entities.add(new Asteroid(world));
         entities.add(new Player(world));
-        //entities.add(new StandardAI(world));
-        //entities.add(new StandardAI(world, new Vector2f(900,150)));
-        //entities.add(new StandardAI(world, new Vector2f(1100,150)));
-        //entities.add(new SwarmerBase(world));
         accum = 0;
-        asteroidSpawnRate = 2f;
-        swarmerSpawnRate = 17f;
+        asteroidSpawnRate = 1f;
+        swarmerSpawnRate = 6f;
         standardTime = 10f;
         lastSwarmer = 0;
 
@@ -64,25 +61,9 @@ public class PlayState extends State {
 
     @Override
     public void update(float dt) {
-        accum += dt;
-        lastSwarmer += dt;
-        lastStandard += dt;
 
         world.update(dt);
-        if(accum > asteroidSpawnRate) {
-            entities.add(new Asteroid(world));
-            asteroidSpawnRate = MathUtil.clamp(0.99f * asteroidSpawnRate, 0.4f, 3);
-            accum = 0;
-        }
-        if(lastSwarmer > swarmerSpawnRate) {
-            entities.add(new SwarmerBase(world));
-            ((AI)entities.get(entities.size()-1)).setEntities(entities);
-            lastSwarmer = 0;
-        }
-        if(lastStandard>standardTime){
-            entities.add(new StandardAI(world));
-            lastStandard = 0;
-        }
+        spawnEntities(dt);
 
         for(int i = 0; i < entities.size(); i++) {
             entities.get(i).update(dt);
@@ -108,8 +89,6 @@ public class PlayState extends State {
                 }
             }
         }
-
-        window.setTitle("Entities: " + entities.size());
         if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)) {
             game.getEngine().close();
         }
@@ -126,6 +105,7 @@ public class PlayState extends State {
         }
         return index;
     }
+
     public int updateAsteroid(Asteroid a){
         int index = entities.indexOf(a);
         if(a.shouldExpload()) {
@@ -136,19 +116,20 @@ public class PlayState extends State {
                 entities.add(a1);
                 entities.add(a2);
             }
-
+            ContentManager.instance.getSound("expload" +MathUtil.randomInt(1,4)).play();
             world.removeBody(a.getBody());
             entities.remove(index);
             index--;
         }
         return index;
     }
+
     public int updateAI(AI ai){
         int index = entities.indexOf(ai);
         ai.setEntities(entities);
         if(ai.isShooting()) {
             if(ai.getType() == Entity.Type.SwamerBase) {
-                for(int j = 0; j < MathUtil.randomInt(4,6); j++){
+                for(int j = 0; j < MathUtil.randomInt(4,8); j++){
                     entities.add(new Swarmer(world,entities.get(index).getBody().getTransform().getPosition()));
                     ((AI)entities.get(entities.size()-1)).setEntities(entities);
                 }
@@ -163,6 +144,27 @@ public class PlayState extends State {
             }
         }
         return index;
+    }
+
+    public void spawnEntities(float dt){
+        accum += dt;
+        lastSwarmer += dt;
+        lastStandard += dt;
+
+        if(accum > asteroidSpawnRate) {
+            entities.add(new Asteroid(world));
+            asteroidSpawnRate = MathUtil.clamp(0.99f * asteroidSpawnRate, 0.5f, 3);
+            accum = 0;
+        }
+        if(lastSwarmer > swarmerSpawnRate) {
+            entities.add(new SwarmerBase(world));
+            ((AI)entities.get(entities.size()-1)).setEntities(entities);
+            lastSwarmer = 0;
+        }
+        if(lastStandard>standardTime){
+            //entities.add(new StandardAI(world));
+            lastStandard = 0;
+        }
     }
 
     @Override
@@ -190,8 +192,12 @@ public class PlayState extends State {
     public void dispose() {
 
     }
+
     public void loadContent(){
         ContentManager.instance.loadTexture("Asteroid", "Asteroid.png");
         ContentManager.instance.loadSound("pew", "pew.wav");
+        ContentManager.instance.loadSound("expload1", "expload.wav");
+        ContentManager.instance.loadSound("expload2", "expload2.wav");
+        ContentManager.instance.loadSound("expload3", "expload3.wav");
     }
 }

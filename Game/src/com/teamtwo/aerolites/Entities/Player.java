@@ -20,9 +20,9 @@ import org.jsfml.window.Keyboard;
  */
 public class Player extends Entity {
 
-    private final float ROTATION_SPEED = MathUtil.PI;
-    private final float FORCE_FROM_JET = 75000;
-    private final float TIME_BETWEEN_SHOTS = 0.3f;
+    private final float ROTATION_SPEED = MathUtil.PI*1.2f;
+    private final float FORCE_FROM_JET = 100000;
+    private final float TIME_BETWEEN_SHOTS = 0.15f;
 
     private ParticleEmitter jet;
     private float shootCooldown;
