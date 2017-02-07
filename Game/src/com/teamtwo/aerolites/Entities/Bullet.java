@@ -5,6 +5,7 @@ import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
+import com.teamtwo.engine.Utilities.MathUtil;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
@@ -45,7 +46,8 @@ public class Bullet extends Entity {
         body.setData(this);
         switch (owner){
             case Bullet:
-                this.renderColour = Color.YELLOW;
+                //this.renderColour = Color.YELLOW;
+                this.renderColour = new Color(MathUtil.randomInt(30,255),MathUtil.randomInt(30,255),MathUtil.randomInt(30,255));
                 break;
             case EnemyBullet:
                 this.renderColour = Color.RED;

@@ -1,7 +1,6 @@
 package com.teamtwo.aerolites.States;
 
 import com.teamtwo.aerolites.Entities.AI.AI;
-import com.teamtwo.aerolites.Entities.AI.StandardAI;
 import com.teamtwo.aerolites.Entities.AI.Swarmer;
 import com.teamtwo.aerolites.Entities.AI.SwarmerBase;
 import com.teamtwo.aerolites.Entities.Asteroid;
@@ -13,7 +12,6 @@ import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
-import org.jsfml.audio.Sound;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
@@ -159,6 +157,7 @@ public class PlayState extends State {
         if(lastSwarmer > swarmerSpawnRate) {
             entities.add(new SwarmerBase(world));
             ((AI)entities.get(entities.size()-1)).setEntities(entities);
+            swarmerSpawnRate = MathUtil.clamp(0.99f * swarmerSpawnRate, 3f, 10);
             lastSwarmer = 0;
         }
         if(lastStandard>standardTime){

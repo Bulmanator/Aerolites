@@ -49,12 +49,12 @@ public class Swarmer extends AI {
         pConfig.maxAngle = 0;
         pConfig.speed = 70;
         pConfig.rotationalSpeed = 40;
-        pConfig.pointCount = 4;
-        pConfig.colours[0] = Color.YELLOW;
+        pConfig.pointCount = 0;
+        pConfig.colours[0] = Color.TRANSPARENT;
         //pConfig.colours[0] = Color.MAGENTA;
         pConfig.colours[1] = Color.YELLOW;
         pConfig.colours[2] = Color.YELLOW;
-        pConfig.fadeOut = true;
+        pConfig.fadeOut = false;
         pConfig.startSize = 5;
         pConfig.endSize = 1;
         pConfig.minLifetime = 0.5f;
@@ -84,8 +84,8 @@ public class Swarmer extends AI {
     }
     @Override
     public void render(RenderWindow window){
-        super.render(window);
         jet.render(window);
+        super.render(window);
     }
 
     @Override
