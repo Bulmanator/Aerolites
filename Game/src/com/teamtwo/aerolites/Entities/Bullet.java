@@ -46,8 +46,7 @@ public class Bullet extends Entity {
         body.setData(this);
         switch (owner){
             case Bullet:
-                //this.renderColour = Color.YELLOW;
-                this.renderColour = new Color(MathUtil.randomInt(30,255),MathUtil.randomInt(30,255),MathUtil.randomInt(30,255));
+                this.renderColour = Color.YELLOW;
                 break;
             case EnemyBullet:
                 this.renderColour = Color.RED;

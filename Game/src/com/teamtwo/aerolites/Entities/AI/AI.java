@@ -40,7 +40,7 @@ public abstract class AI extends Entity {
         this.shooting = shooting;
     }
 
-    public void setEntities(ArrayList<Entity> entities){
+    public void setEntities(ArrayList entities){
         this.entities = entities;
     }
 

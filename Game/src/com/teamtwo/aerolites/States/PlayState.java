@@ -1,6 +1,7 @@
 package com.teamtwo.aerolites.States;
 
 import com.teamtwo.aerolites.Entities.AI.AI;
+import com.teamtwo.aerolites.Entities.AI.StandardAI;
 import com.teamtwo.aerolites.Entities.AI.Swarmer;
 import com.teamtwo.aerolites.Entities.AI.SwarmerBase;
 import com.teamtwo.aerolites.Entities.Asteroid;
@@ -26,6 +27,7 @@ public class PlayState extends State {
 
     private World world;
     private ArrayList<Entity> entities;
+    private ArrayList<Player> players;
     private float accum;
     private float asteroidSpawnRate;
     private float swarmerSpawnRate;
@@ -44,8 +46,17 @@ public class PlayState extends State {
         World.DRAW_AABB = false;
 
         entities = new ArrayList<>();
+        players = new ArrayList<>();
         //entities.add(new Asteroid(world));
-        entities.add(new Player(world));
+        players.add(new Player(world));
+        players.add(new Player(world));
+        ((Player)players.get(1)).setControllerNum(0);
+        players.add(new Player(world));
+        ((Player)players.get(2)).setControllerNum(1);
+        players.add(new Player(world));
+        ((Player)players.get(3)).setControllerNum(2);
+        players.add(new Player(world));
+        ((Player)players.get(4)).setControllerNum(3);
         accum = 0;
         asteroidSpawnRate = 1f;
         swarmerSpawnRate = 6f;
@@ -76,9 +87,6 @@ public class PlayState extends State {
                     case Asteroid:
                         i = updateAsteroid((Asteroid) e);
                         break;
-                    case Player:
-                        i = updatePlayer((Player) e);
-                        break;
                     case StandardAI:
                     case SwamerBase:
                     case Swamer:
@@ -86,6 +94,10 @@ public class PlayState extends State {
                         break;
                 }
             }
+        }
+        for(Player p: players){
+            p.update(dt);
+            updatePlayer(p);
         }
         if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)) {
             game.getEngine().close();
@@ -124,12 +136,18 @@ public class PlayState extends State {
 
     public int updateAI(AI ai){
         int index = entities.indexOf(ai);
-        ai.setEntities(entities);
+        if(ai.getType() == Entity.Type.Swamer)
+            ai.setEntities(players);
+        else if(ai.getType() == Entity.Type.SwamerBase) {
+            ai.setEntities(players);
+        }
+        else
+            ai.setEntities(entities);
         if(ai.isShooting()) {
             if(ai.getType() == Entity.Type.SwamerBase) {
                 for(int j = 0; j < MathUtil.randomInt(4,8); j++){
                     entities.add(new Swarmer(world,entities.get(index).getBody().getTransform().getPosition()));
-                    ((AI)entities.get(entities.size()-1)).setEntities(entities);
+                    ((AI)entities.get(entities.size()-1)).setEntities(players);
                 }
                 world.removeBody(entities.get(index).getBody());
                 entities.remove(index);
@@ -156,12 +174,12 @@ public class PlayState extends State {
         }
         if(lastSwarmer > swarmerSpawnRate) {
             entities.add(new SwarmerBase(world));
-            ((AI)entities.get(entities.size()-1)).setEntities(entities);
+            ((AI)entities.get(entities.size()-1)).setEntities(players);
             swarmerSpawnRate = MathUtil.clamp(0.99f * swarmerSpawnRate, 3f, 10);
             lastSwarmer = 0;
         }
         if(lastStandard>standardTime){
-            //entities.add(new StandardAI(world));
+            entities.add(new StandardAI(world));
             lastStandard = 0;
         }
     }
@@ -171,19 +189,24 @@ public class PlayState extends State {
         for(Entity a : entities){
             a.render(window);
         }
-        Text enttitiyCount = new Text("Entities: "+entities.size(),ContentManager.instance.getFont("Ubuntu"));
-        enttitiyCount.setPosition(new Vector2f(0,0));
-        enttitiyCount.setColor(Color.BLUE);
-        window.draw(enttitiyCount);
-        enttitiyCount = new Text("FPS: "+ gsm.game.getEngine().getFps(),ContentManager.instance.getFont("Ubuntu"));
-        enttitiyCount.setPosition(new Vector2f(0,50));
-        enttitiyCount.setColor(Color.BLUE);
-        window.draw(enttitiyCount);
 
-        enttitiyCount = new Text("Time Alive: "+ (System.nanoTime()-startTime)/1000000000,ContentManager.instance.getFont("Ubuntu"));
-        enttitiyCount.setPosition(new Vector2f(0,100));
-        enttitiyCount.setColor(Color.BLUE);
-        window.draw(enttitiyCount);
+        for(Player p: players)
+            p.render(window);
+
+
+        Text entitiyCount = new Text("Entities: "+entities.size(),ContentManager.instance.getFont("Ubuntu"));
+        entitiyCount.setPosition(new Vector2f(0,0));
+        entitiyCount.setColor(Color.BLUE);
+        window.draw(entitiyCount);
+        entitiyCount = new Text("FPS: "+ gsm.game.getEngine().getFps(),ContentManager.instance.getFont("Ubuntu"));
+        entitiyCount.setPosition(new Vector2f(0,50));
+        entitiyCount.setColor(Color.BLUE);
+        window.draw(entitiyCount);
+
+        entitiyCount = new Text("Time Alive: "+ (System.nanoTime()-startTime)/1000000000,ContentManager.instance.getFont("Ubuntu"));
+        entitiyCount.setPosition(new Vector2f(0,100));
+        entitiyCount.setColor(Color.BLUE);
+        window.draw(entitiyCount);
         world.render(window);
     }
 

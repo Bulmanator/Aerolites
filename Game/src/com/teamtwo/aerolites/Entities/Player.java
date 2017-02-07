@@ -10,6 +10,7 @@ import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.MathUtil;
+import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
@@ -108,8 +109,9 @@ public class Player extends Entity {
         if(message.getType() == Message.Type.Collision) {
             CollisionMessage cm = (CollisionMessage) message;
             ///System.out.println(cm.getBodyA().getData().getType() + " collided with " + cm.getBodyB().getData().getType());
-            if(cm.getBodyB().getData().getType() != Type.Bullet){
-                //System.exit(0);
+            if(cm.getBodyB().getData().getType() != Type.Bullet && cm.getBodyA().getData().getType() != Type.Bullet){
+                if(cm.getBodyB().getData().getType() != Type.Player && cm.getBodyA().getData().getType() != Type.Player)
+                    System.exit(0);
             }
         }
     }
@@ -119,13 +121,12 @@ public class Player extends Entity {
             if (Keyboard.isKeyPressed(Keyboard.Key.W)) {
                 boost();
             } else {
-                // Deactivate the particle emitter as the ship is not boosting
                 jet.setActive(false);
             }
             if (Keyboard.isKeyPressed(Keyboard.Key.D)) {
-                turn(false);
+                turn(false, false);
             } else if (Keyboard.isKeyPressed(Keyboard.Key.A)) {
-                turn(true);
+                turn(true, false);
             } else {
                 body.setAngularVelocity(0);
             }
@@ -134,20 +135,19 @@ public class Player extends Entity {
             }
         }
         else{
-            if (Keyboard.isKeyPressed(Keyboard.Key.W)) {
+            if (Controllers.isButtonPressed(controllerNum, Controller.Button.RT)) {
                 boost();
             } else {
-                // Deactivate the particle emitter as the ship is not boosting
                 jet.setActive(false);
             }
             if (Controllers.getThumbstickValues(controllerNum, Controller.Thumbstick.Left).x > 0) {
-                turn(false);
-            } else if (Keyboard.isKeyPressed(Keyboard.Key.A)) {
-                turn(true);
+                turn(false, true);
+            } else if (Controllers.getThumbstickValues(controllerNum, Controller.Thumbstick.Left).x < 0) {
+                turn(true, true);
             } else {
                 body.setAngularVelocity(0);
             }
-            if (Keyboard.isKeyPressed(Keyboard.Key.SPACE)) {
+            if (Controllers.isButtonPressed(controllerNum, Controller.Button.A)) {
                 shoot();
             }
         }
@@ -160,11 +160,17 @@ public class Player extends Entity {
         }
     }
 
-    private void turn(boolean left){
-        if(left)
-            body.setAngularVelocity(-ROTATION_SPEED);
+    private void turn(boolean left, boolean controller){
+        if(!controller) {
+            if (left)
+                body.setAngularVelocity(-ROTATION_SPEED);
+            else
+                body.setAngularVelocity(ROTATION_SPEED);
+        }
         else
-            body.setAngularVelocity(ROTATION_SPEED);
+        {
+            body.setAngularVelocity(ROTATION_SPEED*(Controllers.getThumbstickValues(controllerNum,Controller.Thumbstick.Left).x)/100);
+        }
     }
 
     private void boost(){
@@ -185,6 +191,28 @@ public class Player extends Entity {
             return true;
         }
         return false;
+    }
+
+    public void setControllerNum(int controllerNum){
+        controller = true;
+        switch(controllerNum){
+            case 0:
+                this.controllerNum = Controller.Player.One;
+                renderColour = Color.BLUE;
+                break;
+            case 1:
+                this.controllerNum = Controller.Player.Two;
+                renderColour = Color.YELLOW;
+                break;
+            case 2:
+                this.controllerNum = Controller.Player.Three;
+                renderColour = Color.MAGENTA;
+                break;
+            case 3:
+                this.controllerNum = Controller.Player.Four;
+                renderColour = Color.CYAN;
+                break;
+        }
     }
 
 

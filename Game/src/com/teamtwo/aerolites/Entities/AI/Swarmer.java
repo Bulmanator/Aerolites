@@ -1,5 +1,8 @@
 package com.teamtwo.aerolites.Entities.AI;
 
+import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
+import com.teamtwo.aerolites.Entities.Entity;
+import com.teamtwo.aerolites.Entities.Player;
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
 import com.teamtwo.engine.Messages.Message;
@@ -12,12 +15,15 @@ import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 
+import java.util.ArrayList;
+
 /**
  * @author Matthew Threlfall
  */
 public class Swarmer extends AI {
     private final float MAX_FORCE = 800;
     private ParticleEmitter jet;
+    private Entity target;
 
     public Swarmer(World world, Vector2f pos){
         this.onScreen = true;
@@ -70,11 +76,12 @@ public class Swarmer extends AI {
     public void update(float dt){
         super.update(dt);
         jet.update(dt);
+        findTarget();
         float x = body.getTransform().getPosition().x;
         float y = body.getTransform().getPosition().y;
         jet.getConfig().position = body.getShape().getTransformed()[0];
 
-        Vector2f pos = entities.get(0).getBody().getTransform().getPosition();
+        Vector2f pos = target.getBody().getTransform().getPosition();
 
         float degreeBetween =  (float)Math.atan2(pos.y - y, pos.x - x) + MathUtil.PI/2;
 
@@ -82,6 +89,23 @@ public class Swarmer extends AI {
         float yForce = MathUtil.cos(degreeBetween)*-MAX_FORCE;
         body.applyForce(new Vector2f(xForce,yForce));
     }
+
+    public void findTarget(){
+        float lowestDistance = 100000000;
+        for(Entity p : entities) {
+            float x = p.getBody().getTransform().getPosition().x;
+            float y = p.getBody().getTransform().getPosition().y;
+
+            float xAI = getBody().getTransform().getPosition().x;
+            float yAI = getBody().getTransform().getPosition().y;
+            float distanceTo= MathUtil.square(x - xAI) + MathUtil.square(y - yAI);
+            if ( distanceTo < lowestDistance) {
+                lowestDistance = MathUtil.square(x - xAI) + MathUtil.square(y - yAI);
+                target = p;
+            }
+        }
+    }
+
     @Override
     public void render(RenderWindow window){
         jet.render(window);
@@ -100,4 +124,9 @@ public class Swarmer extends AI {
 
     @Override
     public Type getType() { return Type.Swamer; }
+
+    @Override
+    public void setEntities(ArrayList entities){
+        this.entities = entities;
+    }
 }
