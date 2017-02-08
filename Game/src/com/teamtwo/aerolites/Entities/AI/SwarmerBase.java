@@ -1,5 +1,10 @@
 package com.teamtwo.aerolites.Entities.AI;
 
+import com.teamtwo.aerolites.Entities.Entity;
+import com.teamtwo.engine.Messages.Message;
+import com.teamtwo.engine.Messages.Types.CollisionMessage;
+import com.teamtwo.aerolites.Entities.CollisionMask;
+import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
@@ -10,15 +15,21 @@ import org.jsfml.graphics.ConvexShape;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 
+import java.util.ArrayList;
+
 /**
- * @Aurthor Matthew Threlfall
+ * @author Matthew Threlfall
  */
 public class SwarmerBase extends AI {
+
+    Entity target;
 
     public SwarmerBase(World world) {
         this.onScreen = true;
         BodyConfig config = new BodyConfig();
 
+        config.mask = CollisionMask.SWARMER_BASE;
+        config.category = CollisionMask.ALL;
 
         int x = 0, y = 0, velocityX = 0, velocityY = 0;
         int screenSide = MathUtil.randomInt(0,4);
@@ -58,13 +69,17 @@ public class SwarmerBase extends AI {
 
         config.shape = new Polygon(MathUtil.randomFloat(40,45));
 
+
         body = world.createBody(config);
+        body.setData(this);
+        body.registerObserver(this, Message.Type.Collision);
     }
 
     @Override
     public void update(float dt){
         super.update(dt);
-        if(playerDistance()<MathUtil.squared(400)){
+        findTarget();
+        if(target != null && playerDistance()<MathUtil.square(500)){
             setShooting(true);
         }
     }
@@ -77,12 +92,49 @@ public class SwarmerBase extends AI {
         bodyShape.setTexture(ContentManager.instance.getTexture("Asteroid"));
         window.draw(bodyShape);
     }
-    public float playerDistance(){
-        float x = entities.get(0).getBody().getTransform().getPosition().x;
-        float y = entities.get(0).getBody().getTransform().getPosition().y;
+    public float playerDistance() {
+        float x = target.getBody().getTransform().getPosition().x;
+        float y = target.getBody().getTransform().getPosition().y;
 
         float xAI = getBody().getTransform().getPosition().x;
         float yAI = getBody().getTransform().getPosition().y;
-        return MathUtil.squared(x - xAI) + MathUtil.squared(y - yAI);
+        return MathUtil.square(x - xAI) + MathUtil.square(y - yAI);
+    }
+
+    @Override
+    public void receiveMessage(Message message) {
+        if(message.getType() == Message.Type.Collision) {
+            CollisionMessage cm = (CollisionMessage) message;
+            if(cm.getBodyB().getData().getType() == Type.Bullet) {
+                setShooting(true);
+            }
+            else if(cm.getBodyA().getData().getType() == Type.Bullet) {
+                setShooting(true);
+
+            }
+        }
+    }
+
+    public void findTarget(){
+        float lowestDistance = 100000000;
+        for(Entity p : entities) {
+                float x = p.getBody().getTransform().getPosition().x;
+                float y = p.getBody().getTransform().getPosition().y;
+
+                float xAI = getBody().getTransform().getPosition().x;
+                float yAI = getBody().getTransform().getPosition().y;
+                float distanceTo = MathUtil.square(x - xAI) + MathUtil.square(y - yAI);
+                if (distanceTo < lowestDistance) {
+                    lowestDistance = MathUtil.square(x - xAI) + MathUtil.square(y - yAI);
+                    target = p;
+                }
+        }
+    }
+
+    @Override
+    public Type getType() { return Type.SwamerBase; }
+
+    public void setEntities(ArrayList entities){
+        this.entities = entities;
     }
 }

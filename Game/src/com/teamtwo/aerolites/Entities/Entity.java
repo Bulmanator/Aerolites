@@ -1,7 +1,10 @@
 package com.teamtwo.aerolites.Entities;
 
+import com.teamtwo.engine.Messages.Message;
+import com.teamtwo.engine.Messages.Observer;
 import com.teamtwo.engine.Physics.RigidBody;
 import com.teamtwo.engine.Utilities.Interfaces.EntityRenderable;
+import com.teamtwo.engine.Utilities.Interfaces.Typeable;
 import com.teamtwo.engine.Utilities.Interfaces.Updateable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
@@ -13,17 +16,30 @@ import org.jsfml.system.Vector2f;
 /**
  * @author Matthew Threlfall
  */
-public class Entity implements EntityRenderable, Updateable {
+public abstract class Entity implements EntityRenderable, Updateable, Observer, Typeable<Entity.Type> {
+
+    public enum Type {
+        Player,
+        Asteroid,
+        Bullet,
+        EnemyBullet,
+        StandardAI,
+        Swamer,
+        SwamerBase
+    }
+
     protected RigidBody body;
     protected Color renderColour;
     protected boolean onScreen;
+    protected boolean alive;
     protected Vector2f offScreenAllowance;
     private float maxSpeed = 200;
 
-    public Entity(){
+    public Entity() {
         renderColour = Color.WHITE;
         onScreen = true;
-        offScreenAllowance = new Vector2f(0,0);
+        alive = true;
+        offScreenAllowance = new Vector2f(0, 0);
     }
 
     @Override
@@ -39,9 +55,6 @@ public class Entity implements EntityRenderable, Updateable {
     public void update(float dt) {
         checkOffScreen();
         limitSpeed();
-    }
-    public RigidBody getBody(){
-        return body;
     }
 
     protected void checkOffScreen(){
@@ -70,16 +83,11 @@ public class Entity implements EntityRenderable, Updateable {
             body.setTransform(new Vector2f(x, y), body.getTransform().getAngle());
         }
     }
-    protected void move(float forceX,float forceY){
+
+    protected void move(float forceX, float forceY){
         // Apply force to move the ship
         Vector2f force = body.getTransform().applyRotation(new Vector2f(forceX, forceY));
         body.applyForce(force);
-    }
-
-
-
-    public boolean isOnScreen() {
-        return onScreen;
     }
 
     public void limitSpeed(){
@@ -89,11 +97,24 @@ public class Entity implements EntityRenderable, Updateable {
         y = MathUtil.clamp(y, -maxSpeed, maxSpeed);
         body.setVelocity(new Vector2f(x, y));
     }
-    public void setMaxSpeed(float speed){
-        maxSpeed = speed;
-    }
 
+    @Override
+    public abstract void receiveMessage(Message message);
+
+    @Override
+    public abstract Type getType();
+
+    public boolean isOnScreen() {
+        return onScreen;
+    }
+    public RigidBody getBody(){
+        return body;
+    }
     public float getMaxSpeed() {
         return maxSpeed;
+    }
+
+    public void setMaxSpeed(float speed){
+        maxSpeed = speed;
     }
 }

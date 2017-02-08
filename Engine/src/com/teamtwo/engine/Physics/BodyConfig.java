@@ -21,6 +21,10 @@ public class BodyConfig {
     public float restitution;
     /** The density of the body, default = 0.5 */
     public float density;
+    /** The mask of bits which can collide with this body */
+    public int mask;
+    /** The mask of bits which this body can collide with */
+    public int category;
 
     /**
      * Creates a default body configuration
@@ -37,6 +41,10 @@ public class BodyConfig {
         // Material
         restitution = 0.2f;
         density = 0.5f;
+
+        // Other
+        mask = 0xFFFF;
+        category = 0x0001;
     }
 
 }
