@@ -183,6 +183,9 @@ public class GameOver extends State {
                 window.draw(scores);
 
                 float playerWidth = (1920-(90 + 40*(playerCount+1)))/(playerCount+1);
+                int font = 32;
+                if(playerCount > 3)
+                    font = 24;
                 for(int i = 0; i < playerCount+1; i++){
                     box = new RectangleShape();
                     box.setPosition(30+40*(i+1)+playerWidth*i,WORLD_SIZE.y / 2 - backgroundYMovement + 100);
@@ -192,43 +195,43 @@ public class GameOver extends State {
 
                     if(playerInfoSize == 700) {
                         Text text = new Text("Player " + (i + 1), ContentManager.instance.getFont("Ubuntu"), 64);
-                        FloatRect textRect = scores.getLocalBounds();
+                        FloatRect textRect = text.getLocalBounds();
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 110);
                         window.draw(text);
 
-                        text = new Text("Score: ", ContentManager.instance.getFont("Ubuntu"), 32);
-                        textRect = scores.getLocalBounds();
+                        text = new Text("Score: ", ContentManager.instance.getFont("Ubuntu"), font);
+                        textRect = text.getLocalBounds();
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 190);
                         window.draw(text);
 
-                        text = new Text("Asteroids Destroyed: ", ContentManager.instance.getFont("Ubuntu"), 32);
-                        textRect = scores.getLocalBounds();
+                        text = new Text("Asteroids Destroyed: ", ContentManager.instance.getFont("Ubuntu"), font);
+                        textRect = text.getLocalBounds();
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 230);
                         window.draw(text);
 
-                        text = new Text("Enemies Killed: ", ContentManager.instance.getFont("Ubuntu"), 32);
-                        textRect = scores.getLocalBounds();
+                        text = new Text("Enemies Killed: ", ContentManager.instance.getFont("Ubuntu"), font);
+                        textRect = text.getLocalBounds();
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 270);
                         window.draw(text);
 
-                        text = new Text("Time Survived: ", ContentManager.instance.getFont("Ubuntu"), 32);
-                        textRect = scores.getLocalBounds();
+                        text = new Text("Time Survived: ", ContentManager.instance.getFont("Ubuntu"), font);
+                        textRect = text.getLocalBounds();
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 310);
                         window.draw(text);
 
-                        text = new Text("Bullets Fired: ", ContentManager.instance.getFont("Ubuntu"), 32);
-                        textRect = scores.getLocalBounds();
+                        text = new Text("Bullets Fired: ", ContentManager.instance.getFont("Ubuntu"), font);
+                        textRect = text.getLocalBounds();
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 350);
                         window.draw(text);
 
-                        text = new Text("Time Spent Boosting: ", ContentManager.instance.getFont("Ubuntu"), 32);
-                        textRect = scores.getLocalBounds();
+                        text = new Text("Time Spent Boosting: ", ContentManager.instance.getFont("Ubuntu"), font);
+                        textRect = text.getLocalBounds();
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 390);
                         window.draw(text);

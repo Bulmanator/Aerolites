@@ -16,6 +16,8 @@ import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.ConvexShape;
+import org.jsfml.graphics.FloatRect;
+import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
 
@@ -228,9 +230,15 @@ public class PlayState extends State {
 
         for(Player p: players) {
             for(int i = 0; i < p.getLives()+1; i++) {
+                Text text = new Text("Player " + (players.indexOf(p)+1), ContentManager.instance.getFont("Ubuntu"), 28);
+                text.setStyle(Text.BOLD);
+                text.setOrigin(0, 0);
+                text.setPosition(0,25+ players.indexOf(p)*60);
+                window.draw(text);
+
                 RigidBody body = p.getBody();
                 ConvexShape bodyShape = new ConvexShape(body.getShape().getVertices());
-                bodyShape.setPosition(20+i*30, 50+ players.indexOf(p)*60);
+                bodyShape.setPosition(150+i*30, 50+ players.indexOf(p)*60);
                 bodyShape.setFillColor(p.getDefaultColuor());
                 window.draw(bodyShape);
             }
