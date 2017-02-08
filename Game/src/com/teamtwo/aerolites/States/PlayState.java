@@ -1,6 +1,5 @@
 package com.teamtwo.aerolites.States;
 
-import com.teamtwo.aerolites.Entities.*;
 import com.teamtwo.aerolites.Entities.AI.AI;
 import com.teamtwo.aerolites.Entities.AI.StandardAI;
 import com.teamtwo.aerolites.Entities.AI.Swarmer;
@@ -16,12 +15,12 @@ import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.ConvexShape;
-import org.jsfml.graphics.FloatRect;
 import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * @author Matthew Threlfall
@@ -64,6 +63,7 @@ public class PlayState extends State {
         deadPlayers = new ArrayList<>();
         //entities.add(new Asteroid(world));
         players.add(new Player(world));
+        players.get(0).setPlayerNumber(1);
         int keyboard = 0;
         if(playerCount < 0){
             players.get(0).setControllerNum(0);
@@ -73,6 +73,7 @@ public class PlayState extends State {
         for(int i = 0; i < playerCount; i++){
             players.add(new Player(world));
             ((Player)players.get(i+1)).setControllerNum(i+keyboard);
+            ((Player)players.get(i+1)).setPlayerNumber(i+2);
         }
         accum = 0;
         if(playerCount<=0) {
@@ -81,7 +82,7 @@ public class PlayState extends State {
             standardTime = 10f;
         }
         else {
-            asteroidSpawnRate = 1/playerCount*1.4f;
+            asteroidSpawnRate = 1/playerCount*1.8f;
             swarmerSpawnRate = 6/playerCount;
             standardTime = 10f/playerCount;
         }
@@ -98,6 +99,7 @@ public class PlayState extends State {
         world.update(dt);
         spawnEntities(dt);
         if(players.size() == 0 && !gameOver) {
+            deadPlayers.sort(Comparator.comparing(Player::getPlayerNumber));
             gameOver = true;
             gsm.addState(new GameOver(gsm, this, playerCount));
         }
@@ -105,9 +107,15 @@ public class PlayState extends State {
         for(int i = 0; i < entities.size(); i++) {
             entities.get(i).update(dt);
             if(!entities.get(i).isOnScreen()) {
+                if(entities.get(i).getType() == Entity.Type.Bullet){
+                    int bulletOwner = ((Bullet)entities.get(i)).getBulletOwner();
+                    if(searchPlayers(players,bulletOwner)>=0 && !((Bullet) entities.get(i)).isHit())
+                        players.get(searchPlayers(players,bulletOwner)).incrementBulletsMissed();
+                    else if(searchPlayers(deadPlayers,bulletOwner)>=0 && !((Bullet) entities.get(i)).isHit())
+                        players.get(searchPlayers(deadPlayers,bulletOwner)).incrementBulletsMissed();
+                }
+
                 world.removeBody(entities.get(i).getBody());
-                if(entities.get(i).getType() == Entity.Type.Player)
-                    deadPlayers.add((Player)entities.get(i));
                 entities.remove(i);
                 i--;
             }
@@ -129,10 +137,11 @@ public class PlayState extends State {
             players.get(i).update(dt);
             updatePlayer(players.get(i));
              if(!players.get(i).isOnScreen()){
-                world.removeBody(players.get(i).getBody());
-                players.remove(i);
-                i--;
-            }
+                 deadPlayers.add(players.get(i));
+                 world.removeBody(players.get(i).getBody());
+                 players.remove(i);
+                 i--;
+             }
         }
         if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)) {
             game.getEngine().close();
@@ -145,7 +154,9 @@ public class PlayState extends State {
             float x = p.getBody().getShape().getTransformed()[0].x;
             float y = p.getBody().getShape().getTransformed()[0].y;
             Vector2f pos = new Vector2f(x, y);
-            entities.add(new Bullet(4, pos, Entity.Type.Bullet, p.getBody().getTransform().getAngle(), world));
+            entities.add(new Bullet(2, pos, Entity.Type.Bullet, p.getBody().getTransform().getAngle(), world));
+            ((Bullet)entities.get(entities.size()-1)).setBulletOwner(p.getPlayerNumber());
+            p.incrementBulletsShot();
             ContentManager.instance.getSound("pew").play();
         }
         return index;
@@ -204,13 +215,13 @@ public class PlayState extends State {
 
         if(accum > asteroidSpawnRate) {
             entities.add(new Asteroid(world));
-            asteroidSpawnRate = MathUtil.clamp(0.99f * asteroidSpawnRate, 0.5f, 3);
+            asteroidSpawnRate = MathUtil.clamp(0.99f * asteroidSpawnRate, 0.4f, 3);
             accum = 0;
         }
         if(lastSwarmer > swarmerSpawnRate) {
             entities.add(new SwarmerBase(world));
             ((AI)entities.get(entities.size()-1)).setEntities(players);
-            swarmerSpawnRate = MathUtil.clamp(0.99f * swarmerSpawnRate, 3f, 10);
+            swarmerSpawnRate = MathUtil.clamp(0.99f * swarmerSpawnRate, 2f, 10);
             lastSwarmer = 0;
         }
         if(lastStandard>standardTime){
@@ -230,7 +241,7 @@ public class PlayState extends State {
 
         for(Player p: players) {
             for(int i = 0; i < p.getLives()+1; i++) {
-                Text text = new Text("Player " + (players.indexOf(p)+1), ContentManager.instance.getFont("Ubuntu"), 28);
+                Text text = new Text("Player " + (p.getPlayerNumber()), ContentManager.instance.getFont("Ubuntu"), 28);
                 text.setStyle(Text.BOLD);
                 text.setOrigin(0, 0);
                 text.setPosition(0,25+ players.indexOf(p)*60);
@@ -256,5 +267,13 @@ public class PlayState extends State {
         ContentManager.instance.loadSound("expload1", "expload.wav");
         ContentManager.instance.loadSound("expload2", "expload2.wav");
         ContentManager.instance.loadSound("expload3", "expload3.wav");
+    }
+    public ArrayList getDeadPlayers(){ return deadPlayers; }
+
+    public int searchPlayers(ArrayList<Player> list, int find){
+        for(Player p: list)
+            if(p.getPlayerNumber() == find)
+                return players.indexOf(p);
+        return -1;
     }
 }

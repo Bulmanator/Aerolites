@@ -5,7 +5,6 @@ import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
-import com.teamtwo.engine.Utilities.MathUtil;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
@@ -18,11 +17,15 @@ public class Bullet extends Entity {
     private float lifeTime;
     private final float MAX_LIFE_TIME;
     private Type owner;
+    private int bulletOwner;
+    private boolean hit;
 
     public Bullet(float lifeTime, Vector2f position,Type owner, float angle, World world){
         MAX_LIFE_TIME = lifeTime;
         this.lifeTime = 0;
         this.owner = owner;
+        bulletOwner = -5;
+        hit = false;
 
         BodyConfig config = new BodyConfig();
 
@@ -83,12 +86,17 @@ public class Bullet extends Entity {
         if(message.getType() == Message.Type.Collision) {
             CollisionMessage cm = (CollisionMessage) message;
             if(owner == Type.EnemyBullet) {
-                if (cm.getBodyA().getData().getType() != Type.StandardAI)
+                if (cm.getBodyA().getData().getType() != Type.StandardAI) {
                     onScreen = false;
+                    hit = true;
+                }
+
             }
             else {
-                if (cm.getBodyA().getData().getType() != Type.Player)
+                if (cm.getBodyA().getData().getType() != Type.Player) {
                     onScreen = false;
+                    hit  = true;
+                }
             }
 
         }
@@ -102,4 +110,11 @@ public class Bullet extends Entity {
 
     public void setType(Type type) { owner = type; }
 
+    public void setBulletOwner(int owner) { bulletOwner = owner;}
+
+    public int getBulletOwner() { return bulletOwner; }
+
+    public boolean isHit() {
+        return hit;
+    }
 }

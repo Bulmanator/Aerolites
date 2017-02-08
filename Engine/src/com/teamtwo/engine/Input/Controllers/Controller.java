@@ -29,7 +29,7 @@ public class Controller {
         /** An Xbox 360 controller */
         Xbox_360(0x045e, 0x028e, 11),
         /** An Xbox one controller */
-        Xbox_One(0x045e, 0x02ee, 11),
+        Xbox_One(0x045e, 0x02dd, 11),
         /** An Xbox one elite controller */
         Xbox_Elite(0x045e, 0x02e3, 15),
         /** The type of an unknown controller */

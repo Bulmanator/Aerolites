@@ -23,7 +23,7 @@ public class Player extends Entity {
 
     private final float ROTATION_SPEED = MathUtil.PI*1.2f;
     private final float FORCE_FROM_JET = 100000;
-    private final float TIME_BETWEEN_SHOTS = 0.18f;
+    private final float TIME_BETWEEN_SHOTS = 0.3f;
     private boolean controller;
     private Controller.Player controllerNum;
     private int lives;
@@ -34,14 +34,23 @@ public class Player extends Entity {
     private Color defaultColour;
 
     private float immuneTime;
+
+    private int playNumber;
+
+    //Scoring Variables
     private float timeAlive;
+    private float score;
+    private float timeBoosting;
+    private float bulletsFired;
+    private float bulletsMissed;
 
     public Player(World world) {
         BodyConfig config = new BodyConfig();
         controller = false;
-        lives = 2;
+        lives = 3;
         immuneTime = 0;
         timeAlive = 0;
+        bulletsMissed = 0;
 
         config.mask = CollisionMask.PLAYER;
         config.category = (CollisionMask.ALL & ~CollisionMask.BULLET);
@@ -77,11 +86,11 @@ public class Player extends Entity {
         pConfig.colours[0] = Color.RED;
         pConfig.colours[1] = Color.MAGENTA;
         pConfig.colours[2] = Color.YELLOW;
-        pConfig.fadeOut = false;
+        pConfig.fadeOut = true;
         pConfig.startSize = 14;
         pConfig.endSize = 4;
         pConfig.minLifetime = 1.5f;
-        pConfig.maxLifetime = 6;
+        pConfig.maxLifetime = 3;
 
 
         pConfig.position = body.getTransform().getPosition();
@@ -95,7 +104,6 @@ public class Player extends Entity {
 
     @Override
     public void update(float dt) {
-
         // Update the particle emitter
         jet.update(dt);
         shootCooldown += dt;
@@ -110,10 +118,12 @@ public class Player extends Entity {
         else
             renderColour = defaultColour;
         super.update(dt);
+        input(dt);
         if(lives<0){
+            timeAlive = MathUtil.round(timeAlive,2);
+            timeBoosting = MathUtil.round(timeBoosting,2);
             onScreen = false;
         }
-        input();
     }
 
     @Override
@@ -139,10 +149,10 @@ public class Player extends Entity {
         }
     }
 
-    private void input(){
+    private void input(float dt){
         if(!controller) {
             if (Keyboard.isKeyPressed(Keyboard.Key.W)) {
-                boost();
+                boost(dt);
             } else {
                 jet.setActive(false);
             }
@@ -159,7 +169,7 @@ public class Player extends Entity {
         }
         else{
             if (Controllers.isButtonPressed(controllerNum, Controller.Button.RB)) {
-                boost();
+                boost(dt);
             } else {
                 jet.setActive(false);
             }
@@ -196,9 +206,10 @@ public class Player extends Entity {
         }
     }
 
-    private void boost(){
+    private void boost(float dt){
         // Apply force to move the ship
         move(0, -FORCE_FROM_JET);
+        timeBoosting += dt;
 
         // Move the particle emitter to be at the bottom of the ship
         jet.getConfig().position = body.getTransform().apply(new Vector2f(0, 15));
@@ -251,7 +262,27 @@ public class Player extends Entity {
 
     public void setLives(int lives) { this.lives = lives; }
 
-    public Color getDefaultColuor() {
+    public void setPlayerNumber(int number) { playNumber = number; }
+
+    public int getPlayerNumber() { return playNumber; }
+
+    public Color getDefaultColour() {
         return defaultColour;
+    }
+
+    public float getTimeAlive() { return timeAlive; }
+
+    public float getTimeBoosting() { return timeBoosting; }
+
+    public void incrementBulletsMissed() { bulletsMissed++; }
+
+    public void incrementBulletsShot() { bulletsFired++; }
+
+    public float getBulletsFired() {
+        return bulletsFired;
+    }
+
+    public float getBulletsMissed() {
+        return bulletsMissed;
     }
 }
