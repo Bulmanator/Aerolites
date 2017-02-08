@@ -60,6 +60,7 @@ public class Player extends Entity {
         vertices[1] = new Vector2f(15, 30);
         vertices[2] = new Vector2f(0, 35);
         vertices[3] = new Vector2f(-15, 30);
+        //hi
 
         offScreenAllowance = new Vector2f(15,15);
 
