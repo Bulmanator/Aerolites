@@ -1,6 +1,5 @@
 package com.teamtwo.aerolites.States;
 
-import com.teamtwo.aerolites.Entities.*;
 import com.teamtwo.aerolites.Entities.AI.AI;
 import com.teamtwo.aerolites.Entities.AI.StandardAI;
 import com.teamtwo.aerolites.Entities.AI.Swarmer;
@@ -16,7 +15,6 @@ import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.ConvexShape;
-import org.jsfml.graphics.FloatRect;
 import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
@@ -239,7 +237,7 @@ public class PlayState extends State {
                 RigidBody body = p.getBody();
                 ConvexShape bodyShape = new ConvexShape(body.getShape().getVertices());
                 bodyShape.setPosition(150+i*30, 50+ players.indexOf(p)*60);
-                bodyShape.setFillColor(p.getDefaultColuor());
+                bodyShape.setFillColor(p.getDefaultColour());
                 window.draw(bodyShape);
             }
         }

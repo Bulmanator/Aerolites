@@ -46,12 +46,12 @@ public class CreditState extends State {
         text.setColor(Color.BLACK);
 
 
-        Buttons[0] = new Button(window.getSize().x / 2, window.getSize().y / 36 * 6, window.getSize().x / 4, window.getSize().y / 10, "James Bulman");
-        Buttons[1] = new Button(window.getSize().x / 2, window.getSize().y / 36 * 12, window.getSize().x / 4, window.getSize().y / 10, "Matt Threlfall");
-        Buttons[2] = new Button(window.getSize().x / 2, window.getSize().y / 36 * 18, window.getSize().x / 4, window.getSize().y / 10, "Ayo Olutobi");
-        Buttons[3] = new Button(window.getSize().x / 2, window.getSize().y / 36 * 24, window.getSize().x / 4, window.getSize().y / 10, "Tijan Weir");
-        Buttons[4] = new Button(window.getSize().x / 2, window.getSize().y / 36 * 30, window.getSize().x / 4, window.getSize().y / 10, "Pavlos Anastasiadis");
-        Buttons[5] = new Button(window.getSize().x / 2, window.getSize().y / 36 * 36, window.getSize().x / 4, window.getSize().y / 10, "Lewis Linaker");
+        Buttons[0] = new Button((int)State.WORLD_SIZE.x  / 2, (int)State.WORLD_SIZE.y / 42 * 6, window.getSize().x / 4, window.getSize().y / 10, "James Bulman");
+        Buttons[1] = new Button((int)State.WORLD_SIZE.x  / 2, (int)State.WORLD_SIZE.y / 42 * 12, window.getSize().x / 4, window.getSize().y / 10, "Matt Threlfall");
+        Buttons[2] = new Button((int)State.WORLD_SIZE.x  / 2, (int)State.WORLD_SIZE.y / 42 * 18, window.getSize().x / 4, window.getSize().y / 10, "Ayo Olutobi");
+        Buttons[3] = new Button((int)State.WORLD_SIZE.x  / 2, (int)State.WORLD_SIZE.y / 42 * 24, window.getSize().x / 4, window.getSize().y / 10, "Tijan Weir");
+        Buttons[4] = new Button((int)State.WORLD_SIZE.x / 2, (int)State.WORLD_SIZE.y / 42 * 30, window.getSize().x / 4, window.getSize().y / 10, "Pavlos Anastasiadis");
+        Buttons[5] = new Button((int)State.WORLD_SIZE.x  / 2, (int)State.WORLD_SIZE.y / 42 * 36, window.getSize().x / 4, window.getSize().y / 10, "Lewis Linaker");
 
 
     }

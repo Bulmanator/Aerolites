@@ -35,6 +35,7 @@ public class Player extends Entity {
 
     private float immuneTime;
     private float timeAlive;
+    private boolean shieldActive;
 
     public Player(World world) {
         BodyConfig config = new BodyConfig();
@@ -42,6 +43,7 @@ public class Player extends Entity {
         lives = 2;
         immuneTime = 0;
         timeAlive = 0;
+        shieldActive = false;
 
         config.mask = CollisionMask.PLAYER;
         config.category = (CollisionMask.ALL & ~CollisionMask.BULLET);
@@ -129,7 +131,7 @@ public class Player extends Entity {
             ///System.out.println(cm.getBodyA().getData().getType() + " collided with " + cm.getBodyB().getData().getType());
             if(cm.getBodyB().getData().getType() != Type.Bullet && cm.getBodyA().getData().getType() != Type.Bullet){
                 if(cm.getBodyB().getData().getType() != Type.Player || cm.getBodyA().getData().getType() != Type.Player) {
-                    if(immuneTime<=0){
+                    if(immuneTime<=0 && !shieldActive){
                         lives--;
                         immuneTime = 3;
                     }
@@ -251,7 +253,9 @@ public class Player extends Entity {
 
     public void setLives(int lives) { this.lives = lives; }
 
-    public Color getDefaultColuor() {
+    public Color getDefaultColour() {
         return defaultColour;
     }
+
+    public void setShield(boolean active) { this.shieldActive = active;}
 }

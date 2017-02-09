@@ -16,10 +16,9 @@ import org.jsfml.window.Window;
 /**
  * @author Tijan Weir
  */
-public class MenuState extends State {
-    Button[] Buttons = new Button[4];
+public class ControllerSelectState extends State {
+    Button[] Buttons = new Button[2];
     Text text;
-    private ExampleInput hoverBoxChoices;
 
     public void render() {
         for (int i = 0; i < Buttons.length; i++) {
@@ -38,21 +37,17 @@ public class MenuState extends State {
     // Such as levels, menus etc.
     // Just extend the State class to make a new State and you can add/ remove states from the Game State Manager
     //
-    public MenuState(GameStateManager gsm) {
+    public ControllerSelectState(GameStateManager gsm) {
         super(gsm);
-        ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
+        //ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
 
         text = new Text("Aerolites", ContentManager.instance.getFont("Ubuntu"));
         text.setPosition(window.getSize().x / 2 - text.getLocalBounds().width / 2, window.getSize().y / 2);
         text.setColor(Color.BLACK);
 
 
-        Buttons[0] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 4, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Singleplayer");
-        Buttons[1] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 8, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Multiplayer");
-        Buttons[2] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 12, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Options");
-        Buttons[3] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 16, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Credits");
-
-
+        Buttons[0] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 10 * 5, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Keyboard");
+        Buttons[1] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 10 * 10, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Controller");
     }
 
     /**
@@ -68,17 +63,18 @@ public class MenuState extends State {
             Vector2f pos = window.mapPixelToCoords(Mouse.getPosition(window));
 
             if (Buttons[i].checkInBox(pos) && Mouse.isButtonPressed(Mouse.Button.LEFT)) {
-                if (Buttons[i].getLabel().equals("Singleplayer")) {
-                    gsm.addState(new ControllerSelectState(gsm)); //change here to one for keyboard and controller
-                } else if (Buttons[i].getLabel().equals("Multiplayer")) {
-                    gsm.addState(new MultiplayerMenuState(gsm));
-                } else if (Buttons[i].getLabel().equals("Credits")) {
-                    gsm.addState(new CreditState(gsm));
+                if (Buttons[i].getLabel().equals("Keyboard")) {
+                    gsm.addState(new PlayState(gsm, 0)); //change here to one for keyboard and controller
+                } else if (Buttons[i].getLabel().equals("Controller")) {
+                    gsm.addState(new PlayState(gsm, -1)); //change here to one for keyboard and controller
                 }
             }
         }
-
+        if (Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)) {
+            gsm.popState();
+        }
 
     }
 
 }
+

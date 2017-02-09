@@ -46,9 +46,9 @@ public class MultiplayerMenuState extends State {
         text.setColor(Color.BLACK);
 
 
-        Buttons[0] = new Button(window.getSize().x / 2, window.getSize().y / 10 * 3, window.getSize().x / 4, window.getSize().y / 10, "2 Players");
-        Buttons[1] = new Button(window.getSize().x / 2, window.getSize().y / 10 * 5, window.getSize().x / 4, window.getSize().y / 10, "3 Players");
-        Buttons[2] = new Button(window.getSize().x / 2, window.getSize().y / 10 * 7, window.getSize().x / 4, window.getSize().y / 10, "4 Players");
+        Buttons[0] = new Button((int)State.WORLD_SIZE.x / 2,(int)State.WORLD_SIZE.y / 10 * 3, window.getSize().x / 4, window.getSize().y / 10, "2 Players");
+        Buttons[1] = new Button((int)State.WORLD_SIZE.x / 2, (int)State.WORLD_SIZE.y / 10 * 5, window.getSize().x / 4, window.getSize().y / 10, "3 Players");
+        Buttons[2] = new Button((int)State.WORLD_SIZE.x / 2, (int)State.WORLD_SIZE.y / 10 * 7, window.getSize().x / 4, window.getSize().y / 10, "4 Players");
 
 
     }
