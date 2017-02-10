@@ -250,7 +250,7 @@ public class PlayState extends State {
                 RigidBody body = p.getBody();
                 ConvexShape bodyShape = new ConvexShape(body.getShape().getVertices());
                 bodyShape.setPosition(150+i*30, 50+ players.indexOf(p)*60);
-                bodyShape.setFillColor(p.getDefaultColuor());
+                bodyShape.setFillColor(p.getDefaultColour());
                 window.draw(bodyShape);
             }
         }

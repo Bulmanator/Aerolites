@@ -32,9 +32,9 @@ public class StandardAI extends AI {
 
     public StandardAI(World world){
         this.onScreen = true;
-        PLAN_EXECUTE_TIME = 0.2f;
+        PLAN_EXECUTE_TIME = 0.1f;
         shootCooldown = 0;
-        shootTime = 0.8f;
+        shootTime = 0.6f;
         BodyConfig config = new BodyConfig();
 
         config.mask = CollisionMask.STANDARD_AI;

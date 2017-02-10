@@ -23,7 +23,7 @@ public class Player extends Entity {
 
     private final float ROTATION_SPEED = MathUtil.PI*1.2f;
     private final float FORCE_FROM_JET = 100000;
-    private final float TIME_BETWEEN_SHOTS = 0.3f;
+    private final float TIME_BETWEEN_SHOTS = 0.2f;
     private boolean controller;
     private Controller.Player controllerNum;
     private int lives;
@@ -47,7 +47,7 @@ public class Player extends Entity {
     public Player(World world) {
         BodyConfig config = new BodyConfig();
         controller = false;
-        lives = 3;
+        lives = 0;
         immuneTime = 0;
         timeAlive = 0;
         bulletsMissed = 0;
@@ -60,7 +60,6 @@ public class Player extends Entity {
         vertices[1] = new Vector2f(15, 30);
         vertices[2] = new Vector2f(0, 35);
         vertices[3] = new Vector2f(-15, 30);
-        //hi
 
         offScreenAllowance = new Vector2f(15,15);
 
