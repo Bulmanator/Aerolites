@@ -86,7 +86,7 @@ public class Bullet extends Entity {
         if(message.getType() == Message.Type.Collision) {
             CollisionMessage cm = (CollisionMessage) message;
             if(owner == Type.EnemyBullet) {
-                if (cm.getBodyA().getData().getType() != Type.StandardAI) {
+                if (cm.getBodyA().getData().getType() != Type.StandardAI && cm.getBodyA().getData().getType() != Type.Hexaboss) {
                     onScreen = false;
                     hit = true;
                 }

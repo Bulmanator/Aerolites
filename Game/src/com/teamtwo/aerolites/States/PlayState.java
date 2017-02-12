@@ -1,9 +1,6 @@
 package com.teamtwo.aerolites.States;
 
-import com.teamtwo.aerolites.Entities.AI.AI;
-import com.teamtwo.aerolites.Entities.AI.StandardAI;
-import com.teamtwo.aerolites.Entities.AI.Swarmer;
-import com.teamtwo.aerolites.Entities.AI.SwarmerBase;
+import com.teamtwo.aerolites.Entities.AI.*;
 import com.teamtwo.aerolites.Entities.Asteroid;
 import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.Entity;
@@ -14,8 +11,7 @@ import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
-import org.jsfml.graphics.ConvexShape;
-import org.jsfml.graphics.Text;
+import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
 
@@ -36,11 +32,17 @@ public class PlayState extends State {
     private float swarmerSpawnRate;
     private float lastSwarmer;
     private boolean gameOver;
-    private long startTime;
+
+
+    private float bossTimer;
+    private boolean boss;
+    private boolean alertStopper;
 
     private float lastStandard;
     private float standardTime;
+    private float bossSpawnTime;
     private int playerCount;
+
 
     /**
      * Creates a new Play state, the player count is negative if only controllers are used. -1 will create 1 player, -4 will create 4 players, controllers only.
@@ -61,7 +63,13 @@ public class PlayState extends State {
         entities = new ArrayList<>();
         players = new ArrayList<>();
         deadPlayers = new ArrayList<>();
-        //entities.add(new Asteroid(world));
+
+        bossSpawnTime = 60;
+        bossTimer = 0;
+        boss = false;
+        alertStopper = true;
+
+
         players.add(new Player(world));
         players.get(0).setPlayerNumber(1);
         int keyboard = 0;
@@ -78,8 +86,8 @@ public class PlayState extends State {
         accum = 0;
         if(playerCount<=0) {
             asteroidSpawnRate = 1f;
-            swarmerSpawnRate = 6f;
-            standardTime = 10f;
+            swarmerSpawnRate = 15f;
+            standardTime = 20f;
         }
         else {
             asteroidSpawnRate = 1/playerCount*1.8f;
@@ -90,14 +98,21 @@ public class PlayState extends State {
 
         ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");
         loadContent();
-        startTime = System.nanoTime();
     }
 
     @Override
     public void update(float dt) {
 
         world.update(dt);
-        spawnEntities(dt);
+        bossTimer+=dt;
+
+        if(bossTimer -6 > bossSpawnTime && !boss) {
+            boss = true;
+            entities.add(new Hexaboss(world));
+        }
+        else if(bossTimer < bossSpawnTime)
+            spawnEntities(dt);
+
         if(players.size() == 0 && !gameOver) {
             deadPlayers.sort(Comparator.comparing(Player::getPlayerNumber));
             gameOver = true;
@@ -122,6 +137,9 @@ public class PlayState extends State {
             else {
                 Entity e = entities.get(i);
                 switch (entities.get(i).getType()) {
+                    case Hexaboss:
+                        i = updateHexaboss((Hexaboss) e);
+                        break;
                     case Asteroid:
                         i = updateAsteroid((Asteroid) e);
                         break;
@@ -160,6 +178,17 @@ public class PlayState extends State {
             ContentManager.instance.getSound("pew").play();
         }
         return index;
+    }
+    public int updateHexaboss(Hexaboss h){
+        if(h.isShooting()){
+            for(int i = 0; i < h.getBulletPoints().size();i++){
+                Vector2f v = h.getBulletPoints().get(i);
+                float angle = h.getBulletAngles().get(i);
+                entities.add(new Bullet(1.75f, v, Entity.Type.EnemyBullet, h.getBody().getTransform().getAngle()+angle, world));
+                h.setShooting(false);
+            }
+        }
+        return entities.indexOf(h);
     }
 
     public int updateAsteroid(Asteroid a){
@@ -215,13 +244,13 @@ public class PlayState extends State {
 
         if(accum > asteroidSpawnRate) {
             entities.add(new Asteroid(world));
-            asteroidSpawnRate = MathUtil.clamp(0.99f * asteroidSpawnRate, 0.4f, 3);
+            asteroidSpawnRate = MathUtil.clamp(0.99f * asteroidSpawnRate, 0.6f, 3);
             accum = 0;
         }
         if(lastSwarmer > swarmerSpawnRate) {
             entities.add(new SwarmerBase(world));
             ((AI)entities.get(entities.size()-1)).setEntities(players);
-            swarmerSpawnRate = MathUtil.clamp(0.99f * swarmerSpawnRate, 2f, 10);
+            swarmerSpawnRate = MathUtil.clamp(0.99f * swarmerSpawnRate, 4f, 10);
             lastSwarmer = 0;
         }
         if(lastStandard>standardTime){
@@ -253,6 +282,19 @@ public class PlayState extends State {
                 bodyShape.setFillColor(p.getDefaultColour());
                 window.draw(bodyShape);
             }
+
+            if(bossTimer > bossSpawnTime - 6 && MathUtil.round(bossTimer%1f,0) == 0) {
+                Text text = new Text("Danger! Boss Approaching!", ContentManager.instance.getFont("Ubuntu"), 36);
+                text.setStyle(Text.BOLD | TextStyle.UNDERLINED);
+                text.setColor(Color.RED);
+                FloatRect screenRect = text.getLocalBounds();
+                text.setOrigin(screenRect.width/2, 0);
+                text.setPosition(State.WORLD_SIZE.x/2,40);
+                window.draw(text);
+                if(alertStopper) {ContentManager.instance.getSound("alert").play(); alertStopper = false;}
+            }
+            else
+                alertStopper = true;
         }
     }
 
@@ -267,6 +309,9 @@ public class PlayState extends State {
         ContentManager.instance.loadSound("expload1", "expload.wav");
         ContentManager.instance.loadSound("expload2", "expload2.wav");
         ContentManager.instance.loadSound("expload3", "expload3.wav");
+        ContentManager.instance.loadSound("alert", "alert.wav");
+        ContentManager.instance.getSound("alert").setVolume(0.3f);
+        ContentManager.instance.getSound("pew").setVolume(0.3f);
     }
     public ArrayList getDeadPlayers(){ return deadPlayers; }
 
