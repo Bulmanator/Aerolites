@@ -56,9 +56,11 @@ public class Button implements EntityRenderable {
         {
             if(mouse.y > centerY - shape.getSize().y/2 && mouse.y < centerY + shape.getSize().y/2)
             {
+                shape.setFillColor(Color.BLUE);
                 return true;
             }
         }
+        shape.setFillColor(Color.WHITE);
         return false;
     }
 

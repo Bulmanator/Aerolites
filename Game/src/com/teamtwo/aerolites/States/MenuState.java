@@ -53,6 +53,7 @@ public class MenuState extends State {
         Buttons[3] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 16, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Credits");
 
 
+
     }
 
     /**
@@ -67,6 +68,7 @@ public class MenuState extends State {
         for (int i = 0; i < Buttons.length; i++) {
             Vector2f pos = window.mapPixelToCoords(Mouse.getPosition(window));
 
+            //TODO I need to record the values given when clicked and comapre to next state to stop autoclicking througn pages
             if (Buttons[i].checkInBox(pos) && Mouse.isButtonPressed(Mouse.Button.LEFT)) {
                 if (Buttons[i].getLabel().equals("Singleplayer")) {
                     gsm.addState(new ControllerSelectState(gsm)); //change here to one for keyboard and controller
