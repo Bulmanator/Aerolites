@@ -185,6 +185,7 @@ public class PlayState extends State {
                 Vector2f v = h.getBulletPoints().get(i);
                 float angle = h.getBulletAngles().get(i);
                 entities.add(new Bullet(1.75f, v, Entity.Type.EnemyBullet, h.getBody().getTransform().getAngle()+angle, world));
+                entities.get(entities.size()-1).setMaxSpeed(250);
                 h.setShooting(false);
             }
         }
