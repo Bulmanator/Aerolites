@@ -16,8 +16,10 @@ import org.jsfml.window.Mouse;
  * @author Tijan Weir
  */
 public class MultiplayerMenuState extends State {
-    Button[] Buttons = new Button[3];
+    Button[] Buttons = new Button[4];
     Text text;
+    Boolean clicked;
+
     private ExampleInput hoverBoxChoices;
 
     public void render() {
@@ -46,9 +48,11 @@ public class MultiplayerMenuState extends State {
         text.setColor(Color.BLACK);
 
 
-        Buttons[0] = new Button((int)State.WORLD_SIZE.x / 2,(int)State.WORLD_SIZE.y / 10 * 3, window.getSize().x / 4, window.getSize().y / 10, "2 Players");
-        Buttons[1] = new Button((int)State.WORLD_SIZE.x / 2, (int)State.WORLD_SIZE.y / 10 * 5, window.getSize().x / 4, window.getSize().y / 10, "3 Players");
-        Buttons[2] = new Button((int)State.WORLD_SIZE.x / 2, (int)State.WORLD_SIZE.y / 10 * 7, window.getSize().x / 4, window.getSize().y / 10, "4 Players");
+        Buttons[0] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 4, (int) State.WORLD_SIZE.y / 2, window.getSize().y / 10, "Aerolites");
+        Buttons[1] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 8, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "2 Players");
+        Buttons[2] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 12, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "3 Players");
+        Buttons[3] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 16, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "4 Players");
+
 
 
     }
@@ -63,8 +67,8 @@ public class MultiplayerMenuState extends State {
             Vector2f pos = window.mapPixelToCoords(Mouse.getPosition(window));
 
 
-            if (Buttons[i].checkInBox(pos) && Mouse.isButtonPressed(Mouse.Button.LEFT))
-                System.out.println("Currently Not Implemented");
+           // if (Buttons[i].checkInBox(pos) && Mouse.isButtonPressed(Mouse.Button.LEFT))
+              //  System.out.println("Currently Not Implemented");
         }
         if (Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)) {
             gsm.popState();

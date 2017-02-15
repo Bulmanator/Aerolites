@@ -1,13 +1,10 @@
 package com.teamtwo.aerolites.States;
 
+import com.teamtwo.aerolites.Entities.*;
 import com.teamtwo.aerolites.Entities.AI.AI;
 import com.teamtwo.aerolites.Entities.AI.StandardAI;
 import com.teamtwo.aerolites.Entities.AI.Swarmer;
 import com.teamtwo.aerolites.Entities.AI.SwarmerBase;
-import com.teamtwo.aerolites.Entities.Asteroid;
-import com.teamtwo.aerolites.Entities.Bullet;
-import com.teamtwo.aerolites.Entities.Entity;
-import com.teamtwo.aerolites.Entities.Player;
 import com.teamtwo.engine.Physics.RigidBody;
 import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.ContentManager;
@@ -40,6 +37,7 @@ public class PlayState extends State {
     private float lastStandard;
     private float standardTime;
     private int playerCount;
+    private float powerUpChance;
 
     /**
      * Creates a new Play state, the player count is negative if only controllers are used. -1 will create 1 player, -4 will create 4 players, controllers only.
@@ -84,6 +82,7 @@ public class PlayState extends State {
             standardTime = 10f/playerCount;
         }
         lastSwarmer = 0;
+        powerUpChance = 1f;
 
         ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");
         loadContent();
@@ -158,6 +157,8 @@ public class PlayState extends State {
                 Asteroid a2 = new Asteroid(world, a.getBody().getTransform().getPosition(), new Vector2f(-a.getBody().getVelocity().x*1.2f,-a.getBody().getVelocity().y*1.2f), a.getShape().getRadius()*MathUtil.randomFloat(0.5f,0.8f));
                 entities.add(a1);
                 entities.add(a2);
+                PowerUpPickUp p = new PowerUpPickUp(5f,a.getBody().getTransform().getPosition(), world);
+                entities.add(p);
             }
             ContentManager.instance.getSound("expload" +MathUtil.randomInt(1,4)).play();
             world.removeBody(a.getBody());

@@ -18,7 +18,7 @@ import org.jsfml.window.Mouse;
 public class CreditState extends State {
     Button[] Buttons = new Button[6];
     Text text;
-    private ExampleInput hoverBoxChoices;
+    Boolean clicked;
 
     public void render() {
         for (int i = 0; i < Buttons.length; i++) {

@@ -7,6 +7,7 @@ import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
+import org.jsfml.window.Mouse;
 
 
 /**
@@ -17,6 +18,7 @@ public class Button implements EntityRenderable {
     RectangleShape shape;
     Text text;
     int centerX, centerY;
+    boolean clicked;
     //RectangleShape testShape;
 
     @Override
@@ -38,6 +40,8 @@ public class Button implements EntityRenderable {
         text.setColor(Color.BLACK);
         text.setPosition(centerX - text.getLocalBounds().width / 2, centerY - text.getLocalBounds().height); //TODO center text correctly
 
+        clicked = false;
+
        /*testShape = new RectangleShape(new Vector2f(text.getLocalBounds().width, text.getLocalBounds().height));
        testShape.setPosition(text.getPosition());
        testShape.setFillColor(Color.RED);*/
@@ -51,19 +55,24 @@ public class Button implements EntityRenderable {
         return centerY;
     }
 
-    public boolean checkInBox(Vector2f mouse){
+    public void checkInBox(Vector2f mouse){
         if(mouse.x > centerX - shape.getSize().x/2 && mouse.x < centerX + shape.getSize().x/2)
         {
             if(mouse.y > centerY - shape.getSize().y/2 && mouse.y < centerY + shape.getSize().y/2)
             {
                 shape.setFillColor(Color.BLUE);
-                return true;
+                clicked = Mouse.isButtonPressed(Mouse.Button.LEFT);
             }
         }
-        shape.setFillColor(Color.WHITE);
-        return false;
+        else {
+            clicked = false;
+            shape.setFillColor(Color.WHITE);
+        }
     }
 
     public String getLabel() { return text.getString(); }
 
+    public boolean isClicked() {
+        return clicked;
+    }
 }

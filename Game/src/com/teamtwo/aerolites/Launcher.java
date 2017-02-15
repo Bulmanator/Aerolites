@@ -5,7 +5,7 @@ import com.teamtwo.engine.Engine;
 import com.teamtwo.engine.Launcher.LauncherConfig;
 import org.jsfml.window.Window;
 
-public class Launcher {
+public class   Launcher {
 
     public static void main(String[] args) {
         LauncherConfig config = new LauncherConfig();

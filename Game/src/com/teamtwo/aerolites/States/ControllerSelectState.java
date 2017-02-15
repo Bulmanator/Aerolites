@@ -17,8 +17,9 @@ import org.jsfml.window.Window;
  * @author Tijan Weir
  */
 public class ControllerSelectState extends State {
-    Button[] Buttons = new Button[2];
+    Button[] Buttons = new Button[3];
     Text text;
+    Boolean clicked;
 
     public void render() {
         for (int i = 0; i < Buttons.length; i++) {
@@ -46,8 +47,10 @@ public class ControllerSelectState extends State {
         text.setColor(Color.BLACK);
 
 
-        Buttons[0] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 10 * 5, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Keyboard");
-        Buttons[1] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 10 * 10, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Controller");
+
+        Buttons[0] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 4, (int) State.WORLD_SIZE.y / 2, window.getSize().y / 10, "Aerolites");
+        Buttons[1] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 8, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Keyboard");
+        Buttons[2] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 12, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Controller");
     }
 
     /**
@@ -62,13 +65,15 @@ public class ControllerSelectState extends State {
         for (int i = 0; i < Buttons.length; i++) {
             Vector2f pos = window.mapPixelToCoords(Mouse.getPosition(window));
 
-            if (Buttons[i].checkInBox(pos) && Mouse.isButtonPressed(Mouse.Button.LEFT)) {
+            if (Buttons[i].isClicked() && !Mouse.isButtonPressed(Mouse.Button.LEFT)) {
                 if (Buttons[i].getLabel().equals("Keyboard")) {
                     gsm.addState(new PlayState(gsm, 0)); //change here to one for keyboard and controller
                 } else if (Buttons[i].getLabel().equals("Controller")) {
                     gsm.addState(new PlayState(gsm, -1)); //change here to one for keyboard and controller
                 }
             }
+
+            Buttons[i].checkInBox(pos);
         }
         if (Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)) {
             gsm.popState();

@@ -32,7 +32,7 @@ public class Asteroid extends Entity {
         BodyConfig config = new BodyConfig();
 
         config.mask = CollisionMask.ASTEROID;
-        config.category = CollisionMask.ALL;
+        config.category = CollisionMask.ALL & ~CollisionMask.POWERUP;
 
         int screenSide = MathUtil.randomInt(0,4);
         int x = 0, y = 0, velocityX = 0, velocityY = 0;
@@ -103,7 +103,7 @@ public class Asteroid extends Entity {
         bodyShape.setPosition(body.getTransform().getPosition());
         bodyShape.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
         bodyShape.setFillColor(renderColour);
-        bodyShape.setTexture(ContentManager.instance.getTexture("Asteroid"));
+        //bodyShape.setTexture(ContentManager.instance.getTexture("Asteroid"));
         renderer.draw(bodyShape);
 
     }

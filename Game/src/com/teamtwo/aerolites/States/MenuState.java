@@ -17,8 +17,10 @@ import org.jsfml.window.Window;
  * @author Tijan Weir
  */
 public class MenuState extends State {
-    Button[] Buttons = new Button[4];
+    Button[] Buttons = new Button[5];
     Text text;
+    Boolean clicked;
+
     private ExampleInput hoverBoxChoices;
 
     public void render() {
@@ -47,10 +49,11 @@ public class MenuState extends State {
         text.setColor(Color.BLACK);
 
 
-        Buttons[0] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 4, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Singleplayer");
-        Buttons[1] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 8, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Multiplayer");
-        Buttons[2] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 12, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Options");
-        Buttons[3] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 16, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Credits");
+        Buttons[0] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 8, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Singleplayer");
+        Buttons[1] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 12, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Multiplayer");
+        Buttons[2] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 16, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Options");
+        Buttons[3] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 20, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Credits");
+        Buttons[4] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 4, (int) State.WORLD_SIZE.y / 2, window.getSize().y / 10, "Aerolites");
 
 
 
@@ -69,7 +72,8 @@ public class MenuState extends State {
             Vector2f pos = window.mapPixelToCoords(Mouse.getPosition(window));
 
             //TODO I need to record the values given when clicked and comapre to next state to stop autoclicking througn pages
-            if (Buttons[i].checkInBox(pos) && Mouse.isButtonPressed(Mouse.Button.LEFT)) {
+
+            if (Buttons[i].isClicked() && !Mouse.isButtonPressed(Mouse.Button.LEFT)) {
                 if (Buttons[i].getLabel().equals("Singleplayer")) {
                     gsm.addState(new ControllerSelectState(gsm)); //change here to one for keyboard and controller
                 } else if (Buttons[i].getLabel().equals("Multiplayer")) {
@@ -78,6 +82,8 @@ public class MenuState extends State {
                     gsm.addState(new CreditState(gsm));
                 }
             }
+            Buttons[i].checkInBox(pos);
+
         }
 
 
