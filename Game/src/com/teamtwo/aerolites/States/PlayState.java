@@ -43,6 +43,18 @@ public class PlayState extends State {
     private float bossSpawnTime;
     private int playerCount;
 
+    //TODO make boss scale
+    //TODO make configs work
+    //TODO shoot bullets out of ait
+    //TODO make power ups work
+    //TODO star map
+    //TODO shop and stuff
+    //TODO count asteroids destoyed and enemies killed and show them on score board
+    //TODO make another boss
+    //TODO make the scores save over levels
+    //TODO make Tijans shit work
+    //TODO tie everything together
+    //TODO fix LevelOver multiple player next shite
 
     /**
      * Creates a new Play state, the player count is negative if only controllers are used. -1 will create 1 player, -4 will create 4 players, controllers only.
@@ -64,7 +76,7 @@ public class PlayState extends State {
         players = new ArrayList<>();
         deadPlayers = new ArrayList<>();
 
-        bossSpawnTime = 60;
+        bossSpawnTime = 120;
         bossTimer = 0;
         boss = false;
         alertStopper = true;
@@ -85,24 +97,25 @@ public class PlayState extends State {
         }
         accum = 0;
         if(playerCount<=0) {
-            asteroidSpawnRate = 1f;
-            swarmerSpawnRate = 15f;
+            asteroidSpawnRate = 5f;
+            swarmerSpawnRate = 20f;
             standardTime = 20f;
         }
         else {
-            asteroidSpawnRate = 1/playerCount*1.8f;
+            asteroidSpawnRate = 1f/playerCount*1.8f;
             swarmerSpawnRate = 6/playerCount;
-            standardTime = 10f/playerCount;
+            standardTime = 8f/playerCount;
         }
         lastSwarmer = 0;
 
         ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");
         loadContent();
+        ContentManager.instance.getMusic("playMusic").setVolume(100);
+        ContentManager.instance.getMusic("playMusic").play();
     }
 
     @Override
     public void update(float dt) {
-
         world.update(dt);
         bossTimer+=dt;
 
@@ -112,11 +125,30 @@ public class PlayState extends State {
         }
         else if(bossTimer < bossSpawnTime)
             spawnEntities(dt);
+        else if(boss && !gameOver)
+        {
+            boolean bossAlive = false;
+            for(Entity e: entities)
+                if(e.getType() == Entity.Type.Hexaboss) {
+                    bossAlive = true;
+                }
+            if(!bossAlive){
+                for (int i = 0; i < players.size(); i++) {
+                    deadPlayers.add(players.get(i));
+                    world.removeBody(players.get(i).getBody());
+                    players.remove(i);
+                    i--;
+                }
+                deadPlayers.sort(Comparator.comparing(Player::getPlayerNumber));
+                gameOver = true;
+                gsm.setState(new LevelOver(gsm, this, playerCount, true));
+            }
+        }
 
         if(players.size() == 0 && !gameOver) {
             deadPlayers.sort(Comparator.comparing(Player::getPlayerNumber));
             gameOver = true;
-            gsm.addState(new GameOver(gsm, this, playerCount));
+            gsm.setState(new LevelOver(gsm, this, playerCount, false));
         }
 
         for(int i = 0; i < entities.size(); i++) {
@@ -176,6 +208,8 @@ public class PlayState extends State {
             ((Bullet)entities.get(entities.size()-1)).setBulletOwner(p.getPlayerNumber());
             p.incrementBulletsShot();
             ContentManager.instance.getSound("pew").play();
+            float pitch = ContentManager.instance.getSound("pew").getPitch();
+            ContentManager.instance.getSound("pew").setPitch(pitch + MathUtil.randomFloat(-0.1f,0.1f));
         }
         return index;
     }
@@ -184,7 +218,7 @@ public class PlayState extends State {
             for(int i = 0; i < h.getBulletPoints().size();i++){
                 Vector2f v = h.getBulletPoints().get(i);
                 float angle = h.getBulletAngles().get(i);
-                entities.add(new Bullet(1.75f, v, Entity.Type.EnemyBullet, h.getBody().getTransform().getAngle()+angle, world));
+                entities.add(new Bullet(10f, v, Entity.Type.EnemyBullet, h.getBody().getTransform().getAngle()+angle, world));
                 entities.get(entities.size()-1).setMaxSpeed(250);
                 h.setShooting(false);
             }
@@ -284,7 +318,7 @@ public class PlayState extends State {
                 window.draw(bodyShape);
             }
 
-            if(bossTimer > bossSpawnTime - 6 && MathUtil.round(bossTimer%1f,0) == 0) {
+            if(bossTimer > bossSpawnTime - 6 && bossTimer < bossSpawnTime + 10 && MathUtil.round(bossTimer%1f,0) == 0) {
                 Text text = new Text("Danger! Boss Approaching!", ContentManager.instance.getFont("Ubuntu"), 36);
                 text.setStyle(Text.BOLD | TextStyle.UNDERLINED);
                 text.setColor(Color.RED);
@@ -292,7 +326,9 @@ public class PlayState extends State {
                 text.setOrigin(screenRect.width/2, 0);
                 text.setPosition(State.WORLD_SIZE.x/2,40);
                 window.draw(text);
-                if(alertStopper) {ContentManager.instance.getSound("alert").play(); alertStopper = false;}
+                if(alertStopper) {
+                    ContentManager.instance.getSound("alert").play();
+                    alertStopper = false;}
             }
             else
                 alertStopper = true;
@@ -311,8 +347,7 @@ public class PlayState extends State {
         ContentManager.instance.loadSound("expload2", "expload2.wav");
         ContentManager.instance.loadSound("expload3", "expload3.wav");
         ContentManager.instance.loadSound("alert", "alert.wav");
-        ContentManager.instance.getSound("alert").setVolume(0.3f);
-        ContentManager.instance.getSound("pew").setVolume(0.3f);
+        ContentManager.instance.loadMusic("playMusic", "music.wav");
     }
     public ArrayList getDeadPlayers(){ return deadPlayers; }
 

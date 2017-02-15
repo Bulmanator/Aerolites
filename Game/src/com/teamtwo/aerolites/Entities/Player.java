@@ -52,8 +52,8 @@ public class Player extends Entity {
         timeAlive = 0;
         bulletsMissed = 0;
 
-        config.mask = CollisionMask.PLAYER;
-        config.category = (CollisionMask.ALL & ~CollisionMask.BULLET);
+        config.category = CollisionMask.PLAYER;
+        config.mask = (CollisionMask.ALL & ~CollisionMask.BULLET);
 
         Vector2f[] vertices = new Vector2f[4];
         vertices[0] = new Vector2f(0, -15);
@@ -83,10 +83,7 @@ public class Player extends Entity {
         pConfig.speed = 70;
         pConfig.rotationalSpeed = 40;
         pConfig.pointCount = 3;
-        pConfig.colours[0] = Color.RED;
-        pConfig.colours[1] = Color.MAGENTA;
-        pConfig.colours[2] = Color.YELLOW;
-        pConfig.fadeOut = true;
+        pConfig.fadeOut = false;
         pConfig.startSize = 14;
         pConfig.endSize = 4;
         pConfig.minLifetime = 1.5f;
@@ -234,21 +231,37 @@ public class Player extends Entity {
                 this.controllerNum = Controller.Player.One;
                 renderColour = Color.BLUE;
                 defaultColour = Color.BLUE;
+                jet.getConfig().colours[0] = new Color(255,0,0);
+                jet.getConfig().colours[1] = new Color(140,255,0);
+                jet.getConfig().colours[2] = new Color(70,0,255);
+                //jet.getConfig().colours[3] = new Color(35,0,255);
                 break;
             case 1:
                 this.controllerNum = Controller.Player.Two;
                 renderColour = Color.YELLOW;
                 defaultColour = Color.YELLOW;
+                jet.getConfig().colours[0] = new Color(255,0,0);
+                jet.getConfig().colours[1] = new Color(0,255,0);
+                jet.getConfig().colours[2] = new Color(0,0,255);
+                jet.getConfig().colours[3] = new Color(255,0,255);
                 break;
             case 2:
                 this.controllerNum = Controller.Player.Three;
                 defaultColour = Color.MAGENTA;
                 renderColour = Color.MAGENTA;
+                jet.getConfig().colours[0] = new Color(255,0,0);
+                jet.getConfig().colours[2] = new Color(0,255,0);
+                jet.getConfig().colours[1] = new Color(0,0,255);
+                jet.getConfig().colours[3] = new Color(255,0,255);
                 break;
             case 3:
                 this.controllerNum = Controller.Player.Four;
                 renderColour = Color.CYAN;
                 defaultColour = Color.CYAN;
+                jet.getConfig().colours[0] = new Color(255,0,0);
+                jet.getConfig().colours[2] = new Color(0,255,0);
+                jet.getConfig().colours[1] = new Color(0,0,255);
+                jet.getConfig().colours[3] = new Color(255,0,255);
                 break;
         }
     }

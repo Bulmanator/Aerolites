@@ -28,8 +28,8 @@ public class Swarmer extends AI {
         this.onScreen = true;
         BodyConfig config = new BodyConfig();
 
-        config.mask = CollisionMask.SWARMER;
-        config.category = CollisionMask.ALL;
+        config.category = CollisionMask.SWARMER;
+        config.mask = CollisionMask.ALL;
 
         setMaxSpeed(130);
         config.angularVelocity = MathUtil.PI2;

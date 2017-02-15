@@ -37,8 +37,8 @@ public class StandardAI extends AI {
         shootTime = 0.6f;
         BodyConfig config = new BodyConfig();
 
-        config.mask = CollisionMask.STANDARD_AI;
-        config.category = CollisionMask.ALL & (~CollisionMask.ENEMY_BULLET);
+        config.category = CollisionMask.STANDARD_AI;
+        config.mask = CollisionMask.ALL & (~CollisionMask.ENEMY_BULLET);
 
         Vector2f[] vertices = new Vector2f[5];
         vertices[0] = new Vector2f(0, 0);

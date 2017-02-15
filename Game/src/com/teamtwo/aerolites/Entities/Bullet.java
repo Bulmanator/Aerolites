@@ -5,6 +5,7 @@ import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
+import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
@@ -42,15 +43,15 @@ public class Bullet extends Entity {
         switch (owner){
             case Bullet:
                 this.renderColour = Color.YELLOW;
-                config.mask = CollisionMask.BULLET;
+                config.category = CollisionMask.BULLET;
                 break;
             case EnemyBullet:
                 this.renderColour = Color.RED;
-                config.mask = CollisionMask.ENEMY_BULLET;
+                config.category = CollisionMask.ENEMY_BULLET;
                 break;
         }
 
-        config.category = CollisionMask.AI | CollisionMask.ASTEROID;
+        config.mask = CollisionMask.AI | CollisionMask.ASTEROID;
 
         this.body = world.createBody(config);
 
@@ -98,7 +99,14 @@ public class Bullet extends Entity {
                     hit  = true;
                 }
             }
-
+            if(cm.getBodyA().getData().getType() == Type.Bullet && cm.getBodyB().getData().getType() == Type.EnemyBullet){
+                hit = true;
+                onScreen = false;
+            }
+            if(cm.getBodyB().getData().getType() == Type.Bullet && cm.getBodyA().getData().getType() == Type.EnemyBullet){
+                hit = true;
+                onScreen = false;
+            }
         }
     }
 
@@ -116,5 +124,22 @@ public class Bullet extends Entity {
 
     public boolean isHit() {
         return hit;
+    }
+    @Override
+    protected void checkOffScreen(){
+        switch (getType()){
+            case Bullet:
+                super.checkOffScreen();
+                break;
+            case EnemyBullet:
+                if(this.onScreen) {
+                    if (body.getTransform().getPosition().x < -offScreenAllowance.x || body.getTransform().getPosition().x > State.WORLD_SIZE.x + offScreenAllowance.x) {
+                        this.onScreen = false;
+                    } else
+                        this.onScreen = !(body.getTransform().getPosition().y < -offScreenAllowance.y
+                                || body.getTransform().getPosition().y > State.WORLD_SIZE.y + offScreenAllowance.y);
+                }
+                break;
+        }
     }
 }
