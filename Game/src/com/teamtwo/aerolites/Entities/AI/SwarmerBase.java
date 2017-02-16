@@ -1,10 +1,9 @@
 package com.teamtwo.aerolites.Entities.AI;
 
+import com.teamtwo.aerolites.Entities.CollisionMask;
 import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.engine.Messages.Message;
 import com.teamtwo.engine.Messages.Types.CollisionMessage;
-import com.teamtwo.aerolites.Entities.CollisionMask;
-import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
@@ -28,8 +27,8 @@ public class SwarmerBase extends AI {
         this.onScreen = true;
         BodyConfig config = new BodyConfig();
 
-        config.mask = CollisionMask.SWARMER_BASE;
-        config.category = CollisionMask.ALL;
+        config.category = CollisionMask.SWARMER_BASE;
+        config.mask = CollisionMask.ALL;
 
         int x = 0, y = 0, velocityX = 0, velocityY = 0;
         int screenSide = MathUtil.randomInt(0,4);
@@ -79,7 +78,7 @@ public class SwarmerBase extends AI {
     public void update(float dt){
         super.update(dt);
         findTarget();
-        if(playerDistance()<MathUtil.square(500)){
+        if(target != null && playerDistance()<MathUtil.square(500)){
             setShooting(true);
         }
     }

@@ -25,7 +25,8 @@ public abstract class Entity implements EntityRenderable, Updateable, Observer, 
         EnemyBullet,
         StandardAI,
         Swamer,
-        SwamerBase
+        SwamerBase,
+        Hexaboss
     }
 
     protected RigidBody body;
@@ -84,13 +85,13 @@ public abstract class Entity implements EntityRenderable, Updateable, Observer, 
         }
     }
 
-    protected void move(float forceX, float forceY){
+    protected void move(float forceX, float forceY) {
         // Apply force to move the ship
         Vector2f force = body.getTransform().applyRotation(new Vector2f(forceX, forceY));
         body.applyForce(force);
     }
 
-    public void limitSpeed(){
+    public void limitSpeed() {
         float x = body.getVelocity().x;
         float y = body.getVelocity().y;
         x = MathUtil.clamp(x, -maxSpeed, maxSpeed);
@@ -116,5 +117,9 @@ public abstract class Entity implements EntityRenderable, Updateable, Observer, 
 
     public void setMaxSpeed(float speed){
         maxSpeed = speed;
+    }
+
+    public void setOnScreen(boolean onscreen) {
+        onScreen = onscreen;
     }
 }
