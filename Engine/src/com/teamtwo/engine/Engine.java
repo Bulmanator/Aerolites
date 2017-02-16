@@ -1,6 +1,5 @@
 package com.teamtwo.engine;
 
-import com.teamtwo.engine.Input.Controllers.Controllers;
 import com.teamtwo.engine.Input.InputHandler;
 import com.teamtwo.engine.Input.InputProcessor;
 import com.teamtwo.engine.Launcher.LauncherConfig;
@@ -32,8 +31,18 @@ import java.io.UncheckedIOException;
  */
 public class Engine implements Updateable, Renderable, Disposable {
 
+    /** The Name of the operating system */
+    public static final String OS_NAME = System.getProperty("os.name").toLowerCase();
+
+    /** Whether or not the game is running on Windows */
+    public static final boolean WINDOWS = OS_NAME.contains("windows");
+    /** Whether or not the game is running on Linux */
+    public static final boolean LINUX = OS_NAME.contains("linux");
+    /** Whether or not the game is running on macOS */
+    public static final boolean MAC_OS = OS_NAME.contains("mac");
+
     // The JSFML version which the engine requires
-    private final String JSFML_VERSION = "2.2-J7";
+    private static final String JSFML_VERSION = "2.2-J7";
 
     // The Game instance in use
     private Game game;
@@ -219,7 +228,6 @@ public class Engine implements Updateable, Renderable, Disposable {
      */
     public void update(float dt) {
         if(isDisposed) throw new IllegalStateException("Error: The game instance has been disposed and therefore cannot be updated");
-        Controllers.instance.update();
         game.update(dt);
     }
 

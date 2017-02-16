@@ -13,18 +13,19 @@ import org.jsfml.system.Vector2f;
 
 import java.util.ArrayList;
 
-import static com.teamtwo.aerolites.Entities.AI.Hexaboss.attackPattern.wait;
+import static com.teamtwo.aerolites.Entities.AI.Hexaboss.AttackPattern.Wait;
 
 
 /**
  * @author Matthew Threlfall
  */
 public class Hexaboss extends AI {
-    public enum attackPattern{
-        spinOne,
-        spinTwo,
-        alternate,
-        wait
+
+    public enum AttackPattern {
+        SpinOne,
+        SpinTwo,
+        Alternate,
+        Wait
     }
 
     private float angle;
@@ -34,7 +35,7 @@ public class Hexaboss extends AI {
     private float lives;
     private float totalLives;
 
-    private attackPattern pattern;
+    private AttackPattern pattern;
     private float attackTime;
     private float timeRunning;
     private boolean waitNeeded;
@@ -76,7 +77,7 @@ public class Hexaboss extends AI {
 
         attackTime = 2;
         timeRunning = 0;
-        pattern = attackPattern.wait;
+        pattern = AttackPattern.Wait;
 
         body.registerObserver(this, Message.Type.Collision);
         bulletPoints = new ArrayList<>();
@@ -105,7 +106,7 @@ public class Hexaboss extends AI {
         {
             timeRunning = 0;
             if(waitNeeded){
-                pattern = wait;
+                pattern = Wait;
                 waitNeeded = false;
             }
             else {
@@ -113,16 +114,16 @@ public class Hexaboss extends AI {
                 int option = MathUtil.randomInt(0, 3);
                 switch (option) {
                     case 0:
-                        pattern = attackPattern.alternate;
+                        pattern = AttackPattern.Alternate;
                         break;
                     case 1:
-                        pattern = attackPattern.spinTwo;
+                        pattern = AttackPattern.SpinTwo;
                         break;
                     case 2:
-                        pattern = attackPattern.spinOne;
+                        pattern = AttackPattern.SpinOne;
                         break;
                     case 3:
-                        pattern = attackPattern.alternate;
+                        pattern = AttackPattern.Alternate;
                         break;
 
                 }
@@ -132,7 +133,7 @@ public class Hexaboss extends AI {
 
     public void attack(float dt){
         switch (pattern) {
-            case spinOne:
+            case SpinOne:
                 timeBetweenShots = 1;
                 bulletPoints.clear();
                 bulletAngles.clear();
@@ -143,7 +144,7 @@ public class Hexaboss extends AI {
                 }
                 angle += (MathUtil.PI/2)*dt;
                 break;
-            case spinTwo:
+            case SpinTwo:
                 timeBetweenShots = 1;
                 bulletPoints.clear();
                 bulletAngles.clear();
@@ -156,7 +157,7 @@ public class Hexaboss extends AI {
                 }
                 angle -= (MathUtil.PI/4)*dt;
                 break;
-            case alternate:
+            case Alternate:
                 if(MathUtil.isZero(angle % MathUtil.PI/3)) {
                     angle -= (MathUtil.PI / 8) * dt;
                 }
@@ -176,7 +177,7 @@ public class Hexaboss extends AI {
                     cooldown = 0;
                 }
                 break;
-            case wait:
+            case Wait:
                 angle -= (MathUtil.PI/4)*dt;
                 break;
         }
@@ -191,13 +192,13 @@ public class Hexaboss extends AI {
     public void receiveMessage(Message message) {
         if (message.getType() == Message.Type.Collision) {
             CollisionMessage cm = (CollisionMessage) message;
-            boolean hit = cm.getBodyA().getData().getType() == Type.Bullet ||  cm.getBodyB().getData().getType() == Type.Bullet;
+            boolean hit = cm.getBodyA().getData().getType() == Type.Bullet || cm.getBodyB().getData().getType() == Type.Bullet;
             if(hit) {
                 lives--;
             }
         }
     }
-    private void addFirePoints(int face){
+    private void addFirePoints(int face) {
         Vector2f pointOne;
         Vector2f pointTwo;
         switch (face) {
@@ -207,12 +208,12 @@ public class Hexaboss extends AI {
                 break;
             default:
                 pointOne = getBody().getShape().getTransformed()[face];
-                pointTwo = getBody().getShape().getTransformed()[face+1];
+                pointTwo = getBody().getShape().getTransformed()[face + 1];
                 break;
         }
 
-        float xAdd = 40*MathUtil.sin((face)*60*MathUtil.DEG_TO_RAD);
-        float yAdd = -40*MathUtil.cos((face)*60*MathUtil.DEG_TO_RAD);
+        float xAdd = 40 * MathUtil.sin(face * 60 * MathUtil.DEG_TO_RAD);
+        float yAdd = -40 * MathUtil.cos(face * 60 * MathUtil.DEG_TO_RAD);
 
         pointOne = new Vector2f(pointOne.x+xAdd, pointOne.y+yAdd);
         pointTwo = new Vector2f(pointTwo.x+xAdd, pointTwo.y+yAdd);

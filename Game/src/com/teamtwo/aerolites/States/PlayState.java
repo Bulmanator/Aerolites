@@ -1,10 +1,12 @@
 package com.teamtwo.aerolites.States;
 
+import com.teamtwo.aerolites.Configs.LevelConfig;
 import com.teamtwo.aerolites.Entities.AI.*;
 import com.teamtwo.aerolites.Entities.Asteroid;
 import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.aerolites.Entities.Player;
+import com.teamtwo.engine.Input.Controllers.PlayerNumber;
 import com.teamtwo.engine.Physics.RigidBody;
 import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.ContentManager;
@@ -25,14 +27,17 @@ public class PlayState extends State {
 
     private World world;
     private ArrayList<Entity> entities;
-    private ArrayList<Player> players;
-    private ArrayList<Player> deadPlayers;
+
+    private Player[] players;
+
     private float accum;
     private float asteroidSpawnRate;
     private float swarmerSpawnRate;
     private float lastSwarmer;
     private boolean gameOver;
 
+    // The configuration for the level
+    private LevelConfig config;
 
     private float bossTimer;
     private boolean boss;
@@ -57,46 +62,53 @@ public class PlayState extends State {
     //TODO fix LevelOver multiple player next shite
 
     /**
-     * Creates a new Play state, the player count is negative if only controllers are used. -1 will create 1 player, -4 will create 4 players, controllers only.
-     * 0 will create a single player using the keyboard, 4 will create 5 players, one using the keyboard
+     * Creates a new Play state, the player count is negative if only controllers are used. -1 will create 1 player, -4 will create 4 players_list, controllers only.
+     * 0 will create a single player using the keyboard, 4 will create 5 players_list, one using the keyboard
      * @param gsm the game state manager for the entire game
-     * @param playerCount the amount of players to be in the game, key highlighted above
+     * @param config The configuration for the level
      */
-    public PlayState(GameStateManager gsm, int playerCount) {
+    public PlayState(GameStateManager gsm, LevelConfig config) {
         super(gsm);
 
         gameOver = false;
-        world = new World(new Vector2f(0,0));
-        World.DRAW_VELOCITIES = false;
-        World.DRAW_BODIES = false;
-        World.DRAW_AABB = false;
-        this.playerCount = playerCount;
+        world = new World(Vector2f.ZERO);
 
         entities = new ArrayList<>();
-        players = new ArrayList<>();
-        deadPlayers = new ArrayList<>();
 
         bossSpawnTime = 120;
         bossTimer = 0;
         boss = false;
         alertStopper = true;
 
+        int playerCount = 0;
+        while (config.players[playerCount] != null) {
+            playerCount++;
+            if(playerCount == config.players.length) break;
+        }
 
-        players.add(new Player(world));
-        players.get(0).setPlayerNumber(1);
+        players = new Player[playerCount];
+        for(int i = 0; i < playerCount; i++) {
+            players[i] = new Player(world, PlayerNumber.values()[i]);
+        }
+
+
+
+/*        players_list.add(new Player(world));
+        players_list.get(0).setPlayerNumber(1);
         int keyboard = 0;
         if(playerCount < 0){
-            players.get(0).setControllerNum(0);
+            players_list.get(0).setControllerNum(0);
             keyboard = 1;
             playerCount = -(playerCount) -1;
         }
         for(int i = 0; i < playerCount; i++){
-            players.add(new Player(world));
-            ((Player)players.get(i+1)).setControllerNum(i+keyboard);
-            ((Player)players.get(i+1)).setPlayerNumber(i+2);
+            players_list.add(new Player(world));
+            ((Player) players_list.get(i+1)).setControllerNum(i+keyboard);
+            ((Player) players_list.get(i+1)).setPlayerNumber(i+2);
         }
+*/
         accum = 0;
-        if(playerCount<=0) {
+        if(playerCount <= 0) {
             asteroidSpawnRate = 5f;
             swarmerSpawnRate = 20f;
             standardTime = 20f;
@@ -108,10 +120,9 @@ public class PlayState extends State {
         }
         lastSwarmer = 0;
 
-        ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");
         loadContent();
-        ContentManager.instance.getMusic("playMusic").setVolume(100);
-        ContentManager.instance.getMusic("playMusic").play();
+
+        ContentManager.instance.getMusic("PlayMusic").play();
     }
 
     @Override
@@ -133,10 +144,10 @@ public class PlayState extends State {
                     bossAlive = true;
                 }
             if(!bossAlive){
-                for (int i = 0; i < players.size(); i++) {
-                    deadPlayers.add(players.get(i));
-                    world.removeBody(players.get(i).getBody());
-                    players.remove(i);
+                for (int i = 0; i < players_list.size(); i++) {
+                    deadPlayers.add(players_list.get(i));
+                    world.removeBody(players_list.get(i).getBody());
+                    players_list.remove(i);
                     i--;
                 }
                 deadPlayers.sort(Comparator.comparing(Player::getPlayerNumber));
@@ -145,7 +156,7 @@ public class PlayState extends State {
             }
         }
 
-        if(players.size() == 0 && !gameOver) {
+        if(players_list.size() == 0 && !gameOver) {
             deadPlayers.sort(Comparator.comparing(Player::getPlayerNumber));
             gameOver = true;
             gsm.setState(new LevelOver(gsm, this, playerCount, false));
@@ -156,10 +167,10 @@ public class PlayState extends State {
             if(!entities.get(i).isOnScreen()) {
                 if(entities.get(i).getType() == Entity.Type.Bullet){
                     int bulletOwner = ((Bullet)entities.get(i)).getBulletOwner();
-                    if(searchPlayers(players,bulletOwner)>=0 && !((Bullet) entities.get(i)).isHit())
-                        players.get(searchPlayers(players,bulletOwner)).incrementBulletsMissed();
+                    if(searchPlayers(players_list,bulletOwner)>=0 && !((Bullet) entities.get(i)).isHit())
+                        players_list.get(searchPlayers(players_list,bulletOwner)).incrementBulletsMissed();
                     else if(searchPlayers(deadPlayers,bulletOwner)>=0 && !((Bullet) entities.get(i)).isHit())
-                        players.get(searchPlayers(deadPlayers,bulletOwner)).incrementBulletsMissed();
+                        players_list.get(searchPlayers(deadPlayers,bulletOwner)).incrementBulletsMissed();
                 }
 
                 world.removeBody(entities.get(i).getBody());
@@ -183,13 +194,13 @@ public class PlayState extends State {
                 }
             }
         }
-        for(int i = 0 ; i < players.size(); i++){
-            players.get(i).update(dt);
-            updatePlayer(players.get(i));
-             if(!players.get(i).isOnScreen()){
-                 deadPlayers.add(players.get(i));
-                 world.removeBody(players.get(i).getBody());
-                 players.remove(i);
+        for(int i = 0; i < players_list.size(); i++){
+            players_list.get(i).update(dt);
+            updatePlayer(players_list.get(i));
+             if(!players_list.get(i).isOnScreen()){
+                 deadPlayers.add(players_list.get(i));
+                 world.removeBody(players_list.get(i).getBody());
+                 players_list.remove(i);
                  i--;
              }
         }
@@ -200,26 +211,26 @@ public class PlayState extends State {
 
     public int updatePlayer(Player p){
         int index = entities.indexOf(p);
-        if (p.shooting()) {
+        if (p.isShooting()) {
             float x = p.getBody().getShape().getTransformed()[0].x;
             float y = p.getBody().getShape().getTransformed()[0].y;
             Vector2f pos = new Vector2f(x, y);
             entities.add(new Bullet(2, pos, Entity.Type.Bullet, p.getBody().getTransform().getAngle(), world));
             ((Bullet)entities.get(entities.size()-1)).setBulletOwner(p.getPlayerNumber());
             p.incrementBulletsShot();
-            ContentManager.instance.getSound("pew").play();
-            float pitch = ContentManager.instance.getSound("pew").getPitch();
-            ContentManager.instance.getSound("pew").setPitch(pitch + MathUtil.randomFloat(-0.1f,0.1f));
+            ContentManager.instance.getSound("Pew").play();
+            float pitch = ContentManager.instance.getSound("Pew").getPitch();
+            ContentManager.instance.getSound("Pew").setPitch(pitch + MathUtil.randomFloat(-0.1f, 0.1f));
         }
         return index;
     }
-    public int updateHexaboss(Hexaboss h){
+    public int updateHexaboss(Hexaboss h) {
         if(h.isShooting()){
             for(int i = 0; i < h.getBulletPoints().size();i++){
                 Vector2f v = h.getBulletPoints().get(i);
                 float angle = h.getBulletAngles().get(i);
                 entities.add(new Bullet(10f, v, Entity.Type.EnemyBullet, h.getBody().getTransform().getAngle()+angle, world));
-                entities.get(entities.size()-1).setMaxSpeed(250);
+                entities.get(entities.size() - 1).setMaxSpeed(250);
                 h.setShooting(false);
             }
         }
@@ -229,14 +240,19 @@ public class PlayState extends State {
     public int updateAsteroid(Asteroid a){
         int index = entities.indexOf(a);
         if(a.shouldExpload()) {
-            if(a.getBody().getShape().getRadius()/2 > 15)
-            {
-                Asteroid a1 = new Asteroid(world, a.getBody().getTransform().getPosition(), new Vector2f(a.getBody().getVelocity().x*1.2f,a.getBody().getVelocity().y*1.2f), a.getShape().getRadius()*MathUtil.randomFloat(0.5f,0.8f));
-                Asteroid a2 = new Asteroid(world, a.getBody().getTransform().getPosition(), new Vector2f(-a.getBody().getVelocity().x*1.2f,-a.getBody().getVelocity().y*1.2f), a.getShape().getRadius()*MathUtil.randomFloat(0.5f,0.8f));
+            if(a.getBody().getShape().getRadius() / 2 > 15) {
+                Vector2f position = a.getBody().getTransform().getPosition();
+                Vector2f velocity = new Vector2f(a.getBody().getVelocity().x * 1.2f, a.getBody().getVelocity().y * 1.2f);
+                float radius = a.getShape().getRadius() * MathUtil.randomFloat(0.5f, 0.8f);
+
+                Asteroid a1 = new Asteroid(world, position, velocity, radius);
+                radius = a.getShape().getRadius() * MathUtil.randomFloat(0.5f, 0.8f);
+                Asteroid a2 = new Asteroid(world, position, Vector2f.neg(velocity), radius);
+
                 entities.add(a1);
                 entities.add(a2);
             }
-            ContentManager.instance.getSound("expload" +MathUtil.randomInt(1,4)).play();
+            ContentManager.instance.getSound("Explode_" + MathUtil.randomInt(1, 4)).play();
             world.removeBody(a.getBody());
             entities.remove(index);
             index--;
@@ -247,17 +263,17 @@ public class PlayState extends State {
     public int updateAI(AI ai){
         int index = entities.indexOf(ai);
         if(ai.getType() == Entity.Type.Swamer)
-            ai.setEntities(players);
+            ai.setEntities(players_list);
         else if(ai.getType() == Entity.Type.SwamerBase) {
-            ai.setEntities(players);
+            ai.setEntities(players_list);
         }
         else
             ai.setEntities(entities);
         if(ai.isShooting()) {
             if(ai.getType() == Entity.Type.SwamerBase) {
-                for(int j = 0; j < MathUtil.randomInt(4,8); j++){
-                    entities.add(new Swarmer(world,entities.get(index).getBody().getTransform().getPosition()));
-                    ((AI)entities.get(entities.size()-1)).setEntities(players);
+                for(int j = 0; j < MathUtil.randomInt(4, 8); j++){
+                    entities.add(new Swarmer(world, entities.get(index).getBody().getTransform().getPosition()));
+                    ((AI)entities.get(entities.size()-1)).setEntities(players_list);
                 }
                 world.removeBody(entities.get(index).getBody());
                 entities.remove(index);
@@ -272,7 +288,7 @@ public class PlayState extends State {
         return index;
     }
 
-    public void spawnEntities(float dt){
+    public void spawnEntities(float dt) {
         accum += dt;
         lastSwarmer += dt;
         lastStandard += dt;
@@ -284,7 +300,7 @@ public class PlayState extends State {
         }
         if(lastSwarmer > swarmerSpawnRate) {
             entities.add(new SwarmerBase(world));
-            ((AI)entities.get(entities.size()-1)).setEntities(players);
+            ((AI)entities.get(entities.size()-1)).setEntities(players_list);
             swarmerSpawnRate = MathUtil.clamp(0.99f * swarmerSpawnRate, 4f, 10);
             lastSwarmer = 0;
         }
@@ -300,20 +316,20 @@ public class PlayState extends State {
             a.render(window);
         }
 
-        for(Player p: players)
+        for(Player p: players_list)
             p.render(window);
 
-        for(Player p: players) {
+        for(Player p: players_list) {
             for(int i = 0; i < p.getLives()+1; i++) {
                 Text text = new Text("Player " + (p.getPlayerNumber()), ContentManager.instance.getFont("Ubuntu"), 28);
                 text.setStyle(Text.BOLD);
                 text.setOrigin(0, 0);
-                text.setPosition(0,25+ players.indexOf(p)*60);
+                text.setPosition(0,25+ players_list.indexOf(p)*60);
                 window.draw(text);
 
                 RigidBody body = p.getBody();
                 ConvexShape bodyShape = new ConvexShape(body.getShape().getVertices());
-                bodyShape.setPosition(150+i*30, 50+ players.indexOf(p)*60);
+                bodyShape.setPosition(150+i*30, 50+ players_list.indexOf(p)*60);
                 bodyShape.setFillColor(p.getDefaultColour());
                 window.draw(bodyShape);
             }
@@ -327,7 +343,7 @@ public class PlayState extends State {
                 text.setPosition(State.WORLD_SIZE.x/2,40);
                 window.draw(text);
                 if(alertStopper) {
-                    ContentManager.instance.getSound("alert").play();
+                    ContentManager.instance.getSound("Alert").play();
                     alertStopper = false;}
             }
             else
@@ -340,21 +356,24 @@ public class PlayState extends State {
 
     }
 
-    public void loadContent(){
-        ContentManager.instance.loadTexture("Asteroid", "Asteroid.png");
-        ContentManager.instance.loadSound("pew", "pew.wav");
-        ContentManager.instance.loadSound("expload1", "expload.wav");
-        ContentManager.instance.loadSound("expload2", "expload2.wav");
-        ContentManager.instance.loadSound("expload3", "expload3.wav");
-        ContentManager.instance.loadSound("alert", "alert.wav");
-        ContentManager.instance.loadMusic("playMusic", "music.wav");
-    }
-    public ArrayList getDeadPlayers(){ return deadPlayers; }
+    private void loadContent() {
 
-    public int searchPlayers(ArrayList<Player> list, int find){
-        for(Player p: list)
-            if(p.getPlayerNumber() == find)
-                return players.indexOf(p);
-        return -1;
+        // Load Textures
+        ContentManager.instance.loadTexture("Asteroid", "Asteroid.png");
+
+        // Load Fonts
+        ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");
+
+        // Load Sounds
+        ContentManager.instance.loadSound("Pew", "pew.wav");
+        ContentManager.instance.loadSound("Explode_1", "explode.wav");
+        ContentManager.instance.loadSound("Explode_2", "explode2.wav");
+        ContentManager.instance.loadSound("Explode_3", "explode3.wav");
+        ContentManager.instance.loadSound("Alert", "alert.wav");
+
+        // Load Music
+        ContentManager.instance.loadMusic("PlayMusic", "music.wav");
     }
+
+    public Player[] getPlayers() { return players; }
 }

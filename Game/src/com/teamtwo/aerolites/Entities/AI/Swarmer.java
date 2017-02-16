@@ -2,6 +2,7 @@ package com.teamtwo.aerolites.Entities.AI;
 
 import com.teamtwo.aerolites.Entities.CollisionMask;
 import com.teamtwo.aerolites.Entities.Entity;
+import com.teamtwo.aerolites.Entities.Player;
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
 import com.teamtwo.engine.Messages.Message;
@@ -14,17 +15,17 @@ import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 
-import java.util.ArrayList;
-
 /**
  * @author Matthew Threlfall
  */
 public class Swarmer extends AI {
-    private final float MAX_FORCE = 800;
+
+    private final float maxForce = 800;
+
     private ParticleEmitter jet;
     private Entity target;
 
-    public Swarmer(World world, Vector2f pos){
+    public Swarmer(World world, Vector2f pos) {
         this.onScreen = true;
         BodyConfig config = new BodyConfig();
 
@@ -77,44 +78,45 @@ public class Swarmer extends AI {
     @Override
     public void update(float dt){
         super.update(dt);
+
         jet.update(dt);
-        findTarget();
-        float x = body.getTransform().getPosition().x;
-        float y = body.getTransform().getPosition().y;
         jet.getConfig().position = body.getShape().getTransformed()[0];
+
         if(target != null) {
-            Vector2f pos = target.getBody().getTransform().getPosition();
+            Vector2f position = body.getTransform().getPosition();
+            Vector2f targetPos = target.getBody().getTransform().getPosition();
 
-            float degreeBetween = (float) Math.atan2(pos.y - y, pos.x - x) + MathUtil.PI / 2;
+            float degreeBetween = (float) Math.atan2(targetPos.y - position.y, targetPos.x - position.x)
+                    + MathUtil.PI / 2;
 
-            float xForce = MathUtil.sin(degreeBetween) * MAX_FORCE;
-            float yForce = MathUtil.cos(degreeBetween) * -MAX_FORCE;
+            float xForce = MathUtil.sin(degreeBetween) * maxForce;
+            float yForce = MathUtil.cos(degreeBetween) * -maxForce;
             body.applyForce(new Vector2f(xForce, yForce));
         }
-        else
-        {
-            body.applyForce(new Vector2f(MathUtil.randomInt(-1,1)*MAX_FORCE, MathUtil.randomInt(-1,1)*MAX_FORCE));
+        else {
+            body.applyForce(new Vector2f(MathUtil.randomInt(-1, 1) * maxForce, MathUtil.randomInt(-1,1) * maxForce));
         }
     }
 
-    public void findTarget(){
-        float lowestDistance = 100000000;
-        for(Entity p : entities) {
-            float x = p.getBody().getTransform().getPosition().x;
-            float y = p.getBody().getTransform().getPosition().y;
+    public void findTarget(Player[] players) {
+        float lowestDistance = Float.MAX_VALUE;
 
-            float xAI = getBody().getTransform().getPosition().x;
-            float yAI = getBody().getTransform().getPosition().y;
-            float distanceTo= MathUtil.square(x - xAI) + MathUtil.square(y - yAI);
-            if ( distanceTo < lowestDistance) {
-                lowestDistance = MathUtil.square(x - xAI) + MathUtil.square(y - yAI);
+        for(Player p : players) {
+
+            Vector2f position = body.getTransform().getPosition();
+            Vector2f playerPos = p.getBody().getTransform().getPosition();
+
+            float distanceTo = MathUtil.lengthSq(Vector2f.sub(playerPos, position));
+
+            if (distanceTo < lowestDistance) {
+                lowestDistance = distanceTo;
                 target = p;
             }
         }
     }
 
     @Override
-    public void render(RenderWindow window){
+    public void render(RenderWindow window) {
         jet.render(window);
         super.render(window);
     }
@@ -131,9 +133,4 @@ public class Swarmer extends AI {
 
     @Override
     public Type getType() { return Type.Swamer; }
-
-    @Override
-    public void setEntities(ArrayList entities){
-        this.entities = entities;
-    }
 }
