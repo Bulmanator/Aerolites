@@ -20,6 +20,8 @@ public class Bullet extends Entity {
     private Type owner;
     private int bulletOwner;
     private boolean hit;
+    private boolean asteroid;
+    private boolean enemy;
 
     public Bullet(float lifeTime, Vector2f position,Type owner, float angle, World world){
         MAX_LIFE_TIME = lifeTime;
@@ -27,6 +29,8 @@ public class Bullet extends Entity {
         this.owner = owner;
         bulletOwner = -5;
         hit = false;
+        asteroid = false;
+        enemy = false;
 
         BodyConfig config = new BodyConfig();
 
@@ -107,6 +111,14 @@ public class Bullet extends Entity {
                 hit = true;
                 onScreen = false;
             }
+
+            asteroid = cm.getBodyA().getData().getType() == Type.Asteroid || cm.getBodyB().getData().getType() == Type.Asteroid;
+            asteroid = asteroid && getType() == Type.Bullet;
+
+            enemy = cm.getBodyA().getData().getType() == Type.StandardAI || cm.getBodyB().getData().getType() == Type.StandardAI;
+            enemy |= cm.getBodyA().getData().getType() == Type.Swamer || cm.getBodyB().getData().getType() == Type.Swamer;
+            enemy = enemy && getType() == Type.Bullet;
+
         }
     }
 
@@ -141,5 +153,13 @@ public class Bullet extends Entity {
                 }
                 break;
         }
+    }
+
+    public boolean isAsteroid() {
+        return asteroid;
+    }
+
+    public boolean isEnemy() {
+        return enemy;
     }
 }

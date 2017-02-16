@@ -109,9 +109,9 @@ public class PlayState extends State {
 */
         accum = 0;
         if(playerCount <= 0) {
-            asteroidSpawnRate = 5f;
-            swarmerSpawnRate = 20f;
-            standardTime = 20f;
+            asteroidSpawnRate = 1.8f;
+            swarmerSpawnRate = 8f;
+            standardTime = 10f;
         }
         else {
             asteroidSpawnRate = 1f/playerCount*1.8f;

@@ -56,12 +56,9 @@ public class Player extends Entity {
 
     private float immuneTime;
 
-    //Scoring Variables
-    private float timeAlive;
-    private float score;
-    private float timeBoosting;
-    private float bulletsFired;
-    private float bulletsMissed;
+    //Scoring
+    ScoreObject score;
+
 
     public Player(World world, PlayerNumber player) {
 
@@ -72,8 +69,7 @@ public class Player extends Entity {
         alive = true;
 
         immuneTime = 0;
-        timeAlive = 0;
-        bulletsMissed = 0;
+        score = new ScoreObject();
 
         config.category = CollisionMask.PLAYER;
         config.mask = (CollisionMask.ALL & ~CollisionMask.BULLET);
@@ -182,7 +178,8 @@ public class Player extends Entity {
         shootCooldown += dt;
         timeAlive += dt;
         renderColour = defaultColour;
-        if(immuneTime > 0) {
+        score.incrementTimeAlive(dt);
+        if(immuneTime>0) {
             immuneTime -= dt;
             if (MathUtil.round(immuneTime % 0.3f, 1) == 0)
                 renderColour = Color.WHITE;
@@ -193,13 +190,6 @@ public class Player extends Entity {
 
         // Handle input
         handleInput(dt);
-
-        // If the player has died then round the time alive and time boosting values
-        if(lives < 0) {
-            timeAlive = MathUtil.round(timeAlive, 2);
-            timeBoosting = MathUtil.round(timeBoosting, 2);
-            onScreen = false;
-        }
     }
 
     /**
@@ -290,4 +280,7 @@ public class Player extends Entity {
     public void incrementBulletsMissed() { bulletsMissed++; }
     public void incrementBulletsShot() { bulletsFired++; }
 
+    public ScoreObject getScore() {
+        return score;
+    }
 }

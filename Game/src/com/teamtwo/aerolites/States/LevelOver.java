@@ -1,8 +1,8 @@
 package com.teamtwo.aerolites.States;
 
 import com.teamtwo.aerolites.Entities.Player;
+import com.teamtwo.aerolites.Entities.ScoreObject;
 import com.teamtwo.engine.Utilities.ContentManager;
-import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.Color;
@@ -147,16 +147,17 @@ public class LevelOver extends State {
                 window.draw(scores);
 
                 float playerWidth = (1920-(90 + 40*(playerCount+1)))/(playerCount+1);
-                int font = 32;
+                int font = 20;
                 if(playerCount > 3)
-                    font = 24;
+                    font = 20;
                 for(int i = 0; i < playerCount+1; i++){
                     box = new RectangleShape();
                     box.setPosition(30+40*(i+1)+playerWidth*i,WORLD_SIZE.y / 2 - backgroundYMovement + 100);
                     box.setSize(new Vector2f(playerWidth,playerInfoSize));
                     box.setFillColor(new Color(90,0,0, 240));
                     window.draw(box);
-                    Player player = ((Player)background.getDeadPlayers().get(i));
+                    Player p = ((Player)background.getDeadPlayers().get(i));
+                    ScoreObject s = ((Player)background.getDeadPlayers().get(i)).getScore();
 
                     if(playerInfoSize == 700) {
                         Text text = new Text("Player " + player.getPlayerNumber(), ContentManager.instance.getFont("Ubuntu"), 64);
@@ -207,8 +208,6 @@ public class LevelOver extends State {
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 470);
                         window.draw(text);
-
-
                     }
                 }
                 break;

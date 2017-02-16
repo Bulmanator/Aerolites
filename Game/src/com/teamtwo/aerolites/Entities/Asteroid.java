@@ -114,7 +114,8 @@ public class Asteroid extends Entity {
             CollisionMessage cm = (CollisionMessage) message;
             Type typeA = (Type)cm.getBodyA().getData().getType();
             Type typeB = (Type)cm.getBodyB().getData().getType();
-            expload = typeB == Type.Bullet || typeB == Type.EnemyBullet || typeA == Type.Bullet || typeA == Type.EnemyBullet;
+            expload = typeB == Type.Bullet || typeB == Type.EnemyBullet;
+            expload |= typeA == Type.Bullet || typeA == Type.EnemyBullet;
         }
     }
 
