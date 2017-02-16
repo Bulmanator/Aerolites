@@ -37,20 +37,16 @@ public class Player extends Entity {
 
     private int playNumber;
 
-    //Scoring Variables
-    private float timeAlive;
-    private float score;
-    private float timeBoosting;
-    private float bulletsFired;
-    private float bulletsMissed;
+    //Scoring
+    ScoreObject score;
+
 
     public Player(World world) {
         BodyConfig config = new BodyConfig();
         controller = false;
-        lives = 2;
+        lives = 1;
         immuneTime = 0;
-        timeAlive = 0;
-        bulletsMissed = 0;
+        score = new ScoreObject();
 
         config.category = CollisionMask.PLAYER;
         config.mask = (CollisionMask.ALL & ~CollisionMask.BULLET);
@@ -104,7 +100,7 @@ public class Player extends Entity {
         // Update the particle emitter
         jet.update(dt);
         shootCooldown += dt;
-        timeAlive += dt;
+        score.incrementTimeAlive(dt);
         if(immuneTime>0) {
             immuneTime -= dt;
             if (MathUtil.round(immuneTime % 0.3f, 1)== 0)
@@ -117,8 +113,7 @@ public class Player extends Entity {
         super.update(dt);
         input(dt);
         if(lives<0){
-            timeAlive = MathUtil.round(timeAlive,2);
-            timeBoosting = MathUtil.round(timeBoosting,2);
+            score.roundValues();
             onScreen = false;
         }
     }
@@ -206,7 +201,7 @@ public class Player extends Entity {
     private void boost(float dt){
         // Apply force to move the ship
         move(0, -FORCE_FROM_JET);
-        timeBoosting += dt;
+        score.incrementTimeBoosting(dt);
 
         // Move the particle emitter to be at the bottom of the ship
         jet.getConfig().position = body.getTransform().apply(new Vector2f(0, 15));
@@ -283,19 +278,7 @@ public class Player extends Entity {
         return defaultColour;
     }
 
-    public float getTimeAlive() { return timeAlive; }
-
-    public float getTimeBoosting() { return timeBoosting; }
-
-    public void incrementBulletsMissed() { bulletsMissed++; }
-
-    public void incrementBulletsShot() { bulletsFired++; }
-
-    public float getBulletsFired() {
-        return bulletsFired;
-    }
-
-    public float getBulletsMissed() {
-        return bulletsMissed;
+    public ScoreObject getScore() {
+        return score;
     }
 }

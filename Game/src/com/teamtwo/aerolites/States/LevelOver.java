@@ -1,10 +1,10 @@
 package com.teamtwo.aerolites.States;
 
 import com.teamtwo.aerolites.Entities.Player;
+import com.teamtwo.aerolites.Entities.ScoreObject;
 import com.teamtwo.engine.Input.Controllers.Controller;
 import com.teamtwo.engine.Input.Controllers.Controllers;
 import com.teamtwo.engine.Utilities.ContentManager;
-import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.Color;
@@ -123,6 +123,8 @@ public class LevelOver extends State {
                     if(originalPress && current == Stage.Gameover) {
                         current = Stage.Scores;
                     }
+                    if(originalPress && current == Stage.Scores)
+                        gsm.setState(new PlayState(gsm,-1));
                 }
                 else
                     originalPress = true;
@@ -187,82 +189,80 @@ public class LevelOver extends State {
                 window.draw(scores);
 
                 float playerWidth = (1920-(90 + 40*(playerCount+1)))/(playerCount+1);
-                int font = 32;
+                int font = 20;
                 if(playerCount > 3)
-                    font = 24;
+                    font = 20;
                 for(int i = 0; i < playerCount+1; i++){
                     box = new RectangleShape();
                     box.setPosition(30+40*(i+1)+playerWidth*i,WORLD_SIZE.y / 2 - backgroundYMovement + 100);
                     box.setSize(new Vector2f(playerWidth,playerInfoSize));
                     box.setFillColor(new Color(90,0,0, 240));
                     window.draw(box);
-                    Player player = ((Player)background.getDeadPlayers().get(i));
+                    Player p = ((Player)background.getDeadPlayers().get(i));
+                    ScoreObject s = ((Player)background.getDeadPlayers().get(i)).getScore();
+
 
                     if(playerInfoSize == 700) {
-                        Text text = new Text("Player " + player.getPlayerNumber(), ContentManager.instance.getFont("Ubuntu"), 64);
+                        Text text = new Text("Player " + p.getPlayerNumber(), ContentManager.instance.getFont("Ubuntu"), 64);
                         FloatRect textRect = text.getLocalBounds();
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 110);
                         window.draw(text);
 
-                        text = new Text("Score: ", ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Score: " + s.getScore() + " / " + s.getScoreTotal() +" total", ContentManager.instance.getFont("Ubuntu"), font);
                         textRect = text.getLocalBounds();
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 190);
                         window.draw(text);
 
-                        text = new Text("Asteroids Destroyed: ", ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Asteroids Destroyed: " + s.getAsteroidsDestroyed() +" / " +s.getAsteroidsDestroyedTotal()+" total", ContentManager.instance.getFont("Ubuntu"), font);
                         textRect = text.getLocalBounds();
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 230);
                         window.draw(text);
 
-                        text = new Text("Enemies Killed: ", ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Enemies Killed: "+ s.getEnemiesDestoryed()+" / "+s.getEnemiesDestoryedTotal()+" total", ContentManager.instance.getFont("Ubuntu"), font);
                         textRect = text.getLocalBounds();
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 270);
                         window.draw(text);
 
-                        text = new Text("Time Survived: " + player.getTimeAlive()+"s", ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Time Survived: " + s.getTimeAlive()+"s / "+s.getTimeAliveTotal()+"s"+" total", ContentManager.instance.getFont("Ubuntu"), font);
                         textRect = text.getLocalBounds();
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 310);
                         window.draw(text);
 
-                        text = new Text("Bullets Fired: " + (int)player.getBulletsFired(), ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Bullets Fired: " + s.getBulletsFired()+" / "+s.getBulletsFiredTotal()+" total", ContentManager.instance.getFont("Ubuntu"), font);
                         textRect = text.getLocalBounds();
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 350);
                         window.draw(text);
 
-                        text = new Text("Bullets Missed: " + (int)player.getBulletsMissed(), ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Bullets Missed: " + s.getBulletsMissed()+" / "+s.getBulletsMissedTotal()+" total", ContentManager.instance.getFont("Ubuntu"), font);
                         textRect = text.getLocalBounds();
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 390);
                         window.draw(text);
 
-                        float accuracy = 0;
-                        if(player.getBulletsFired()>0) {
-                            accuracy = MathUtil.round(((player.getBulletsFired()-player.getBulletsMissed()) / player.getBulletsFired()) * 100, 2);
-                        }
-                        text = new Text("Accuracy: " + accuracy+"%", ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Accuracy: " + s.getAccuracy()+"% / "+s.getTotalAccuracy()+"% total", ContentManager.instance.getFont("Ubuntu"), font);
                         textRect = text.getLocalBounds();
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 430);
                         window.draw(text);
 
-                        text = new Text("Time Spent Boosting: " +player.getTimeBoosting()+"s", ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Time Spent Boosting: " +s.getTimeSpentBoosting()+"s / "+s.getTimeSpentBoostingTotal()+"s"+" total", ContentManager.instance.getFont("Ubuntu"), font);
                         textRect = text.getLocalBounds();
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 470);
                         window.draw(text);
-
-
                     }
                 }
                 break;
         }
     }
+
+
 
     @Override
     public void dispose() {

@@ -97,9 +97,9 @@ public class PlayState extends State {
         }
         accum = 0;
         if(playerCount<=0) {
-            asteroidSpawnRate = 5f;
-            swarmerSpawnRate = 20f;
-            standardTime = 20f;
+            asteroidSpawnRate = 1.8f;
+            swarmerSpawnRate = 8f;
+            standardTime = 10f;
         }
         else {
             asteroidSpawnRate = 1f/playerCount*1.8f;
@@ -157,9 +157,21 @@ public class PlayState extends State {
                 if(entities.get(i).getType() == Entity.Type.Bullet){
                     int bulletOwner = ((Bullet)entities.get(i)).getBulletOwner();
                     if(searchPlayers(players,bulletOwner)>=0 && !((Bullet) entities.get(i)).isHit())
-                        players.get(searchPlayers(players,bulletOwner)).incrementBulletsMissed();
+                        players.get(searchPlayers(players,bulletOwner)).getScore().incrementBulletsMissed();
                     else if(searchPlayers(deadPlayers,bulletOwner)>=0 && !((Bullet) entities.get(i)).isHit())
-                        players.get(searchPlayers(deadPlayers,bulletOwner)).incrementBulletsMissed();
+                        players.get(searchPlayers(deadPlayers,bulletOwner)).getScore().incrementBulletsMissed();
+
+                    //Asteroid counts
+                    if(searchPlayers(players,bulletOwner)>=0 && !((Bullet) entities.get(i)).isAsteroid())
+                        players.get(searchPlayers(players,bulletOwner)).getScore().incrementAsteroidsDestoryed();
+                    else if(searchPlayers(deadPlayers,bulletOwner)>=0 && !((Bullet) entities.get(i)).isAsteroid())
+                        players.get(searchPlayers(deadPlayers,bulletOwner)).getScore().incrementAsteroidsDestoryed();
+
+                    //enemy counts
+                    if(searchPlayers(players,bulletOwner)>=0 && !((Bullet) entities.get(i)).isEnemy())
+                        players.get(searchPlayers(players,bulletOwner)).getScore().incrementEnemiesKilled();
+                    else if(searchPlayers(deadPlayers,bulletOwner)>=0 && !((Bullet) entities.get(i)).isEnemy())
+                        players.get(searchPlayers(deadPlayers,bulletOwner)).getScore().incrementEnemiesKilled();
                 }
 
                 world.removeBody(entities.get(i).getBody());
@@ -206,7 +218,7 @@ public class PlayState extends State {
             Vector2f pos = new Vector2f(x, y);
             entities.add(new Bullet(2, pos, Entity.Type.Bullet, p.getBody().getTransform().getAngle(), world));
             ((Bullet)entities.get(entities.size()-1)).setBulletOwner(p.getPlayerNumber());
-            p.incrementBulletsShot();
+            p.getScore().incrementBulletsFired();
             ContentManager.instance.getSound("pew").play();
             float pitch = ContentManager.instance.getSound("pew").getPitch();
             ContentManager.instance.getSound("pew").setPitch(pitch + MathUtil.randomFloat(-0.1f,0.1f));
