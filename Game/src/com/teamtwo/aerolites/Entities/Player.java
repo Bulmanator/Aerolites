@@ -44,7 +44,7 @@ public class Player extends Entity {
     public Player(World world) {
         BodyConfig config = new BodyConfig();
         controller = false;
-        lives = 1;
+        lives = 20;
         immuneTime = 0;
         score = new ScoreObject();
 
@@ -128,7 +128,6 @@ public class Player extends Entity {
     public void receiveMessage(Message message) {
         if(message.getType() == Message.Type.Collision) {
             CollisionMessage cm = (CollisionMessage) message;
-            ///System.out.println(cm.getBodyA().getData().getType() + " collided with " + cm.getBodyB().getData().getType());
             if(cm.getBodyB().getData().getType() != Type.Bullet && cm.getBodyA().getData().getType() != Type.Bullet){
                 if(cm.getBodyB().getData().getType() != Type.Player || cm.getBodyA().getData().getType() != Type.Player) {
                     if(immuneTime<=0){
