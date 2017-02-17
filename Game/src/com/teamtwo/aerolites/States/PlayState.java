@@ -43,9 +43,7 @@ public class PlayState extends State {
     private float bossSpawnTime;
     private int playerCount;
 
-    //TODO make boss scale
     //TODO make configs work
-    //TODO shoot bullets out of ait
     //TODO make power ups work
     //TODO star map
     //TODO shop and stuff
@@ -74,7 +72,7 @@ public class PlayState extends State {
         players = new ArrayList<>();
         deadPlayers = new ArrayList<>();
 
-        bossSpawnTime = 0;
+        bossSpawnTime = 120;
         bossTimer = 0;
         boss = false;
         alertStopper = true;
@@ -108,18 +106,21 @@ public class PlayState extends State {
 
         ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");
         loadContent();
-        ContentManager.instance.getMusic("playMusic").setVolume(100);
         ContentManager.instance.getMusic("playMusic").play();
+        ContentManager.instance.getMusic("playMusic").setVolume(10f);
+
     }
 
     @Override
     public void update(float dt) {
+        window.setTitle(gsm.game.getEngine().getFps()+" fps");
         world.update(dt);
         bossTimer+=dt;
 
         if(bossTimer -6 > bossSpawnTime && !boss) {
             boss = true;
             entities.add(new Hexaboss(world));
+            ((Hexaboss)entities.get(entities.size()-1)).setLives(playerCount+1);
         }
         else if(bossTimer < bossSpawnTime)
             spawnEntities(dt);
@@ -219,7 +220,6 @@ public class PlayState extends State {
             p.getScore().incrementBulletsFired();
             ContentManager.instance.getSound("pew").play();
             float pitch = ContentManager.instance.getSound("pew").getPitch();
-            ContentManager.instance.getSound("pew").setPitch(pitch + MathUtil.randomFloat(-0.1f,0.1f));
         }
         return index;
     }
@@ -359,6 +359,7 @@ public class PlayState extends State {
         ContentManager.instance.loadSound("alert", "alert.wav");
         ContentManager.instance.loadMusic("playMusic", "music.wav");
         ContentManager.instance.loadMusic("hexagon", "focus.ogg");
+        ContentManager.instance.loadMusic("hexagonloop", "focusloop.ogg");
     }
     public ArrayList getDeadPlayers(){ return deadPlayers; }
 

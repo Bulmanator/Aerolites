@@ -123,8 +123,6 @@ public class LevelOver extends State {
                     if(originalPress && current == Stage.Gameover) {
                         current = Stage.Scores;
                     }
-                    if(originalPress && current == Stage.Scores)
-                        gsm.setState(new PlayState(gsm,-1));
                 }
                 else
                     originalPress = true;

@@ -44,7 +44,7 @@ public class Player extends Entity {
     public Player(World world) {
         BodyConfig config = new BodyConfig();
         controller = false;
-        lives = 20;
+        lives = 2;
         immuneTime = 0;
         score = new ScoreObject();
 
