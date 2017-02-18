@@ -53,9 +53,7 @@ public class PlayState extends State {
     //TODO make power ups work
     //TODO star map
     //TODO shop and stuff
-    //TODO count asteroids destoyed and enemies killed and show them on score board
     //TODO make another boss
-    //TODO make the scores save over levels
     //TODO make Tijans shit work
     //TODO tie everything together
     //TODO fix LevelOver multiple player next shite
@@ -335,7 +333,9 @@ public class PlayState extends State {
         ContentManager.instance.loadSound("Alert", "alert.wav");
 
         // Load Music
-        ContentManager.instance.loadMusic("PlayMusic", "music.wav");
+        ContentManager.instance.loadMusic("PlayMusic", "Music.wav");
+        ContentManager.instance.loadMusic("Hexagon", "Focus.ogg");
+        ContentManager.instance.loadMusic("HexagonLoop", "FocusLoop.ogg");
     }
 
     public Player[] getPlayers() { return players; }

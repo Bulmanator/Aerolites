@@ -64,7 +64,7 @@ public class Player extends Entity implements Disposable {
     private float immuneTime;
 
     //Scoring
-    Score score;
+    private Score score;
 
 
     public Player(World world, PlayerNumber player) {
