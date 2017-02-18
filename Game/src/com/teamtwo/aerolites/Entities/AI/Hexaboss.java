@@ -43,11 +43,15 @@ public class Hexaboss extends AI {
     private ArrayList<Vector2f> bulletPoints;
     private ArrayList<Float> bulletAngles;
 
-    public Hexaboss(World world){
+    public Hexaboss(World world, int lives) {
 
-        BodyConfig config = new BodyConfig();
+        this.lives = lives;
+        totalLives = lives;
+
         this.onScreen = true;
         waitNeeded = false;
+
+        BodyConfig config = new BodyConfig();
 
         config.category = CollisionMask.HEXABOSS;
         config.mask = CollisionMask.ALL & (~CollisionMask.ENEMY_BULLET);
@@ -63,23 +67,21 @@ public class Hexaboss extends AI {
 
         config.shape = new Polygon(vertices);
         config.position = new Vector2f(State.WORLD_SIZE.x/2,-250);
-        this.offScreenAllowance = new Vector2f(250,250);
-
-        renderColour = Color.CYAN;
 
         body = world.createBody(config);
         body.setData(this);
+        body.registerObserver(this, Message.Type.Collision);
+
+        this.offScreenAllowance = new Vector2f(250,250);
+        renderColour = Color.CYAN;
 
         timeBetweenShots = 5f;
         cooldown = 0;
-        lives = 360;
-        totalLives = 360;
 
         attackTime = 2;
         timeRunning = 0;
         pattern = AttackPattern.Wait;
 
-        body.registerObserver(this, Message.Type.Collision);
         bulletPoints = new ArrayList<>();
         bulletAngles = new ArrayList<>();
     }
@@ -89,6 +91,7 @@ public class Hexaboss extends AI {
         renderColour = new Color((int)MathUtil.lerp(0,255,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)));
         if(lives<0){
             onScreen = false;
+            alive = false;
         }
         if(body.getTransform().getPosition().y>State.WORLD_SIZE.y/2){
             body.setVelocity(new Vector2f(0,0));
@@ -262,4 +265,6 @@ public class Hexaboss extends AI {
         lives = 180*players;
         totalLives = 180*players;
     }
+
+    public boolean isAlive() { return alive; }
 }

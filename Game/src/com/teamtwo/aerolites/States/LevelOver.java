@@ -1,7 +1,10 @@
 package com.teamtwo.aerolites.States;
 
 import com.teamtwo.aerolites.Entities.Player;
-import com.teamtwo.aerolites.Entities.ScoreObject;
+import com.teamtwo.aerolites.Utilities.Score;
+import com.teamtwo.engine.Input.Controllers.Button;
+import com.teamtwo.engine.Input.Controllers.ControllerState;
+import com.teamtwo.engine.Input.Controllers.Controllers;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
@@ -23,32 +26,43 @@ public class LevelOver extends State {
     }
 
     private PlayState background;
+
     private Stage current;
     private float backgroundPos;
     private float backgroundYMovement;
     private int playerCount;
-    private boolean originalPress;
 
     private float playerInfoSize;
     private String bannerMessage;
 
+    private Player[] players;
+    private ControllerState[] previousStates;
+    private boolean previousSpace;
 
-    public LevelOver(GameStateManager gsm, PlayState background, int playerCount, boolean win) {
+    public LevelOver(GameStateManager gsm, PlayState background, boolean win) {
         super(gsm);
         this.background = background;
-        this.playerCount = playerCount;
-        if(playerCount < 0) {
-            this.playerCount = -(playerCount) - 1;
-        }
+
         current = Stage.GameOver;
         backgroundPos = 0;
         backgroundYMovement = 0;
-        originalPress = false;
+        previousSpace = false;
         playerInfoSize = 0;
         if(win)
             bannerMessage = "Level Cleared!";
         else
             bannerMessage = "Game Over";
+
+        players = background.getPlayers();
+        playerCount = players.length;
+        previousStates = new ControllerState[playerCount];
+        for(int i = 0; i < playerCount; i++) {
+            if(players[i].isController()) {
+                previousStates[i] = Controllers.getState(players[i].getNumber());
+            }
+        }
+
+        previousSpace = Keyboard.isKeyPressed(Keyboard.Key.SPACE);
     }
 
     @Override
@@ -56,13 +70,29 @@ public class LevelOver extends State {
         background.update(dt);
         if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE))
             game.getEngine().close();
-        switch (current){
+        switch (current) {
             case GameOver:
                 if(backgroundPos < 1920) {
                     backgroundPos += 4000 * dt;
                 }
                 else if(backgroundPos > 1920) {
                     backgroundPos = 1920;
+                }
+
+                for(int i = 0; i < playerCount; i++) {
+                    Player player = players[i];
+                    if(player.isController()) {
+                        ControllerState state = Controllers.getState(player.getNumber());
+                        if(state.button(Button.A) && !previousStates[i].button(Button.A)) {
+                            current = Stage.Scores;
+                        }
+                        previousStates[i] = state;
+                    }
+                    else if(Keyboard.isKeyPressed(Keyboard.Key.SPACE) && !previousSpace) {
+                        current = Stage.Scores;
+                    }
+
+                    previousSpace = Keyboard.isKeyPressed(Keyboard.Key.SPACE);
                 }
                 break;
             case Scores:
@@ -121,15 +151,15 @@ public class LevelOver extends State {
                 gameOverText = new Text(bannerMessage, ContentManager.instance.getFont("Ubuntu"), 120);
 
                 box = new RectangleShape();
-                box.setPosition(0,WORLD_SIZE.y/2-90 - backgroundYMovement);
+                box.setPosition(0, WORLD_SIZE.y / 2 - 90 - backgroundYMovement);
                 box.setSize(new Vector2f(backgroundPos,180f));
                 box.setFillColor(new Color(255,0,0, 200));
                 window.draw(box);
 
                 box = new RectangleShape();
-                box.setPosition(0,WORLD_SIZE.y/2+90 - backgroundYMovement);
-                box.setSize(new Vector2f(backgroundPos,60 + backgroundYMovement*1.8f));
-                box.setFillColor(new Color(122,0,0, 230));
+                box.setPosition(0, WORLD_SIZE.y / 2 + 90 - backgroundYMovement);
+                box.setSize(new Vector2f(backgroundPos, 60 + backgroundYMovement * 1.8f));
+                box.setFillColor(new Color(122, 0, 0, 230));
                 window.draw(box);
 
                 gameOverText.setStyle(Text.BOLD);
@@ -150,17 +180,21 @@ public class LevelOver extends State {
                 int font = 20;
                 if(playerCount > 3)
                     font = 20;
-                for(int i = 0; i < playerCount+1; i++){
+                for(int i = 0; i < playerCount; i++){
                     box = new RectangleShape();
                     box.setPosition(30+40*(i+1)+playerWidth*i,WORLD_SIZE.y / 2 - backgroundYMovement + 100);
                     box.setSize(new Vector2f(playerWidth,playerInfoSize));
-                    box.setFillColor(new Color(90,0,0, 240));
+                    box.setFillColor(new Color(90, 0, 0, 240));
                     window.draw(box);
-                    Player p = ((Player)background.getDeadPlayers().get(i));
-                    ScoreObject s = ((Player)background.getDeadPlayers().get(i)).getScore();
+
+                    Player player = players[i];
+                    int number = player.getNumber().ordinal() + 1;
+
+                    Score score = player.getScore();
+                    score.roundValues();
 
                     if(playerInfoSize == 700) {
-                        Text text = new Text("Player " + player.getPlayerNumber(), ContentManager.instance.getFont("Ubuntu"), 64);
+                        Text text = new Text("Player " + number, ContentManager.instance.getFont("Ubuntu"), 64);
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 110);
                         window.draw(text);
@@ -180,31 +214,27 @@ public class LevelOver extends State {
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 270);
                         window.draw(text);
 
-                        text = new Text("Time Survived: " + player.getTimeAlive()+"s", ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Time Survived: " + score.getTimeAlive() +"s", ContentManager.instance.getFont("Ubuntu"), font);
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 310);
                         window.draw(text);
 
-                        text = new Text("Bullets Fired: " + (int)player.getBulletsFired(), ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Bullets Fired: " + score.getBulletsFired(), ContentManager.instance.getFont("Ubuntu"), font);
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 350);
                         window.draw(text);
 
-                        text = new Text("Bullets Missed: " + (int)player.getBulletsMissed(), ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Bullets Missed: " + score.getBulletsMissed(), ContentManager.instance.getFont("Ubuntu"), font);
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 390);
                         window.draw(text);
 
-                        float accuracy = 0;
-                        if(player.getBulletsFired()>0) {
-                            accuracy = MathUtil.round(((player.getBulletsFired()-player.getBulletsMissed()) / player.getBulletsFired()) * 100, 2);
-                        }
-                        text = new Text("Accuracy: " + accuracy+"%", ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Accuracy: " + score.getAccuracy() + "%", ContentManager.instance.getFont("Ubuntu"), font);
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 430);
                         window.draw(text);
 
-                        text = new Text("Time Spent Boosting: " +player.getTimeBoosting()+"s", ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Time Spent Boosting: " + score.getTimeBoosting() + "s", ContentManager.instance.getFont("Ubuntu"), font);
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 470);
                         window.draw(text);

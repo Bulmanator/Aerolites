@@ -17,8 +17,23 @@ public class LevelConfig {
         ArenaClear
     }
 
+    /**
+     * An enumeration for the difficulty of the level
+     */
+    public enum Difficulty {
+        /** Easy difficulty */
+        Easy,
+        /** Medium difficulty */
+        Medium,
+        /** Hard difficulty */
+        Hard
+    }
+
     /** The type of level to create, default = {@link Type#TimeSurvival}*/
     public Type levelType;
+
+    /** The difficulty of the level, default = {@link Difficulty#Medium} */
+    public Difficulty difficulty;
 
     /** The base asteroid spawn rate, default = 1.1 */
     public float asteroidBaseRate;
@@ -48,6 +63,7 @@ public class LevelConfig {
     public LevelConfig() {
 
         levelType = Type.TimeSurvival;
+        difficulty = Difficulty.Medium;
 
         asteroidBaseRate = 1.1f;
 
