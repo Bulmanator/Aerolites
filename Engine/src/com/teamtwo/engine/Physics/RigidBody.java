@@ -45,6 +45,9 @@ public class RigidBody implements Updateable, Listener {
     private boolean alive;
     private Typeable data;
 
+    // The world the body is contained in
+    private World world;
+
     // Collision Data
     private int mask;
     private int category;
@@ -56,7 +59,7 @@ public class RigidBody implements Updateable, Listener {
      * Creates a new rigid body from the config given
      * @param config The configuration to make to body from
      */
-    RigidBody(BodyConfig config) {
+    RigidBody(BodyConfig config, World world) {
 
         if(config.shape == null)
             throw new IllegalArgumentException("Error: Shape cannot be null");
@@ -81,6 +84,8 @@ public class RigidBody implements Updateable, Listener {
 
         mask = config.mask;
         category = config.category;
+
+        this.world = world;
 
         observers = new HashMap<>();
     }
@@ -290,6 +295,12 @@ public class RigidBody implements Updateable, Listener {
      * @return The data of the body
      */
     public Typeable getData() { return data; }
+
+    /**
+     * Gets the world the body is contained within
+     * @return The world
+     */
+    public World getWorld() { return world; }
 
     /**
      * Sets the mass of the body to the value specified

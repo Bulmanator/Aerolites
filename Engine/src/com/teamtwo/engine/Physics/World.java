@@ -164,7 +164,7 @@ public class World implements Updateable, EntityRenderable {
      * @return The body instance which was created
      */
     public RigidBody createBody(BodyConfig config) {
-        RigidBody rb = new RigidBody(config);
+        RigidBody rb = new RigidBody(config, this);
         bodies.add(rb);
 
         return rb;

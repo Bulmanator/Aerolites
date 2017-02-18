@@ -19,15 +19,14 @@ import org.jsfml.system.Vector2f;
 public class Asteroid extends Entity {
 
     private boolean onScreen;
-    private boolean expload;
+    private boolean explode;
 
     /**
      * Constructs a new procedurally generated asteroid
      * @param world The world which is used to create the body
      */
     public Asteroid(World world) {
-        super();
-        expload = false;
+        explode = false;
         onScreen = true;
         BodyConfig config = new BodyConfig();
 
@@ -78,9 +77,8 @@ public class Asteroid extends Entity {
     }
 
     public Asteroid(World world, Vector2f pos, Vector2f vel, float radius) {
-        super();
         this.onScreen = true;
-        this.expload = false;
+        this.explode = false;
         BodyConfig config = new BodyConfig();
 
         config.position = pos;
@@ -89,6 +87,9 @@ public class Asteroid extends Entity {
         config.restitution = 0.3f;
         config.velocity = vel;
         config.angularVelocity = MathUtil.randomFloat(0, MathUtil.PI / 4f);
+
+        config.category = CollisionMask.ASTEROID;
+        config.mask = CollisionMask.ALL;
 
         config.density = 0.6f;
         body = world.createBody(config);
@@ -114,8 +115,9 @@ public class Asteroid extends Entity {
             CollisionMessage cm = (CollisionMessage) message;
             Type typeA = (Type)cm.getBodyA().getData().getType();
             Type typeB = (Type)cm.getBodyB().getData().getType();
-            expload = typeB == Type.Bullet || typeB == Type.EnemyBullet;
-            expload |= typeA == Type.Bullet || typeA == Type.EnemyBullet;
+
+            explode = typeB == Type.Bullet || typeB == Type.EnemyBullet;
+            explode |= typeA == Type.Bullet || typeA == Type.EnemyBullet;
         }
     }
 
@@ -133,13 +135,11 @@ public class Asteroid extends Entity {
     }
 
     @Override
-    public void checkOffScreen(){
-        if(body.getTransform().getPosition().x < -offScreenAllowance.x || body.getTransform().getPosition().x > State.WORLD_SIZE.x + offScreenAllowance.x){
-            this.onScreen = false;
-        }
-        else
-            this.onScreen = !(body.getTransform().getPosition().y < -offScreenAllowance.y
-                    || body.getTransform().getPosition().y > State.WORLD_SIZE.y + offScreenAllowance.y);
+    public void checkOffScreen() {
+        onScreen = !(body.getTransform().getPosition().x < -offScreenAllowance.x
+                || body.getTransform().getPosition().x > State.WORLD_SIZE.x + offScreenAllowance.x)
+                && !(body.getTransform().getPosition().y < -offScreenAllowance.y
+                || body.getTransform().getPosition().y > State.WORLD_SIZE.y + offScreenAllowance.y);
     }
 
     @Override
@@ -150,7 +150,7 @@ public class Asteroid extends Entity {
     @Override
     public Type getType() { return Type.Asteroid; }
 
-    public boolean shouldExpload() {
-        return expload;
+    public boolean shouldExplode() {
+        return explode;
     }
 }

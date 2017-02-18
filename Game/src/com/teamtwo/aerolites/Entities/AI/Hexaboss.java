@@ -16,19 +16,20 @@ import org.jsfml.system.Vector2f;
 
 import java.util.ArrayList;
 
-import static com.teamtwo.aerolites.Entities.AI.Hexaboss.attackPattern.wait;
+import static com.teamtwo.aerolites.Entities.AI.Hexaboss.AttackPattern.Wait;
 
 
 /**
  * @author Matthew Threlfall
  */
 public class Hexaboss extends AI {
-    public enum attackPattern{
-        spinOne,
-        spinTwo,
-        triforce,
-        standOne,
-        wait
+
+    public enum AttackPattern{
+        SpinOne,
+        SpinTwo,
+        Triforce,
+        StandOne,
+        Wait
     }
 
     private float angle;
@@ -38,6 +39,7 @@ public class Hexaboss extends AI {
     private float lives;
     private float totalLives;
 
+    private AttackPattern pattern;
     //music stuff
     private boolean inPlace;
     private float fadeout;
@@ -54,13 +56,17 @@ public class Hexaboss extends AI {
     private ArrayList<Vector2f> bulletPoints;
     private ArrayList<Float> bulletAngles;
 
-    public Hexaboss(World world){
+    public Hexaboss(World world, int lives) {
 
-        BodyConfig config = new BodyConfig();
+        this.lives = lives;
+        totalLives = lives;
+
         this.onScreen = true;
         waitNeeded = false;
         inPlace = false;
         fadeout = 10;
+
+        BodyConfig config = new BodyConfig();
 
         config.category = CollisionMask.HEXABOSS;
         config.mask = CollisionMask.ALL & (~CollisionMask.ENEMY_BULLET);
@@ -76,26 +82,23 @@ public class Hexaboss extends AI {
 
         config.shape = new Polygon(vertices);
         config.position = new Vector2f(State.WORLD_SIZE.x/2,-250);
-        this.offScreenAllowance = new Vector2f(250,250);
-
-        renderColour = Color.CYAN;
 
         body = world.createBody(config);
         body.setData(this);
+        body.registerObserver(this, Message.Type.Collision);
+
+        this.offScreenAllowance = new Vector2f(250,250);
+        renderColour = Color.CYAN;
 
         timeBetweenShots = 5f;
         cooldown = 0;
-        lives = 360;
-        totalLives = 360;
 
         warningTime = 2;
         warnTimer = 9;
         attackTime = 0;
         timeRunning = 0;
-        pattern = attackPattern.wait;
+        pattern = AttackPattern.Wait;
 
-
-        body.registerObserver(this, Message.Type.Collision);
         bulletPoints = new ArrayList<>();
         bulletAngles = new ArrayList<>();
     }
@@ -106,6 +109,7 @@ public class Hexaboss extends AI {
         renderColour = new Color((int)MathUtil.lerp(0,255,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)));
         if(lives<0){
             onScreen = false;
+            alive = false;
         }
         if(body.getTransform().getPosition().y>State.WORLD_SIZE.y/2){
             if(!inPlace)
@@ -134,7 +138,7 @@ public class Hexaboss extends AI {
         {
             timeRunning = 0;
             if(waitNeeded){
-                pattern = wait;
+                pattern = Wait;
                 waitNeeded = false;
                 waitTurnSpeed = (MathUtil.PI/8)*dt*MathUtil.randomInt(-4,4);
                 attackTime = 0.5f;
@@ -180,7 +184,7 @@ public class Hexaboss extends AI {
 
     public void attack(float dt){
         switch (pattern) {
-            case spinOne:
+            case SpinOne:
                 warnTimer+=dt;
 
                 bulletPoints.clear();
@@ -196,7 +200,7 @@ public class Hexaboss extends AI {
                 }
                 angle += (MathUtil.PI/2)*dt*MathUtil.sin(timeRunning*5);
                 break;
-            case spinTwo:
+            case SpinTwo:
 
                 warnTimer+=dt;
 
@@ -228,6 +232,7 @@ public class Hexaboss extends AI {
                     shooting = true;
                     cooldown = 0;
                 }
+                angle -= (MathUtil.PI/4)*dt;
                 break;
             case standOne:
                 body.setAngularVelocity(0);
@@ -267,11 +272,8 @@ public class Hexaboss extends AI {
                     cooldown = 0;
                 }
 
-
-
-
                 break;
-            case wait:
+            case Wait:
                 angle -= waitTurnSpeed;
                 break;
         }
@@ -286,13 +288,13 @@ public class Hexaboss extends AI {
     public void receiveMessage(Message message) {
         if (message.getType() == Message.Type.Collision) {
             CollisionMessage cm = (CollisionMessage) message;
-            boolean hit = cm.getBodyA().getData().getType() == Type.Bullet ||  cm.getBodyB().getData().getType() == Type.Bullet;
+            boolean hit = cm.getBodyA().getData().getType() == Type.Bullet || cm.getBodyB().getData().getType() == Type.Bullet;
             if(hit) {
                 lives--;
             }
         }
     }
-    private void addFirePoints(int face){
+    private void addFirePoints(int face) {
         Vector2f pointOne;
         Vector2f pointTwo;
         switch (face) {
@@ -302,12 +304,12 @@ public class Hexaboss extends AI {
                 break;
             default:
                 pointOne = getBody().getShape().getTransformed()[face];
-                pointTwo = getBody().getShape().getTransformed()[face+1];
+                pointTwo = getBody().getShape().getTransformed()[face + 1];
                 break;
         }
 
-        float xAdd = 40*MathUtil.sin(angle + (face)*60*MathUtil.DEG_TO_RAD);
-        float yAdd = -40*MathUtil.cos(angle + (face)*60*MathUtil.DEG_TO_RAD);
+        float xAdd = 40 * MathUtil.sin(angle + (face) * 60 * MathUtil.DEG_TO_RAD);
+        float yAdd = -40 * MathUtil.cos(angle + (face) * 60 * MathUtil.DEG_TO_RAD);
 
         pointOne = new Vector2f(pointOne.x+xAdd, pointOne.y+yAdd);
         pointTwo = new Vector2f(pointTwo.x+xAdd, pointTwo.y+yAdd);
@@ -371,4 +373,6 @@ public class Hexaboss extends AI {
         lives = 360*players;
         totalLives = 360*players;
     }
+
+    public boolean isAlive() { return alive; }
 }
