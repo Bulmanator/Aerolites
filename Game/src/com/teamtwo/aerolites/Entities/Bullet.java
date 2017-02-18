@@ -108,6 +108,10 @@ public class Bullet extends Entity {
                 if(typeA == Type.StandardAI || typeB == Type.StandardAI) {
                     alive = true;
                 }
+                else
+                {
+                    onScreen = false;
+                }
             }
             else {
                 asteroid = typeA == Type.Asteroid || typeB == Type.Asteroid;

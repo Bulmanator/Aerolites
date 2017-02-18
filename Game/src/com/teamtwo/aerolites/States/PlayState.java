@@ -74,7 +74,7 @@ public class PlayState extends State {
 
         entities = new ArrayList<>();
 
-//        bossSpawnTime = 120;
+ //       bossSpawnTime = 120;
         bossTimer = 0;
         bossSpawned = false;
 //        alertStopper = true;
@@ -336,6 +336,7 @@ public class PlayState extends State {
 
         // Load Music
         ContentManager.instance.loadMusic("PlayMusic", "music.wav");
+        ContentManager.instance.loadMusic("Hexagon", "focus.ogg");
     }
 
     public Player[] getPlayers() { return players; }

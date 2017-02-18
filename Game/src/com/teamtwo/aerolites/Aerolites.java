@@ -15,17 +15,18 @@ public class Aerolites extends Game {
     public void initialise() {
         stateManager = new GameStateManager(this);
 
-        int playerCount = 1;
+        int playerCount = 2;
 
         LevelConfig config = new LevelConfig();
-        config.asteroidBaseRate = 1.0f / (playerCount * 1.8f);
+        config.asteroidBaseRate = 1.8f / (playerCount * 1.8f);
         config.swarmerBaseRate = 6.0f / (float) playerCount;
         config.aiBaseRate = 8.0f / (float) playerCount;
 
-        config.bossLives = 180 * playerCount;
-        config.bossSpawnTime = 120;
+        config.bossLives = 270 * playerCount;
+        config.bossSpawnTime = 0;
 
         config.players[0] = InputType.Controller;
+        config.players[1] = InputType.Keyboard;
 
         stateManager.addState(new PlayState(stateManager, config));
     }

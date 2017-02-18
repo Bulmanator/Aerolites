@@ -125,7 +125,9 @@ public class Player extends Entity implements Disposable {
     private void setColours() {
         switch (player) {
             case One:
-                defaultColour = new Color(244, 75, 66);
+                defaultColour = new Color(61, 64, 255);
+                jet.getConfig().colours[0] = new Color(255,255,0);
+                jet.getConfig().colours[1] = new Color(255,0,0);
                 break;
             case Two:
                 defaultColour = new Color(255, 228, 94);
@@ -140,7 +142,7 @@ public class Player extends Entity implements Disposable {
                 defaultColour = new Color(124, 235, 255);
                 break;
             case Six:
-                defaultColour = new Color(61, 64, 255);
+                defaultColour = new Color(244, 75, 66);
                 break;
             case Seven:
                 defaultColour = new Color(204, 86, 255);

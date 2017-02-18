@@ -39,12 +39,11 @@ public class Hexaboss extends AI {
     private float lives;
     private float totalLives;
 
-    private AttackPattern pattern;
     //music stuff
     private boolean inPlace;
     private float fadeout;
 
-    private attackPattern pattern;
+    private AttackPattern pattern;
     private float attackTime;
     private float timeRunning;
     private boolean waitNeeded;
@@ -93,8 +92,8 @@ public class Hexaboss extends AI {
         timeBetweenShots = 5f;
         cooldown = 0;
 
-        warningTime = 2;
-        warnTimer = 9;
+        warningTime = 0;
+        warnTimer = 0;
         attackTime = 0;
         timeRunning = 0;
         pattern = AttackPattern.Wait;
@@ -115,10 +114,10 @@ public class Hexaboss extends AI {
             if(!inPlace)
             {
                 inPlace = true;
-                ContentManager.instance.getMusic("hexagon").play();
-                ContentManager.instance.getMusic("hexagon").setVolume(10f);
-                ContentManager.instance.getMusic("hexagon").setLoop(true);
-                ContentManager.instance.getMusic("playMusic").stop();
+                ContentManager.instance.getMusic("Hexagon").play();
+                ContentManager.instance.getMusic("Hexagon").setVolume(10f);
+                ContentManager.instance.getMusic("Hexagon").setLoop(true);
+                ContentManager.instance.getMusic("PlayMusic").stop();
             }
             body.setVelocity(new Vector2f(0,0));
             body.setTransform(new Vector2f(State.WORLD_SIZE.x/2, State.WORLD_SIZE.y/2),angle);
@@ -127,21 +126,21 @@ public class Hexaboss extends AI {
         }
         else {
             body.applyForce(new Vector2f(0, 5000000));
-            ContentManager.instance.getMusic("playMusic").setVolume(fadeout);
-            fadeout -= 0.3f;
+            ContentManager.instance.getMusic("PlayMusic").setVolume(fadeout);
+            fadeout -= 0.3f*dt;
         }
     }
 
     public void pickPattern(float dt){
         timeRunning += dt;
-        if(timeRunning> attackTime+warningTime)
+        if(timeRunning > attackTime+warningTime)
         {
             timeRunning = 0;
             if(waitNeeded){
                 pattern = Wait;
                 waitNeeded = false;
                 waitTurnSpeed = (MathUtil.PI/8)*dt*MathUtil.randomInt(-4,4);
-                attackTime = 0.5f;
+                attackTime = 0.2f;
             }
             else {
                 waitNeeded = true;
@@ -150,31 +149,31 @@ public class Hexaboss extends AI {
                 switch (option) {
                     case 0:
                         warnTimer = 0;
-                        warningTime = 2;
+                        warningTime = 1;
                         timeBetweenShots = 0.18f;
                         attackTime = 6;
-                        pattern = attackPattern.spinTwo;
+                        pattern = AttackPattern.SpinTwo;
                         break;
                     case 1:
                         warnTimer = 0;
-                        warningTime = 2;
+                        warningTime = 1;
                         timeBetweenShots = 0.25f;
                         attackTime = 6;
-                        pattern = attackPattern.spinOne;
+                        pattern = AttackPattern.SpinOne;
                         break;
                     case 2:
                         warnTimer = 0;
                         warningTime = 2;
                         timeBetweenShots = 0.18f;
-                        attackTime = 3;
-                        pattern = attackPattern.triforce;
+                        attackTime = 6;
+                        pattern = AttackPattern.Triforce;
                         break;
                     case 3:
                         warnTimer = 0;
-                        warningTime = 1;
+                        warningTime = 0.6f;
                         timeBetweenShots = 0.25f;
                         attackTime = 9;
-                        pattern = attackPattern.standOne;
+                        pattern = AttackPattern.StandOne;
                         break;
 
                 }
@@ -217,8 +216,7 @@ public class Hexaboss extends AI {
                 }
                 angle -= (MathUtil.PI/3)*dt;
                 break;
-            case triforce:
-                angle += (MathUtil.PI/3)*dt;
+            case Triforce:
                 warnTimer += dt;
 
                 bulletPoints.clear();
@@ -232,9 +230,9 @@ public class Hexaboss extends AI {
                     shooting = true;
                     cooldown = 0;
                 }
-                angle -= (MathUtil.PI/4)*dt;
+                angle -= (MathUtil.PI/2.5f)*dt;
                 break;
-            case standOne:
+            case StandOne:
                 body.setAngularVelocity(0);
                 if(timeRunning>6){
                     bulletPoints.clear();
