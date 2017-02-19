@@ -99,7 +99,7 @@ public class PlayState extends State {
         // Load content and then play the level music
         loadContent();
         ContentManager.instance.getMusic("PlayMusic").play();
-        ContentManager.instance.getMusic("PlayMusic").setVolume(10f);
+        ContentManager.instance.getMusic("PlayMusic").setVolume(100f);
 
     }
 
@@ -333,6 +333,7 @@ public class PlayState extends State {
         ContentManager.instance.loadSound("Explode_2", "explode2.wav");
         ContentManager.instance.loadSound("Explode_3", "explode3.wav");
         ContentManager.instance.loadSound("Alert", "alert.wav");
+        ContentManager.instance.getSound("Alert").setVolume(50f);
 
         // Load Music
         ContentManager.instance.loadMusic("PlayMusic", "music.wav");

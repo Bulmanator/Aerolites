@@ -115,7 +115,7 @@ public class Hexaboss extends AI {
             {
                 inPlace = true;
                 ContentManager.instance.getMusic("Hexagon").play();
-                ContentManager.instance.getMusic("Hexagon").setVolume(10f);
+                ContentManager.instance.getMusic("Hexagon").setVolume(60f);
                 ContentManager.instance.getMusic("Hexagon").setLoop(true);
                 ContentManager.instance.getMusic("PlayMusic").stop();
             }
@@ -127,7 +127,7 @@ public class Hexaboss extends AI {
         else {
             body.applyForce(new Vector2f(0, 5000000));
             ContentManager.instance.getMusic("PlayMusic").setVolume(fadeout);
-            fadeout -= 0.3f*dt;
+            fadeout -= 2f*dt;
         }
     }
 
