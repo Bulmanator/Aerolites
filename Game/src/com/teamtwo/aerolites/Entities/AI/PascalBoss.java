@@ -1,11 +1,14 @@
 package com.teamtwo.aerolites.Entities.AI;
 
 import com.teamtwo.aerolites.Entities.CollisionMask;
+import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
+import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
 import com.teamtwo.engine.Messages.Message;
 import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
+import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.CircleShape;
@@ -35,8 +38,9 @@ public class PascalBoss extends AI {
     private boolean second;
 
     private int totalLives;
+    private float fadeout;
 
-
+    private ParticleEmitter damage;
 
     private ArrayList<Vector2f> bulletPoints;
     private ArrayList<Float> bulletAngles;
@@ -44,28 +48,49 @@ public class PascalBoss extends AI {
     public PascalBoss(World world, int lives, boolean second){
 
         this.second = second;
+        setMaxSpeed(300f);
 
         this.lives = lives;
         totalLives = lives;
         onScreen = true;
         inPlace = false;
-        offScreenAllowance = new Vector2f(60,60);
+        offScreenAllowance = new Vector2f(170,170);
 
         BodyConfig config = new BodyConfig();
+        ParticleConfig pConfig = new ParticleConfig();
+
+        pConfig.minAngle = 0;
+        pConfig.maxAngle = 360;
+        pConfig.speed = 20;
+        pConfig.rotationalSpeed = 80;
+        pConfig.pointCount = 3;
+        pConfig.fadeOut = true;
+        pConfig.startSize = 20;
+        pConfig.endSize = 12;
+        pConfig.minLifetime = 1.5f;
+        pConfig.maxLifetime = 3;
+
         if(second) {
-            config.position = new Vector2f(State.WORLD_SIZE.x/2 - 80, 0);
+            config.position = new Vector2f(State.WORLD_SIZE.x/2 - 80, -150);
+            pConfig.position = config.position;
             renderColour = new Color(255,153,0);
+            pConfig.colours[0] = renderColour;
+            pConfig.colours[1] = renderColour;
             defaultColor = renderColour;
             direction = -1;
             angle = 0;
         }
         else {
-            config.position = new Vector2f(State.WORLD_SIZE.x/2 + 80, 0);
+            config.position = new Vector2f(State.WORLD_SIZE.x/2 + 80, -150);
+            pConfig.position = config.position;
             renderColour = new Color(36,25,178);
+            pConfig.colours[0] = renderColour;
+            pConfig.colours[1] = renderColour;
             direction = 1;
             defaultColor = renderColour;
             angle = 180 * MathUtil.DEG_TO_RAD;
         }
+        damage = new ParticleEmitter(pConfig,150,200);
 
         position = new Vector2f(config.position.x,State.WORLD_SIZE.y/2);
 
@@ -91,10 +116,13 @@ public class PascalBoss extends AI {
         shootTimer = 0;
         lastHit = 2;
         barrage = 0;
+        fadeout  = 100;
     }
 
     public void update(float dt) {
         lastHit+=dt;
+        updateParticles();
+        damage.update(dt);
         if(lastHit<0.1f){
             renderColour = Color.WHITE;
         }
@@ -113,21 +141,31 @@ public class PascalBoss extends AI {
             attack(dt);
         }
         else if(body.getTransform().getPosition().y < State.WORLD_SIZE.y/2){
-            body.applyForce(new Vector2f(0, 3000000));
+            body.applyForce(new Vector2f(0, 10000000));
+            limitSpeed();
+            fadeout-=30*dt;
+            ContentManager.instance.getMusic("PlayMusic").setVolume(fadeout);
         }
         else if(!inPlace) {
             body.setVelocity(new Vector2f(body.getVelocity().x,0));
-            body.applyForce(new Vector2f(3000000*direction, 0));
+            limitSpeed();
+            body.applyForce(new Vector2f(10000000*direction, 0));
+            fadeout-=30*dt;
+            ContentManager.instance.getMusic("PlayMusic").setVolume(fadeout);
             if(second) {
                 if(body.getTransform().getPosition().x < State.WORLD_SIZE.x/6*1.5) {
                     position = new Vector2f(State.WORLD_SIZE.x/6*1.5f, position.y);
                     inPlace = true;
+                    ContentManager.instance.getMusic("PlayMusic").stop();
+                    ContentManager.instance.getMusic("Pascal").play();
                 }
             }
             else {
                 if(body.getTransform().getPosition().x > State.WORLD_SIZE.x/6*4.5) {
                     position = new Vector2f(State.WORLD_SIZE.x/6*4.5f, position.y);
                     inPlace = true;
+                    ContentManager.instance.getMusic("PlayMusic").stop();
+                    ContentManager.instance.getMusic("Pascal").play();
                 }
             }
         }
@@ -180,6 +218,7 @@ public class PascalBoss extends AI {
 
     @Override
     public void render(RenderWindow window){
+        damage.render(window);
         super.render(window);
         if(shootCoolDown>shootTimer)
         {
@@ -239,7 +278,29 @@ public class PascalBoss extends AI {
 
         for(int i = 0; i < 5; i++)
             bulletAngles.add((face)*120*MathUtil.DEG_TO_RAD);
+    }
 
+    private void updateParticles(){
+        damage.getConfig().position = body.getTransform().getPosition();
+        damage.getConfig().endSize = MathUtil.lerp(6,1, 1-(lives/totalLives));
+        damage.getConfig().speed = MathUtil.clamp(20*0.5f*totalLives/lives,100,200);
+        damage.getConfig().maxLifetime = MathUtil.lerp(3,1.5f,1-(lives/totalLives));
+        damage.getConfig().minLifetime = MathUtil.lerp(1.5f,0.3f,1-(lives/totalLives));
+        damage.setEmissionRate(300*(totalLives/lives)*(totalLives/lives));
+        int red, green, blue;
+        if(!second){
+            red = 255;
+            green = 153;
+            blue = 0;
+        }
+        else
+        {
+            red = 36;
+            green = 25;
+            blue = 178;
+        }
+        damage.getConfig().colours[1] = new Color((int)MathUtil.lerp(red,255,1-(lives/totalLives)),(int)MathUtil.lerp(green,0,1-(lives/totalLives)),(int)MathUtil.lerp(blue,0,1-(lives/totalLives)));
+        damage.getConfig().colours[2] = new Color((int)MathUtil.lerp(red,255,1-(lives/totalLives)),(int)MathUtil.lerp(green,0,1-(lives/totalLives)),(int)MathUtil.lerp(blue,0,1-(lives/totalLives)));
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.teamtwo.aerolites.Entities.AI;
 
 import com.teamtwo.aerolites.Entities.CollisionMask;
+import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
+import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
 import com.teamtwo.engine.Messages.Message;
 import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
@@ -39,6 +41,8 @@ public class Hexaboss extends AI {
     private float lives;
     private float totalLives;
 
+    private ParticleEmitter damage;
+
     //music stuff
     private boolean inPlace;
     private float fadeout;
@@ -51,6 +55,7 @@ public class Hexaboss extends AI {
     private float warnTimer;
     private float waitTurnSpeed;
     private float lastHit;
+    private int lastAttack;
 
 
     private ArrayList<Vector2f> bulletPoints;
@@ -64,7 +69,7 @@ public class Hexaboss extends AI {
         this.onScreen = true;
         waitNeeded = false;
         inPlace = false;
-        fadeout = 10;
+        fadeout = 100;
 
         BodyConfig config = new BodyConfig();
 
@@ -102,12 +107,45 @@ public class Hexaboss extends AI {
 
         bulletPoints = new ArrayList<>();
         bulletAngles = new ArrayList<>();
+        lastAttack = 0;
+
+        ParticleConfig pConfig = new ParticleConfig();
+
+        pConfig.minAngle = 0;
+        pConfig.maxAngle = 360;
+        pConfig.speed = 100;
+        pConfig.rotationalSpeed = 80;
+        pConfig.pointCount = 6;
+        pConfig.fadeOut = true;
+        pConfig.startSize = 20;
+        pConfig.endSize = 12;
+        pConfig.minLifetime = 1.5f;
+        pConfig.maxLifetime = 3;
+
+        pConfig.colours[0] = Color.YELLOW;
+        pConfig.colours[1] = Color.RED;
+
+        pConfig.position = body.getTransform().getPosition();
+
+        damage = new ParticleEmitter(pConfig,300,600);
     }
+    private void updateParticles(){
+        damage.getConfig().position = body.getTransform().getPosition();
+        damage.getConfig().endSize = MathUtil.lerp(12,1, 1-(lives/totalLives));
+        damage.getConfig().speed = MathUtil.clamp(200*0.5f*totalLives/lives,100,300);
+        damage.getConfig().maxLifetime = MathUtil.lerp(3,1.5f,1-(lives/totalLives));
+        damage.getConfig().minLifetime = MathUtil.lerp(1.5f,0.3f,1-(lives/totalLives));
+        damage.setEmissionRate(300*(totalLives/lives)*(totalLives/lives));
+        damage.getConfig().colours[0] = new Color((int)MathUtil.lerp(0,255,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)),0);
+        damage.getConfig().colours[1] = new Color((int)MathUtil.lerp(0,255,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)));
+    }
+
     @Override
     public void update(float dt){
         cooldown += dt;
         lastHit+=dt;
-
+        damage.update(dt);
+        updateParticles();
         if(lastHit > 0.03f) renderColour = new Color((int)MathUtil.lerp(0,255,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)));
         if(lives < 0){
             onScreen = false;
@@ -130,7 +168,7 @@ public class Hexaboss extends AI {
         else {
             body.applyForce(new Vector2f(0, 5000000));
             ContentManager.instance.getMusic("PlayMusic").setVolume(fadeout);
-            fadeout -= 2f*dt;
+            fadeout -= 35f*dt;
         }
     }
 
@@ -149,6 +187,9 @@ public class Hexaboss extends AI {
                 waitNeeded = true;
                 attackTime = 2;
                 int option = MathUtil.randomInt(0, 4);
+                while(option == lastAttack)
+                    option = MathUtil.randomInt(0, 4);
+                lastAttack = option;
                 switch (option) {
                     case 0:
                         warnTimer = 0;
@@ -345,6 +386,7 @@ public class Hexaboss extends AI {
     }
     @Override
     public void render(RenderWindow window){
+        damage.render(window);
         super.render(window);
         if(warningTime>warnTimer)
         {

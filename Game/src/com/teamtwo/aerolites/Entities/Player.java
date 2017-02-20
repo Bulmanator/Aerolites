@@ -14,6 +14,7 @@ import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.Color;
+import org.jsfml.graphics.ConvexShape;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
@@ -38,7 +39,7 @@ public class Player extends Entity implements Disposable {
 
     // Constant values for movement
     private static final float rotationSpeed = MathUtil.PI * 1.2f;
-    private static final float forceFromJet = 100000;
+    private static final float forceFromJet = 100000f;
     // The delay between shots
     private static final float timeBetweenShots = 0.15f;
 
@@ -75,7 +76,7 @@ public class Player extends Entity implements Disposable {
         BodyConfig config = new BodyConfig();
         controller = false;
 
-        lives = 20;
+        lives = 2;
         alive = true;
 
         immuneTime = 0;
@@ -96,6 +97,7 @@ public class Player extends Entity implements Disposable {
         body = world.createBody(config);
         body.setData(this);
         body.registerObserver(this, Message.Type.Collision);
+
 
         offScreenAllowance = new Vector2f(15, 15);
 
@@ -280,7 +282,13 @@ public class Player extends Entity implements Disposable {
 
         // Draw the jet and shape
         jet.render(renderer);
-        super.render(renderer);
+        ConvexShape bodyShape = new ConvexShape(body.getShape().getVertices());
+        bodyShape.setPosition(body.getTransform().getPosition());
+        bodyShape.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
+        bodyShape.setFillColor(renderColour);
+        bodyShape.setTexture(ContentManager.instance.getTexture("Player"));
+        renderer.draw(bodyShape);
+        //super.render(renderer);
 
         for(Bullet bullet : bullets) {
             bullet.render(renderer);

@@ -50,15 +50,11 @@ public class PlayState extends State {
 
     private Entity.Type bossType;
 
-
-    //TODO shoot bullets out of ait
     //TODO make power ups work
     //TODO star map
     //TODO shop and stuff
-    //TODO make another boss
     //TODO make Tijans shit work
     //TODO tie everything together
-    //TODO fix LevelOver multiple player next shite
 
     /**
      * Creates a new level from the configuration provided
@@ -77,10 +73,8 @@ public class PlayState extends State {
 
         entities = new ArrayList<>();
 
- //       bossSpawnTime = 120;
         bossTimer = 0;
         bossSpawned = false;
-//        alertStopper = true;
 
         int playerCount = 0;
         while (config.players[playerCount] != null) {
@@ -100,9 +94,10 @@ public class PlayState extends State {
         alertPlaying = false;
 
         // Load content and then play the level music
-        loadContent();
+        loadContent(config.textured);
         ContentManager.instance.getMusic("PlayMusic").play();
         ContentManager.instance.getMusic("PlayMusic").setVolume(100f);
+
 
     }
 
@@ -110,14 +105,15 @@ public class PlayState extends State {
     public void update(float dt) {
 
         world.update(dt);
-        bossTimer += dt;
+        if(!gameOver)
+            bossTimer += dt;
 
         int alivePlayers = 0;
         for(Player player : players) {
             if(player.isAlive()) alivePlayers++;
         }
 
-        if(bossTimer - 6 > config.bossSpawnTime && !bossSpawned) {
+        if(bossTimer - 6 > config.bossSpawnTime && !bossSpawned && entities.size() == 0) {
             switch (bossType){
                 case PascalBoss:
                     boss2 = new PascalBoss(world,config.bossLives/4,false);
@@ -327,6 +323,11 @@ public class PlayState extends State {
                 }
             }
         }
+        Text text = new Text("Time Survived " + MathUtil.round(bossTimer,2)+"s", ContentManager.instance.getFont("Ubuntu"), 28);
+        text.setStyle(TextStyle.BOLD);
+        text.setPosition(15, 25 + ((players.length) * 60));
+        window.draw(text);
+
         if(bossSpawned && bossType == Entity.Type.PascalBoss)
             if(boss2.isAlive()) boss2.render(window);
         if(bossSpawned && boss.isAlive()) {
@@ -338,7 +339,7 @@ public class PlayState extends State {
 
         if(showText) {
 
-            Text text = new Text("Danger! Boss Approaching!", ContentManager.instance.getFont("Ubuntu"), 36);
+            text = new Text("Danger! Boss Approaching!", ContentManager.instance.getFont("Ubuntu"), 36);
             text.setStyle(Text.BOLD | TextStyle.UNDERLINED);
             text.setColor(Color.RED);
             FloatRect screenRect = text.getLocalBounds();
@@ -361,10 +362,18 @@ public class PlayState extends State {
     @Override
     public void dispose() {}
 
-    private void loadContent() {
+    private void loadContent(boolean textured) {
+
 
         // Load Textures
-        ContentManager.instance.loadTexture("Asteroid", "Asteroid.png");
+        if(textured) {
+            ContentManager.instance.loadTexture("Asteroid", "Asteroid.png");
+            ContentManager.instance.loadTexture("Player", "Player.png");
+        }
+        else {
+            ContentManager.instance.loadTexture("Asteroid", "Retro.png");
+            ContentManager.instance.loadTexture("Player", "Retro.png");
+        }
 
         // Load Fonts
         ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");
@@ -380,6 +389,7 @@ public class PlayState extends State {
         // Load Music
         ContentManager.instance.loadMusic("PlayMusic", "music.wav");
         ContentManager.instance.loadMusic("Hexagon", "focus.ogg");
+        ContentManager.instance.loadMusic("Pascal", "pascal.ogg");
     }
 
     public Player[] getPlayers() { return players; }
