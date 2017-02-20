@@ -1,10 +1,7 @@
 package com.teamtwo.aerolites.States;
 
 import com.teamtwo.aerolites.Configs.LevelConfig;
-import com.teamtwo.aerolites.Entities.AI.Hexaboss;
-import com.teamtwo.aerolites.Entities.AI.StandardAI;
-import com.teamtwo.aerolites.Entities.AI.Swarmer;
-import com.teamtwo.aerolites.Entities.AI.SwarmerBase;
+import com.teamtwo.aerolites.Entities.AI.*;
 import com.teamtwo.aerolites.Entities.Asteroid;
 import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.Entity;
@@ -22,6 +19,8 @@ import org.jsfml.window.Keyboard;
 
 import java.util.ArrayList;
 
+import static com.teamtwo.aerolites.Entities.Entity.Type.EnemyBullet;
+
 /**
  * @author Matthew Threlfall
  */
@@ -38,7 +37,8 @@ public class PlayState extends State {
 
     private float accumulator;
 
-    private Hexaboss boss;
+    private Entity boss;
+    private Entity boss2;
     private float bossTimer;
     private boolean bossSpawned;
 
@@ -47,6 +47,8 @@ public class PlayState extends State {
     private float swarmerTimer;
     private float aiTimer;
     private float asteroidTimer;
+
+    private Entity.Type bossType;
 
 
     //TODO shoot bullets out of ait
@@ -65,6 +67,7 @@ public class PlayState extends State {
      */
     public PlayState(GameStateManager gsm, LevelConfig config) {
         super(gsm);
+        bossType = Entity.Type.PascalBoss;
 
         this.config = config;
 
@@ -115,8 +118,16 @@ public class PlayState extends State {
         }
 
         if(bossTimer - 6 > config.bossSpawnTime && !bossSpawned) {
+            switch (bossType){
+                case PascalBoss:
+                    boss2 = new PascalBoss(world,config.bossLives/4,false);
+                    boss = new PascalBoss(world,config.bossLives/4,true);
+                    break;
+                case Hexaboss:
+                    boss = new Hexaboss(world, config.bossLives);
+                    break;
+            }
             bossSpawned = true;
-            boss = new Hexaboss(world, config.bossLives);
         }
         else if(bossTimer < config.bossSpawnTime) {
             spawnEntities(dt);
@@ -124,6 +135,8 @@ public class PlayState extends State {
         else if(bossSpawned && !gameOver) {
 
             boolean bossAlive = boss.isAlive();
+            if(bossType == Entity.Type.PascalBoss)
+                bossAlive = bossAlive || boss2.isAlive();
             if(!bossAlive) {
                 for(Player player : players) {
                     player.setAlive(false);
@@ -139,10 +152,23 @@ public class PlayState extends State {
             gameOver = true;
             gsm.setState(new LevelOver(gsm, this, false));
         }
-
-        if(bossSpawned && boss.isAlive()) {
+        boolean alive = false;
+        if(bossSpawned) {
+            alive = boss.isAlive();
+            if (bossType == Entity.Type.PascalBoss) alive = alive || boss2.isAlive();
+        }
+        if(bossSpawned && alive) {
             boss.update(dt);
-            updateHexaboss(boss);
+            switch (bossType) {
+                case Hexaboss:
+                    updateHexaboss((Hexaboss) boss);
+                    break;
+                case PascalBoss:
+                    boss2.update(dt);
+                    updatePascalBoss((PascalBoss) boss);
+                    updatePascalBoss((PascalBoss) boss2);
+                    break;
+            }
         }
 
         for(int i = 0; i < entities.size(); i++) {
@@ -159,6 +185,8 @@ public class PlayState extends State {
                 Entity e = entities.get(i);
                 switch (e.getType()) {
                     case Hexaboss:
+                        break;
+                    case PascalBoss:
                         break;
                     case Asteroid:
                         i = updateAsteroid((Asteroid) e);
@@ -214,6 +242,19 @@ public class PlayState extends State {
             }
         }
         return entities.indexOf(h);
+    }
+
+    public void updatePascalBoss(PascalBoss p){
+        if(p.isShooting() && p.isAlive()) {
+            for(Vector2f v : p.getBulletPoints()) {
+                entities.add(new Bullet(10f, v, EnemyBullet, p.getBody().getTransform().getAngle() + p.getBulletAngles().get(p.getBulletPoints().indexOf(v)), world));
+                entities.get(entities.size() - 1).setMaxSpeed(250);
+                p.setShooting(false);
+            }
+        }
+        if(!p.isAlive()){
+            world.removeBody(p.getBody());
+        }
     }
 
     public int updateAsteroid(Asteroid a){
@@ -286,7 +327,8 @@ public class PlayState extends State {
                 }
             }
         }
-
+        if(bossSpawned && bossType == Entity.Type.PascalBoss)
+            if(boss2.isAlive()) boss2.render(window);
         if(bossSpawned && boss.isAlive()) {
             boss.render(window);
         }

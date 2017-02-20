@@ -50,6 +50,7 @@ public class Hexaboss extends AI {
     private float warningTime;
     private float warnTimer;
     private float waitTurnSpeed;
+    private float lastHit;
 
 
     private ArrayList<Vector2f> bulletPoints;
@@ -91,6 +92,7 @@ public class Hexaboss extends AI {
 
         timeBetweenShots = 5f;
         cooldown = 0;
+        lastHit = 0;
 
         warningTime = 0;
         warnTimer = 0;
@@ -104,9 +106,10 @@ public class Hexaboss extends AI {
     @Override
     public void update(float dt){
         cooldown += dt;
+        lastHit+=dt;
 
-        renderColour = new Color((int)MathUtil.lerp(0,255,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)));
-        if(lives<0){
+        if(lastHit > 0.03f) renderColour = new Color((int)MathUtil.lerp(0,255,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)));
+        if(lives < 0){
             onScreen = false;
             alive = false;
         }
@@ -289,6 +292,8 @@ public class Hexaboss extends AI {
             boolean hit = cm.getBodyA().getData().getType() == Type.Bullet || cm.getBodyB().getData().getType() == Type.Bullet;
             if(hit) {
                 lives--;
+                renderColour = Color.WHITE;
+                lastHit = 0;
             }
         }
     }

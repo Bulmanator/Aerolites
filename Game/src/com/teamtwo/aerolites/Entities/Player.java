@@ -42,6 +42,7 @@ public class Player extends Entity implements Disposable {
     // The delay between shots
     private static final float timeBetweenShots = 0.15f;
 
+
     // #### Static End ####
 
 
@@ -74,7 +75,7 @@ public class Player extends Entity implements Disposable {
         BodyConfig config = new BodyConfig();
         controller = false;
 
-        lives = 2;
+        lives = 20;
         alive = true;
 
         immuneTime = 0;

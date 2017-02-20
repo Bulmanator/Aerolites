@@ -26,7 +26,8 @@ public abstract class Entity implements EntityRenderable, Updateable, Observer, 
         StandardAI,
         Swamer,
         SwamerBase,
-        Hexaboss
+        Hexaboss,
+        PascalBoss
     }
 
     protected RigidBody body;
@@ -115,6 +116,7 @@ public abstract class Entity implements EntityRenderable, Updateable, Observer, 
     public void setMaxSpeed(float speed){
         maxSpeed = speed;
     }
+    public boolean isAlive(){ return alive; }
 
     public void setOnScreen(boolean onscreen) {
         onScreen = onscreen;
