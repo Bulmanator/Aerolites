@@ -1,5 +1,9 @@
 package com.teamtwo.aerolites.Entities.AI;
 
+import com.teamtwo.aerolites.Entities.CollisionMask;
+import com.teamtwo.aerolites.Entities.Player;
+import com.teamtwo.engine.Messages.Message;
+import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
@@ -11,14 +15,21 @@ import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 
 /**
- * @Aurthor Matthew Threlfall
+ * @author Matthew Threlfall
  */
 public class SwarmerBase extends AI {
 
+    private Player target;
+    private float lowestDistance;
+    private boolean split;
+
     public SwarmerBase(World world) {
         this.onScreen = true;
+        split = false;
         BodyConfig config = new BodyConfig();
 
+        config.category = CollisionMask.SWARMER_BASE;
+        config.mask = CollisionMask.ALL;
 
         int x = 0, y = 0, velocityX = 0, velocityY = 0;
         int screenSide = MathUtil.randomInt(0,4);
@@ -58,14 +69,17 @@ public class SwarmerBase extends AI {
 
         config.shape = new Polygon(MathUtil.randomFloat(40,45));
 
+
         body = world.createBody(config);
+        body.setData(this);
+        body.registerObserver(this, Message.Type.Collision);
     }
 
     @Override
     public void update(float dt){
         super.update(dt);
-        if(playerDistance()<MathUtil.squared(400)){
-            setShooting(true);
+        if(target != null && lowestDistance < MathUtil.square(150)) {
+            split = true;
         }
     }
     @Override
@@ -77,12 +91,38 @@ public class SwarmerBase extends AI {
         bodyShape.setTexture(ContentManager.instance.getTexture("Asteroid"));
         window.draw(bodyShape);
     }
-    public float playerDistance(){
-        float x = entities.get(0).getBody().getTransform().getPosition().x;
-        float y = entities.get(0).getBody().getTransform().getPosition().y;
 
-        float xAI = getBody().getTransform().getPosition().x;
-        float yAI = getBody().getTransform().getPosition().y;
-        return MathUtil.squared(x - xAI) + MathUtil.squared(y - yAI);
+    @Override
+    public void receiveMessage(Message message) {
+        if(message.getType() == Message.Type.Collision) {
+            CollisionMessage cm = (CollisionMessage) message;
+            if(cm.getBodyB().getData().getType() == Type.Bullet) {
+                split = true;
+            }
+            else if(cm.getBodyA().getData().getType() == Type.Bullet) {
+                split = true;
+            }
+        }
     }
+
+    public void findTarget(Player[] players) {
+        lowestDistance = Float.MAX_VALUE;
+        for(Player player : players) {
+            if(!player.isAlive()) continue;
+
+            Vector2f position = body.getTransform().getPosition();
+            Vector2f playerPos = player.getBody().getTransform().getPosition();
+
+            float distanceTo = MathUtil.lengthSq(Vector2f.sub(playerPos, position));
+            if (distanceTo < lowestDistance) {
+                lowestDistance = distanceTo;
+                target = player;
+            }
+        }
+    }
+
+    @Override
+    public Type getType() { return Type.SwamerBase; }
+
+    public boolean shouldSplit() { return split; }
 }

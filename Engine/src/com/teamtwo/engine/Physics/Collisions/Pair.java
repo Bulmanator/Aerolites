@@ -41,6 +41,9 @@ public class Pair {
 
         // Separating Axis Theorem Collision Detection
 
+        if(((A.getMask() & B.getCategory()) == 0) || ((B.getMask() & A.getCategory()) == 0))
+            return false;
+
         // If they are both static then don't resolve
         if(MathUtil.isZero(A.getInvMass() + B.getInvMass()))
             return false;

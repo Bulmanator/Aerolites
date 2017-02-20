@@ -1,41 +1,45 @@
 package com.teamtwo.aerolites.Entities.AI;
 
 import com.teamtwo.aerolites.Entities.Entity;
-import org.jsfml.graphics.RenderWindow;
-
-import java.util.ArrayList;
+import com.teamtwo.engine.Messages.Message;
 
 /**
- * @Author Matthew Threlfall
+ * A class to represent the base AI
+ * @author Matthew Threlfall
  */
-public class AI extends Entity{
-    protected ArrayList<Entity> entities;
+public abstract class AI extends Entity {
+
     protected boolean shooting;
 
+    /**
+     *
+     */
     public AI(){
         shooting = false;
     }
 
+    /**
+     * Whether or not the AI is currently isShooting
+     * @return True if the AI is isShooting, otherwise false
+     */
     public boolean isShooting() {
         return shooting;
     }
 
+    /**
+     * Change whether or not the AI is isShooting
+     * @param shooting True for the AI to shoot, otherwise false
+     */
     protected void setShooting(boolean shooting) {
         this.shooting = shooting;
     }
 
-    public void setEntities(ArrayList<Entity> entities){
-        this.entities = entities;
-    }
+    /**
+     * Used to receive specific types of messages
+     * @param message The message sent
+     */
+    public abstract void receiveMessage(Message message);
 
     @Override
-    public void update(float dt) {
-        checkOffScreen();
-        limitSpeed();
-    }
-
-    @Override
-    public void render(RenderWindow renderer) {
-        super.render(renderer);
-    }
+    public abstract Type getType();
 }

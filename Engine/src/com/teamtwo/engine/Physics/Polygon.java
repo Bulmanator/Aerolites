@@ -27,15 +27,14 @@ public class Polygon implements Initialisable<RigidBody> {
     /** The body associated with the polygon */
     private RigidBody body;
 
-    /**
-     *
-     */
+    /** The radius of the polygon */
     private float radius;
+
     /**
      * Creates a randomly generated polygon
      */
     public Polygon() {
-        // Pick a random radius between 10 and 100 and generate
+        // Pick a random radius between 10 and 50 and generate
         this(MathUtil.randomFloat(10, 50));
     }
 
@@ -115,7 +114,7 @@ public class Polygon implements Initialisable<RigidBody> {
         // This is because it is way too complicated to work out the inertia of the actual shape
         AABB aabb = new AABB(vertices);
         float inertia = ((4 * aabb.getHalfSize().x * aabb.getHalfSize().y)) / 12f;
-        inertia *= (MathUtil.squared(aabb.getHalfSize().x * 2) + MathUtil.squared(aabb.getHalfSize().y * 2));
+        inertia *= (MathUtil.square(aabb.getHalfSize().x * 2) + MathUtil.square(aabb.getHalfSize().y * 2));
 
         // You can get huge inertia values from this but they seem to work all the same
         body.setInertia(Math.abs(inertia));

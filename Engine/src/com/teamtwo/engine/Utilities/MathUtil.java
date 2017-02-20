@@ -2,16 +2,20 @@ package com.teamtwo.engine.Utilities;
 
 import org.jsfml.system.Vector2f;
 
+/**
+ * Various useful maths functions
+ */
 public final class MathUtil {
 
     /**
      * A floating point representation of Pi
      */
     public static final float PI = (float)Math.PI;
+
     /**
-     * A floating point representation of 2 * Pi;
+     * A floating point representation of 2 * {@link #PI};
      */
-    public static final float PI2 = (float)Math.PI * 2f;
+    public static final float PI2 = PI * 2f;
 
     /**
      * A very small value for checking if floating point numbers are zero
@@ -36,7 +40,7 @@ public final class MathUtil {
      * @param number The number to square
      * @return The square
      */
-    public static float squared(float number) { return number * number; }
+    public static float square(float number) { return number * number; }
 
     /**
      * A floating point conversion for {@link Math#cos(double)}
@@ -143,6 +147,17 @@ public final class MathUtil {
         return Math.abs(value) < tolerance;
     }
 
+    /**
+     * Will change an angles range to be between {@link #PI} and -{@link #PI}
+     * @param radians the angle you wish to normalize in radians
+     * @return the angle in radians between 180 degrees and -179 degrees
+     */
+    public static float normalizeAngle(float radians) {
+        while (radians <= -MathUtil.PI) radians += MathUtil.PI2;
+        while (radians > MathUtil.PI) radians -= MathUtil.PI2;
+        return radians;
+    }
+
     // Vector2 Methods -- Vector2f doesn't have these for some reason
 
     /**
@@ -155,9 +170,9 @@ public final class MathUtil {
     }
 
     /**
-     * Gets the length of the vector given squared
+     * Gets the length of the vector given square
      * @param vector The vector to find the length of
-     * @return The squared length of the vector
+     * @return The square length of the vector
      */
     public static float lengthSq(Vector2f vector) {
         return (vector.x * vector.x) + (vector.y * vector.y);
@@ -199,26 +214,15 @@ public final class MathUtil {
     }
 
     /**
-     * Calculates the absolute value of the given value (removes the negative part)
-     * @param input The number which is to be modulated
-     * @return The modulated input
+     * returns the mid point of two vectors
+     * @param a the first vector
+     * @param b the second vector
+     * @return the mid point vector
      */
-    public static float abs(float input){
-        if(input>0)
-            return input;
-        return input*-1;
-    }
+    public static Vector2f midPoint(Vector2f a, Vector2f b){
+        float x = a.x+b.x;
+        float y = a.y+b.y;
 
-    /**
-     * Will change an angles range to be between 180 and -179 degrees, all input is in radians
-     * @param angle the angle you wish to normalize in radians
-     * @return the angle in radians between 180 degrees and -179 degrees
-     */
-    public static float normalizeAngle(float angle)
-    {
-        float newAngle = angle;
-        while (newAngle <= -MathUtil.PI) newAngle += MathUtil.PI2;
-        while (newAngle > MathUtil.PI) newAngle -= MathUtil.PI2;
-        return newAngle;
+        return new Vector2f(x/2,y/2);
     }
 }
