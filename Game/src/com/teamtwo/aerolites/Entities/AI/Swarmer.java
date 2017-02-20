@@ -20,7 +20,7 @@ import org.jsfml.system.Vector2f;
  */
 public class Swarmer extends AI {
 
-    private final float maxForce = 800;
+    private static final float maxForce = 800;
 
     private ParticleEmitter jet;
     private Entity target;
@@ -100,17 +100,19 @@ public class Swarmer extends AI {
 
     public void findTarget(Player[] players) {
         float lowestDistance = Float.MAX_VALUE;
+        target = null;
 
-        for(Player p : players) {
+        for(Player player : players) {
+            if(!player.isAlive()) continue;
 
             Vector2f position = body.getTransform().getPosition();
-            Vector2f playerPos = p.getBody().getTransform().getPosition();
+            Vector2f playerPos = player.getBody().getTransform().getPosition();
 
             float distanceTo = MathUtil.lengthSq(Vector2f.sub(playerPos, position));
 
             if (distanceTo < lowestDistance) {
                 lowestDistance = distanceTo;
-                target = p;
+                target = player;
             }
         }
     }

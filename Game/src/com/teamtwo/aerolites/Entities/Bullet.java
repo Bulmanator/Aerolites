@@ -9,57 +9,63 @@ import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
+import org.jsfml.system.Vector2i;
 
 /**
  * @author Matthew Threlfall
  */
 public class Bullet extends Entity {
 
+    private static final Vector2f[] vertices = new Vector2f[] {
+            new Vector2f(-7.5f, 0), new Vector2f(0f, -5),
+            new Vector2f(7.5f, 0), new Vector2f(0, 30)
+    };
+
+    // How long the bullet has been alive and how long it can be alive
     private float lifeTime;
-    private final float MAX_LIFE_TIME;
+    private final float totalLifeTime;
+
+    // The owner of the bullet
     private Type owner;
-    private int bulletOwner;
+
     private boolean hit;
     private boolean asteroid;
     private boolean enemy;
 
-    public Bullet(float lifeTime, Vector2f position,Type owner, float angle, World world){
-        MAX_LIFE_TIME = lifeTime;
+    public Bullet(float lifeTime, Vector2f position, Type owner, float angle, World world) {
+
+        totalLifeTime = lifeTime;
         this.lifeTime = 0;
-        this.owner = owner;
-        bulletOwner = -5;
+
         hit = false;
         asteroid = false;
         enemy = false;
 
         BodyConfig config = new BodyConfig();
 
-        Vector2f shape[] = new Vector2f[4];
-        shape[0] = new Vector2f(-7.5f, 0);
-        shape[1] = new Vector2f(0f, -5);
-        shape[2] = new Vector2f(7.5f, 0);
-        shape[3] = new Vector2f(0, 30);
+        this.offScreenAllowance = new Vector2f(Vector2i.ZERO);
 
-        this.offScreenAllowance = new Vector2f(0,0);
+        config.shape = new Polygon(vertices);
 
-        config.shape = new Polygon(shape);
-
-        switch (owner){
+        this.owner = owner;
+        switch (owner) {
             case Bullet:
                 this.renderColour = Color.YELLOW;
                 config.category = CollisionMask.BULLET;
+                config.mask = CollisionMask.AI;
                 break;
             case EnemyBullet:
                 this.renderColour = Color.RED;
                 config.category = CollisionMask.ENEMY_BULLET;
+                config.mask = CollisionMask.PLAYER;
                 break;
         }
 
-        config.mask = CollisionMask.AI | CollisionMask.ASTEROID;
+        config.mask |= CollisionMask.ASTEROID;
 
         this.body = world.createBody(config);
 
-        this.body.setVelocity(new Vector2f(0,-350));
+        this.body.setVelocity(new Vector2f(0, -350));
         this.setMaxSpeed(350);
         this.body.rotateVelocity(angle);
         this.body.setTransform(position,angle);
@@ -69,6 +75,7 @@ public class Bullet extends Entity {
         body.registerObserver(this, Message.Type.Collision);
 
         onScreen = true;
+        alive = true;
     }
 
     @Override
@@ -80,9 +87,10 @@ public class Bullet extends Entity {
     @Override
     public void update(float dt){
         super.update(dt);
-        lifeTime+=dt;
-        if(lifeTime > MAX_LIFE_TIME){
+        lifeTime += dt;
+        if(lifeTime > totalLifeTime) {
             onScreen = false;
+            alive = false;
         }
     }
 
@@ -90,55 +98,42 @@ public class Bullet extends Entity {
     public void receiveMessage(Message message) {
         if(message.getType() == Message.Type.Collision) {
             CollisionMessage cm = (CollisionMessage) message;
-            if(owner == Type.EnemyBullet) {
-                if (cm.getBodyA().getData().getType() != Type.StandardAI && cm.getBodyA().getData().getType() != Type.Hexaboss) {
-                    onScreen = false;
-                    hit = true;
-                }
 
+            Entity.Type typeA = (Type) cm.getBodyA().getData().getType();
+            Entity.Type typeB = (Type) cm.getBodyB().getData().getType();
+
+            alive = false;
+
+            if(owner == Type.EnemyBullet) {
+                if(typeA == Type.StandardAI || typeB == Type.StandardAI) {
+                    alive = true;
+                }
+                else {
+                    alive = false;
+                    onScreen = false;
+                }
             }
             else {
-                if (cm.getBodyA().getData().getType() != Type.Player) {
-                    onScreen = false;
-                    hit  = true;
-                }
-            }
-            if(cm.getBodyA().getData().getType() == Type.Bullet && cm.getBodyB().getData().getType() == Type.EnemyBullet){
-                hit = true;
-                onScreen = false;
-            }
-            if(cm.getBodyB().getData().getType() == Type.Bullet && cm.getBodyA().getData().getType() == Type.EnemyBullet){
-                hit = true;
-                onScreen = false;
-            }
+                asteroid = typeA == Type.Asteroid || typeB == Type.Asteroid;
 
-            asteroid = cm.getBodyA().getData().getType() == Type.Asteroid || cm.getBodyB().getData().getType() == Type.Asteroid;
-            asteroid = asteroid && getType() == Type.Bullet;
+                enemy = typeA == Type.StandardAI || typeB == Type.StandardAI;
+                enemy |= typeA == Type.Swamer || typeB == Type.Swamer;
+                enemy |= typeA == Type.SwamerBase || typeB == Type.SwamerBase;
+                enemy |= typeA == Type.Hexaboss || typeB == Type.Hexaboss;
 
-            enemy = cm.getBodyA().getData().getType() == Type.StandardAI || cm.getBodyB().getData().getType() == Type.StandardAI;
-            enemy |= cm.getBodyA().getData().getType() == Type.Swamer || cm.getBodyB().getData().getType() == Type.Swamer;
-            enemy = enemy && getType() == Type.Bullet;
-
+                hit = asteroid || enemy;
+            }
         }
-    }
-
-    public float getMaxLifeTime() {
-        return MAX_LIFE_TIME;
     }
 
     public Type getType() { return owner; }
 
-    public void setType(Type type) { owner = type; }
+    public boolean isAlive() { return alive; }
 
-    public void setBulletOwner(int owner) { bulletOwner = owner;}
+    public boolean hasHit() { return hit; }
 
-    public int getBulletOwner() { return bulletOwner; }
-
-    public boolean isHit() {
-        return hit;
-    }
     @Override
-    protected void checkOffScreen(){
+    protected void checkOffScreen() {
         switch (getType()){
             case Bullet:
                 super.checkOffScreen();
@@ -147,19 +142,23 @@ public class Bullet extends Entity {
                 if(this.onScreen) {
                     if (body.getTransform().getPosition().x < -offScreenAllowance.x || body.getTransform().getPosition().x > State.WORLD_SIZE.x + offScreenAllowance.x) {
                         this.onScreen = false;
-                    } else
+                    }
+                    else {
                         this.onScreen = !(body.getTransform().getPosition().y < -offScreenAllowance.y
                                 || body.getTransform().getPosition().y > State.WORLD_SIZE.y + offScreenAllowance.y);
+                    }
                 }
                 break;
         }
     }
 
-    public boolean isAsteroid() {
+    public boolean hitAsteroid() {
         return asteroid;
     }
 
-    public boolean isEnemy() {
+    public boolean hitEnemy() {
         return enemy;
     }
+
+
 }

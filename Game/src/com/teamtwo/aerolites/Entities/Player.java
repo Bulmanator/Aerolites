@@ -1,5 +1,6 @@
 package com.teamtwo.aerolites.Entities;
 
+import com.teamtwo.aerolites.Utilities.Score;
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
 import com.teamtwo.engine.Input.Controllers.*;
@@ -8,6 +9,8 @@ import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
+import com.teamtwo.engine.Utilities.ContentManager;
+import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.Color;
@@ -15,10 +18,15 @@ import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
 
+import java.util.ArrayList;
+
 /**
+ * A class to represent one player
  * @author Matthew Threlfall
  */
-public class Player extends Entity {
+public class Player extends Entity implements Disposable {
+
+    // TODO Add jet stream colours
 
     // #### Static Begin ####
 
@@ -39,37 +47,48 @@ public class Player extends Entity {
 
     // Whether or not the Player is controlled via a controller
     private boolean controller;
-    // The Player ID
+    // The Player ID & Controller ID if needed
     private PlayerNumber player;
+    private PlayerNumber controllerNumber;
 
     // The amount of lives the player has left
     private int lives;
-    private boolean alive;
 
     // The particle emitter for the jet engine
     private ParticleEmitter jet;
 
+    private ArrayList<Bullet> bullets;
     private float shootCooldown;
-    private boolean shoot;
 
     private Color defaultColour;
 
     private float immuneTime;
 
     //Scoring
-    ScoreObject score;
-
+    private Score score;
 
     public Player(World world, PlayerNumber player) {
+        this(world, player, -1);
+    }
 
-        BodyConfig config = new BodyConfig();
-        controller = false;
+    public Player(World world, PlayerNumber player, int controllerNumber) {
+        this.player = player;
+        if(controllerNumber >= 0) {
+            this.controllerNumber = PlayerNumber.values()[controllerNumber];
+        }
+
+        controller = controllerNumber >= 0;
+
+
+        if(this.controllerNumber == null) controller = false;
 
         lives = 2;
         alive = true;
 
         immuneTime = 0;
-        score = new ScoreObject();
+        score = new Score();
+
+        BodyConfig config = new BodyConfig();
 
         config.category = CollisionMask.PLAYER;
         config.mask = (CollisionMask.ALL & ~CollisionMask.BULLET);
@@ -107,11 +126,39 @@ public class Player extends Entity {
 
         jet = new ParticleEmitter(pConfig, 40f, 400);
 
-        renderColour = Color.GREEN;
-        defaultColour = Color.GREEN;
-        shoot = false;
+        setColours();
+        renderColour = defaultColour;
 
-        this.player = player;
+        bullets = new ArrayList<>();
+    }
+
+    private void setColours() {
+        switch (player) {
+            case One:
+                defaultColour = new Color(61, 64, 255);
+                break;
+            case Two:
+                defaultColour = new Color(255, 228, 94);
+                break;
+            case Three:
+                defaultColour = new Color(123, 255, 94);
+                break;
+            case Four:
+                defaultColour = new Color(124, 255, 189);
+                break;
+            case Five:
+                defaultColour = new Color(124, 235, 255);
+                break;
+            case Six:
+                defaultColour = new Color(244, 75, 66);
+                break;
+            case Seven:
+                defaultColour = new Color(204, 86, 255);
+                break;
+            case Eight:
+                defaultColour = new Color(255, 107, 210);
+                break;
+        }
     }
 
     /**
@@ -126,7 +173,7 @@ public class Player extends Entity {
         // Get whether the player is boosting,
         if(controller) {
             // Store the current controller state
-            ControllerState state = Controllers.getState(player);
+            ControllerState state = Controllers.getState(controllerNumber);
 
             // Get the button states for boost, shoot and rotate
             boost = state.button(Button.RB);
@@ -146,7 +193,7 @@ public class Player extends Entity {
             Vector2f force = body.getTransform().applyRotation(new Vector2f(0, -forceFromJet));
             body.applyForce(force);
 
-            timeBoosting += dt;
+            score.incrementTimeBoosting(dt);
 
             jet.getConfig().position = body.getTransform().apply(new Vector2f(0, 15));
 
@@ -160,7 +207,17 @@ public class Player extends Entity {
         if(shouldShoot) {
             if(shootCooldown > timeBetweenShots) {
                 shootCooldown = 0;
-                shoot = true;
+
+                Vector2f position = body.getShape().getTransformed()[0];
+
+                Bullet bullet = new Bullet(2, position, Entity.Type.Bullet,
+                        body.getTransform().getAngle(), body.getWorld());
+
+                bullets.add(bullet);
+
+                score.bulletFired();
+
+                ContentManager.instance.getSound("Pew").play();
             }
         }
     }
@@ -176,10 +233,11 @@ public class Player extends Entity {
         jet.update(dt);
 
         shootCooldown += dt;
-        timeAlive += dt;
-        renderColour = defaultColour;
         score.incrementTimeAlive(dt);
-        if(immuneTime>0) {
+
+        renderColour = defaultColour;
+
+        if(immuneTime > 0) {
             immuneTime -= dt;
             if (MathUtil.round(immuneTime % 0.3f, 1) == 0)
                 renderColour = Color.WHITE;
@@ -190,6 +248,34 @@ public class Player extends Entity {
 
         // Handle input
         handleInput(dt);
+
+        for(int i = 0; i < bullets.size(); i++) {
+            Bullet bullet = bullets.get(i);
+            if(bullet.isAlive()) {
+                bullet.update(dt);
+            }
+            else {
+                if(!bullet.hasHit()) {
+                    score.bulletMissed();
+                }
+                else {
+                    if (bullet.hitEnemy()) {
+                        score.enemyKilled();
+                    }
+                    else if (bullet.hitAsteroid()) {
+                        score.asteroidDestroyed();
+                    }
+                }
+
+                if(!bullets.remove(bullet)) {
+                    throw new Error("Error: Failed to remove bullet");
+                }
+
+                body.getWorld().removeBody(bullet.getBody());
+
+                i--;
+            }
+        }
     }
 
     /**
@@ -202,6 +288,10 @@ public class Player extends Entity {
         // Draw the jet and shape
         jet.render(renderer);
         super.render(renderer);
+
+        for(Bullet bullet : bullets) {
+            bullet.render(renderer);
+        }
     }
 
     /**
@@ -238,30 +328,7 @@ public class Player extends Entity {
      */
     public boolean isAlive() { return alive; }
 
-    /**
-     * Gets whether or not the player is shooting
-     * @return True if the player is shooting, otherwise false
-     */
-    public boolean isShooting() {
-        if(shoot) {
-            shoot = false;
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Gets the number of bullets the player has fired
-     * @return The number of bullets
-     */
-    public float getBulletsFired() { return bulletsFired; }
-
-    /**
-     * Gets the number of bullets the player has missed
-     * @return The number of missed bullets
-     */
-    public float getBulletsMissed() { return bulletsMissed; }
+    public boolean isController() { return controller; }
 
     /**
      * Gets the number of lives the player has left
@@ -269,18 +336,25 @@ public class Player extends Entity {
      */
     public int getLives() { return lives; }
 
+    public PlayerNumber getNumber() { return player; }
+
+    public PlayerNumber getControllerNumber() { return controllerNumber; }
+
     public Color getDefaultColour() { return defaultColour; }
-
-    public float getTimeAlive() { return timeAlive; }
-
-    public float getTimeBoosting() { return timeBoosting; }
 
     public void setLives(int lives) { this.lives = lives; }
 
-    public void incrementBulletsMissed() { bulletsMissed++; }
-    public void incrementBulletsShot() { bulletsFired++; }
+    public void setAlive(boolean alive) { this.alive = alive; }
 
-    public ScoreObject getScore() {
+    public Score getScore() {
         return score;
+    }
+
+    @Override
+    public void dispose() {
+        for(Bullet bullet : bullets) {
+            body.getWorld().removeBody(bullet.getBody());
+        }
+        bullets.clear();
     }
 }
