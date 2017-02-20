@@ -58,7 +58,7 @@ public class LevelOver extends State {
         previousStates = new ControllerState[playerCount];
         for(int i = 0; i < playerCount; i++) {
             if(players[i].isController()) {
-                previousStates[i] = Controllers.getState(players[i].getNumber());
+                previousStates[i] = Controllers.getState(players[i].getControllerNumber());
             }
         }
 
@@ -82,7 +82,7 @@ public class LevelOver extends State {
                 for(int i = 0; i < playerCount; i++) {
                     Player player = players[i];
                     if(player.isController()) {
-                        ControllerState state = Controllers.getState(player.getNumber());
+                        ControllerState state = Controllers.getState(player.getControllerNumber());
                         if(state.button(Button.A) && !previousStates[i].button(Button.A)) {
                             current = Stage.Scores;
                         }

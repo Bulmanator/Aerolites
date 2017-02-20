@@ -1,14 +1,18 @@
 package com.teamtwo.aerolites.Entities.AI;
 
+import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.CollisionMask;
+import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.engine.Messages.Message;
 import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.ContentManager;
+import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
+import org.jsfml.audio.Music;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.RenderWindow;
@@ -22,15 +26,18 @@ import static com.teamtwo.aerolites.Entities.AI.Hexaboss.AttackPattern.Wait;
 /**
  * @author Matthew Threlfall
  */
-public class Hexaboss extends AI {
+public class Hexaboss extends AI implements Disposable {
 
     public enum AttackPattern {
         SpinOne,
         SpinTwo,
         TriForce,
-        Alternate,
+        StandOne,
         Wait
     }
+
+    private RectangleShape border;
+    private RectangleShape healthBar;
 
     private float angle;
     private float cooldown;
@@ -54,6 +61,8 @@ public class Hexaboss extends AI {
 
     private ArrayList<Vector2f> bulletPoints;
     private ArrayList<Float> bulletAngles;
+
+    private ArrayList<Bullet> bullets;
 
     public Hexaboss(World world, int lives) {
 
@@ -100,6 +109,18 @@ public class Hexaboss extends AI {
 
         bulletPoints = new ArrayList<>();
         bulletAngles = new ArrayList<>();
+
+        bullets = new ArrayList<>();
+
+        border = new RectangleShape(new Vector2f(State.WORLD_SIZE.x - 40, 40));
+        border.setPosition(20, 1020);
+        border.setFillColor(Color.TRANSPARENT);
+        border.setOutlineColor(new Color(74, 74, 74));
+        border.setOutlineThickness(5f);
+
+        healthBar = new RectangleShape(new Vector2f(State.WORLD_SIZE.x - 40, 40));
+        healthBar.setFillColor(Color.RED);
+        healthBar.setPosition(20, 1020);
     }
     @Override
     public void update(float dt){
@@ -110,13 +131,14 @@ public class Hexaboss extends AI {
             onScreen = false;
             alive = false;
         }
-        if(body.getTransform().getPosition().y>State.WORLD_SIZE.y/2){
+        if(body.getTransform().getPosition().y>State.WORLD_SIZE.y/2) {
             if(!inPlace)
             {
                 inPlace = true;
-                ContentManager.instance.getMusic("Hexagon").play();
-                ContentManager.instance.getMusic("Hexagon").setVolume(10f);
-                ContentManager.instance.getMusic("Hexagon").setLoop(true);
+                Music hexagon = ContentManager.instance.getMusic("Hexagon");
+                hexagon.play();
+                hexagon.setVolume(10f);
+                hexagon.setLoop(true);
                 ContentManager.instance.getMusic("PlayMusic").stop();
             }
             body.setVelocity(new Vector2f(0,0));
@@ -129,6 +151,39 @@ public class Hexaboss extends AI {
             ContentManager.instance.getMusic("PlayMusic").setVolume(fadeout);
             fadeout -= 0.3f;
         }
+
+        if(shooting) {
+            for (int i = 0; i < bulletPoints.size(); i++) {
+                Vector2f position = bulletPoints.get(i);
+                float angle = bulletAngles.get(i);
+                Bullet bullet = new Bullet(10f, position, Entity.Type.EnemyBullet,
+                        body.getTransform().getAngle() + angle, body.getWorld());
+                bullet.setMaxSpeed(250);
+                bullets.add(bullet);
+            }
+            shooting = false;
+        }
+
+        for(int i = 0; i < bullets.size(); i++) {
+            Bullet bullet = bullets.get(i);
+            if(bullet.isOnScreen()) {
+                bullet.update(dt);
+            }
+            else {
+                if(!bullets.remove(bullet)) {
+                    throw new Error("Error: Failed to remove bullet");
+                }
+
+                body.getWorld().removeBody(bullet.getBody());
+
+                i--;
+            }
+        }
+
+        float val = 1f - (lives / totalLives);
+        float width = MathUtil.lerp(State.WORLD_SIZE.x - 40, 0, val);
+
+        healthBar.setSize(new Vector2f(width, 40));
     }
 
     public void pickPattern(float dt){
@@ -216,7 +271,7 @@ public class Hexaboss extends AI {
                 }
                 angle -= (MathUtil.PI/3)*dt;
                 break;
-            case triforce:
+            case TriForce:
                 angle += (MathUtil.PI/3)*dt;
                 warnTimer += dt;
 
@@ -232,7 +287,7 @@ public class Hexaboss extends AI {
                     cooldown = 0;
                 }
                 break;
-            case standOne:
+            case StandOne:
                 body.setAngularVelocity(0);
                 if(timeRunning>6){
                     bulletPoints.clear();
@@ -274,7 +329,7 @@ public class Hexaboss extends AI {
 
 
                 break;
-            case wait:
+            case Wait:
                 angle -= waitTurnSpeed;
                 break;
         }
@@ -342,9 +397,9 @@ public class Hexaboss extends AI {
 
     }
     @Override
-    public void render(RenderWindow window){
-        super.render(window);
-        if(warningTime>warnTimer)
+    public void render(RenderWindow renderer){
+        super.render(renderer);
+        if(warningTime > warnTimer)
         {
             RectangleShape warning;
             for(Vector2f v: bulletPoints) {
@@ -352,11 +407,25 @@ public class Hexaboss extends AI {
                 warning.setFillColor(new Color(255,0,0));
                 warning.setSize(new Vector2f(4,4));
                 warning.setPosition(v);
-                window.draw(warning);
+                renderer.draw(warning);
             }
         }
+
+        for(Bullet bullet : bullets) {
+            bullet.render(renderer);
+        }
+
+        renderer.draw(border);
+        renderer.draw(healthBar);
     }
 
+    @Override
+    public void dispose() {
+        for(Bullet bullet : bullets) {
+            body.getWorld().removeBody(bullet.getBody());
+        }
+        bullets.clear();
+    }
 
     public ArrayList<Vector2f> getBulletPoints() {
         return bulletPoints;

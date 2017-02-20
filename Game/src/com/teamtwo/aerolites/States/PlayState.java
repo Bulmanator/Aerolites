@@ -1,6 +1,5 @@
 package com.teamtwo.aerolites.States;
 
-import com.teamtwo.aerolites.Configs.LevelConfig;
 import com.teamtwo.aerolites.Entities.AI.Hexaboss;
 import com.teamtwo.aerolites.Entities.AI.StandardAI;
 import com.teamtwo.aerolites.Entities.AI.Swarmer;
@@ -10,12 +9,14 @@ import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.aerolites.Entities.Player;
 import com.teamtwo.aerolites.Utilities.InputType;
+import com.teamtwo.aerolites.Utilities.LevelConfig;
 import com.teamtwo.engine.Input.Controllers.PlayerNumber;
 import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
+import org.jsfml.audio.Music;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
@@ -74,10 +75,8 @@ public class PlayState extends State {
 
         entities = new ArrayList<>();
 
-//        bossSpawnTime = 120;
         bossTimer = 0;
         bossSpawned = false;
-//        alertStopper = true;
 
         int playerCount = 0;
         while (config.players[playerCount] != null) {
@@ -86,10 +85,13 @@ public class PlayState extends State {
         }
 
         players = new Player[playerCount];
+        int controllerNumber = 0;
         for(int i = 0; i < playerCount; i++) {
-            players[i] = new Player(world, PlayerNumber.values()[i]);
             if(config.players[i] == InputType.Controller) {
-                players[i].setController(true);
+                players[i] = new Player(world, PlayerNumber.values()[i], controllerNumber++);
+            }
+            else {
+                players[i] = new Player(world, PlayerNumber.values()[i]);
             }
         }
 
@@ -98,7 +100,9 @@ public class PlayState extends State {
 
         // Load content and then play the level music
         loadContent();
-        ContentManager.instance.getMusic("PlayMusic").play();
+        Music bgm = ContentManager.instance.getMusic("PlayMusic");
+        bgm.setVolume(10f);
+        bgm.play();
     }
 
     @Override
@@ -114,7 +118,7 @@ public class PlayState extends State {
 
         if(bossTimer - 6 > config.bossSpawnTime && !bossSpawned) {
             bossSpawned = true;
-            boss = new Hexaboss(world, config.bossLives);
+            boss = new Hexaboss(world, config.bossBaseLives * players.length);
         }
         else if(bossTimer < config.bossSpawnTime) {
             spawnEntities(dt);
@@ -140,7 +144,7 @@ public class PlayState extends State {
 
         if(bossSpawned && boss.isAlive()) {
             boss.update(dt);
-            updateHexaboss(boss);
+          //  updateHexaboss(boss);
         }
 
         for(int i = 0; i < entities.size(); i++) {
@@ -156,8 +160,6 @@ public class PlayState extends State {
             else {
                 Entity e = entities.get(i);
                 switch (e.getType()) {
-                    case Hexaboss:
-                        break;
                     case Asteroid:
                         i = updateAsteroid((Asteroid) e);
                         break;
@@ -203,7 +205,7 @@ public class PlayState extends State {
 
     public int updateHexaboss(Hexaboss h) {
         if(h.isShooting()) {
-            for(int i = 0; i < h.getBulletPoints().size();i++) {
+            for(int i = 0; i < h.getBulletPoints().size(); i++) {
                 Vector2f v = h.getBulletPoints().get(i);
                 float angle = h.getBulletAngles().get(i);
                 entities.add(new Bullet(10f, v, Entity.Type.EnemyBullet, h.getBody().getTransform().getAngle()+angle, world));

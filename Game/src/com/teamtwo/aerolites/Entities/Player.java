@@ -47,8 +47,9 @@ public class Player extends Entity implements Disposable {
 
     // Whether or not the Player is controlled via a controller
     private boolean controller;
-    // The Player ID
+    // The Player ID & Controller ID if needed
     private PlayerNumber player;
+    private PlayerNumber controllerNumber;
 
     // The amount of lives the player has left
     private int lives;
@@ -66,19 +67,28 @@ public class Player extends Entity implements Disposable {
     //Scoring
     private Score score;
 
-
     public Player(World world, PlayerNumber player) {
+        this(world, player, -1);
+    }
 
+    public Player(World world, PlayerNumber player, int controllerNumber) {
         this.player = player;
+        if(controllerNumber >= 0) {
+            this.controllerNumber = PlayerNumber.values()[controllerNumber];
+        }
 
-        BodyConfig config = new BodyConfig();
-        controller = false;
+        controller = controllerNumber >= 0;
+
+
+        if(this.controllerNumber == null) controller = false;
 
         lives = 2;
         alive = true;
 
         immuneTime = 0;
         score = new Score();
+
+        BodyConfig config = new BodyConfig();
 
         config.category = CollisionMask.PLAYER;
         config.mask = (CollisionMask.ALL & ~CollisionMask.BULLET);
@@ -125,7 +135,7 @@ public class Player extends Entity implements Disposable {
     private void setColours() {
         switch (player) {
             case One:
-                defaultColour = new Color(244, 75, 66);
+                defaultColour = new Color(61, 64, 255);
                 break;
             case Two:
                 defaultColour = new Color(255, 228, 94);
@@ -140,7 +150,7 @@ public class Player extends Entity implements Disposable {
                 defaultColour = new Color(124, 235, 255);
                 break;
             case Six:
-                defaultColour = new Color(61, 64, 255);
+                defaultColour = new Color(244, 75, 66);
                 break;
             case Seven:
                 defaultColour = new Color(204, 86, 255);
@@ -163,7 +173,7 @@ public class Player extends Entity implements Disposable {
         // Get whether the player is boosting,
         if(controller) {
             // Store the current controller state
-            ControllerState state = Controllers.getState(player);
+            ControllerState state = Controllers.getState(controllerNumber);
 
             // Get the button states for boost, shoot and rotate
             boost = state.button(Button.RB);
@@ -328,13 +338,13 @@ public class Player extends Entity implements Disposable {
 
     public PlayerNumber getNumber() { return player; }
 
+    public PlayerNumber getControllerNumber() { return controllerNumber; }
+
     public Color getDefaultColour() { return defaultColour; }
 
     public void setLives(int lives) { this.lives = lives; }
 
     public void setAlive(boolean alive) { this.alive = alive; }
-
-    public void setController(boolean controller) { this.controller = controller; }
 
     public Score getScore() {
         return score;

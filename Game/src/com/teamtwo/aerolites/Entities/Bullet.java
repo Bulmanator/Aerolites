@@ -32,7 +32,7 @@ public class Bullet extends Entity {
     private boolean asteroid;
     private boolean enemy;
 
-    public Bullet(float lifeTime, Vector2f position,Type owner, float angle, World world) {
+    public Bullet(float lifeTime, Vector2f position, Type owner, float angle, World world) {
 
         totalLifeTime = lifeTime;
         this.lifeTime = 0;
@@ -108,6 +108,10 @@ public class Bullet extends Entity {
                 if(typeA == Type.StandardAI || typeB == Type.StandardAI) {
                     alive = true;
                 }
+                else {
+                    alive = false;
+                    onScreen = false;
+                }
             }
             else {
                 asteroid = typeA == Type.Asteroid || typeB == Type.Asteroid;
@@ -115,6 +119,7 @@ public class Bullet extends Entity {
                 enemy = typeA == Type.StandardAI || typeB == Type.StandardAI;
                 enemy |= typeA == Type.Swamer || typeB == Type.Swamer;
                 enemy |= typeA == Type.SwamerBase || typeB == Type.SwamerBase;
+                enemy |= typeA == Type.Hexaboss || typeB == Type.Hexaboss;
 
                 hit = asteroid || enemy;
             }

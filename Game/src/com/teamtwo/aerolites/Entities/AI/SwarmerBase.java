@@ -78,7 +78,7 @@ public class SwarmerBase extends AI {
     @Override
     public void update(float dt){
         super.update(dt);
-        if(target != null && lowestDistance < MathUtil.square(150)) {
+        if(target != null && lowestDistance < MathUtil.square(500)) {
             split = true;
         }
     }

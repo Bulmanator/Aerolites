@@ -1,4 +1,4 @@
-package com.teamtwo.aerolites.Configs;
+package com.teamtwo.aerolites.Utilities;
 
 import com.teamtwo.aerolites.Aerolites;
 import com.teamtwo.engine.Engine;
