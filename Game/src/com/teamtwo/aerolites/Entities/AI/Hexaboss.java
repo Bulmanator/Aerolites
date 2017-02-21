@@ -2,9 +2,9 @@ package com.teamtwo.aerolites.Entities.AI;
 
 import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.CollisionMask;
+import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
-import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.engine.Messages.Message;
 import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
@@ -14,8 +14,10 @@ import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
+import org.jsfml.audio.Music;
+import org.jsfml.graphics.CircleShape;
 import org.jsfml.graphics.Color;
-import org.jsfml.graphics.RectangleShape;
+import org.jsfml.graphics.ConvexShape;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 
@@ -37,8 +39,11 @@ public class Hexaboss extends AI implements Disposable {
         Wait
     }
 
-    private RectangleShape border;
-    private RectangleShape healthBar;
+    private static final Vector2f[] vertices = new Vector2f[] {
+            new Vector2f(-8 * 16, -25 * 9), new Vector2f(8 * 16, -25 * 9),
+            new Vector2f(16 * 16, 0), new Vector2f(8 * 16, 25 * 9),
+            new Vector2f(-8 * 16, 25 * 9), new Vector2f(-16 * 16, 0)
+    };
 
     private float angle;
     private float cooldown;
@@ -84,24 +89,17 @@ public class Hexaboss extends AI implements Disposable {
         config.category = CollisionMask.HEXABOSS;
         config.mask = CollisionMask.ALL & (~CollisionMask.ENEMY_BULLET);
 
-        Vector2f[] vertices = new Vector2f[6];
-        Vector2f sizes = new Vector2f(16, 9);
-        vertices[0] = new Vector2f(-8*sizes.x, -25*sizes.y);
-        vertices[1] = new Vector2f(8*sizes.x, -25*sizes.y);
-        vertices[2] = new Vector2f(16*sizes.x, 0);
-        vertices[3] = new Vector2f(8*sizes.x, 25*sizes.y);
-        vertices[4] = new Vector2f(-8*sizes.x, 25*sizes.y);
-        vertices[5] = new Vector2f(-16*sizes.x, 0);
-
         config.shape = new Polygon(vertices);
-        config.position = new Vector2f(State.WORLD_SIZE.x/2,-250);
+        config.position = new Vector2f(State.WORLD_SIZE.x / 2, -250);
 
         body = world.createBody(config);
         body.setData(this);
         body.registerObserver(this, Message.Type.Collision);
 
-        this.offScreenAllowance = new Vector2f(250,250);
-        renderColour = Color.CYAN;
+        this.offScreenAllowance = new Vector2f(250, 250);
+
+        display = new ConvexShape(body.getShape().getVertices());
+        display.setFillColor(Color.CYAN);
 
         timeBetweenShots = 5f;
         cooldown = 0;
@@ -118,15 +116,6 @@ public class Hexaboss extends AI implements Disposable {
 
         bullets = new ArrayList<>();
 
-        border = new RectangleShape(new Vector2f(State.WORLD_SIZE.x - 40, 40));
-        border.setPosition(20, 1020);
-        border.setFillColor(Color.TRANSPARENT);
-        border.setOutlineColor(new Color(74, 74, 74));
-        border.setOutlineThickness(5f);
-
-        healthBar = new RectangleShape(new Vector2f(State.WORLD_SIZE.x - 40, 40));
-        healthBar.setFillColor(Color.RED);
-        healthBar.setPosition(20, 1020);
         lastAttack = 0;
 
         ParticleConfig pConfig = new ParticleConfig();
@@ -149,31 +138,49 @@ public class Hexaboss extends AI implements Disposable {
 
         damage = new ParticleEmitter(pConfig,300,600);
     }
-    private void updateParticles(){
+    private void updateParticles() {
         damage.getConfig().position = body.getTransform().getPosition();
-        damage.getConfig().endSize = MathUtil.lerp(12,1, 1-(lives/totalLives));
-        damage.getConfig().speed = MathUtil.clamp(200*0.5f*totalLives/lives,100,300);
-        damage.getConfig().maxLifetime = MathUtil.lerp(3,1.5f,1-(lives/totalLives));
-        damage.getConfig().minLifetime = MathUtil.lerp(1.5f,0.3f,1-(lives/totalLives));
-        damage.setEmissionRate(300*(totalLives/lives)*(totalLives/lives));
-        damage.getConfig().colours[0] = new Color((int)MathUtil.lerp(0,255,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)),0);
-        damage.getConfig().colours[1] = new Color((int)MathUtil.lerp(0,255,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)));
+        float lifeRatio = 1 - (lives / totalLives);
+        float invLifeRatio = (totalLives / lives);
+
+        damage.getConfig().endSize = MathUtil.lerp(12, 1, lifeRatio);
+        damage.getConfig().speed = MathUtil.clamp(200 * 0.5f * invLifeRatio, 100, 300);
+        damage.getConfig().maxLifetime = MathUtil.lerp(3,1.5f, lifeRatio);
+        damage.getConfig().minLifetime = MathUtil.lerp(1.5f,0.3f, lifeRatio);
+        damage.setEmissionRate(300 * invLifeRatio * invLifeRatio);
+
+        int r = (int) MathUtil.lerp(0, 255, lifeRatio);
+        int g = (int) MathUtil.lerp(255, 0, lifeRatio);
+        int b = 0;
+
+        damage.getConfig().colours[0] = new Color(r, g, b);
+
+        b = (int) MathUtil.lerp(255, 0, lifeRatio);
+        damage.getConfig().colours[1] = new Color(r, g, b);
     }
 
     @Override
-    public void update(float dt){
+    public void update(float dt) {
         cooldown += dt;
         lastHit+=dt;
         damage.update(dt);
         updateParticles();
-        if(lastHit > 0.03f) renderColour = new Color((int)MathUtil.lerp(0,255,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)));
-        if(lives < 0){
+
+        if(lastHit > 0.03f) {
+            float value = 1 - (lives / totalLives);
+            int r = (int) MathUtil.lerp(0, 255, value);
+            int g = (int) MathUtil.lerp(255, 0, value);
+            int b = (int) MathUtil.lerp(255, 0, value);
+            display.setFillColor(new Color(r, g, b));
+        }
+
+        if(lives < 0) {
             onScreen = false;
             alive = false;
         }
-        if(body.getTransform().getPosition().y>State.WORLD_SIZE.y/2) {
-            if(!inPlace)
-            {
+
+        if(body.getTransform().getPosition().y > State.WORLD_SIZE.y / 2) {
+            if(!inPlace) {
                 inPlace = true;
                 Music hexagon = ContentManager.instance.getMusic("Hexagon");
                 hexagon.play();
@@ -182,7 +189,7 @@ public class Hexaboss extends AI implements Disposable {
                 ContentManager.instance.getMusic("PlayMusic").stop();
             }
             body.setVelocity(new Vector2f(0,0));
-            body.setTransform(new Vector2f(State.WORLD_SIZE.x/2, State.WORLD_SIZE.y/2),angle);
+            body.setTransform(new Vector2f(State.WORLD_SIZE.x / 2, State.WORLD_SIZE.y / 2), angle);
             pickPattern(dt);
             attack(dt);
         }
@@ -219,19 +226,15 @@ public class Hexaboss extends AI implements Disposable {
                 i--;
             }
         }
-
-        float val = 1f - (lives / totalLives);
-        float width = MathUtil.lerp(State.WORLD_SIZE.x - 40, 0, val);
-
-        healthBar.setSize(new Vector2f(width, 40));
     }
 
-    public void pickPattern(float dt){
+    private void pickPattern(float dt) {
         timeRunning += dt;
-        if(timeRunning > attackTime+warningTime)
-        {
+        if(timeRunning > attackTime + warningTime) {
+
             timeRunning = 0;
-            if(waitNeeded){
+
+            if(waitNeeded) {
                 pattern = Wait;
                 waitNeeded = false;
                 waitTurnSpeed = (MathUtil.PI/8)*dt*MathUtil.randomInt(-4,4);
@@ -264,7 +267,7 @@ public class Hexaboss extends AI implements Disposable {
                         warningTime = 2;
                         timeBetweenShots = 0.18f;
                         attackTime = 6;
-                        pattern = AttackPattern.Triforce;
+                        pattern = AttackPattern.TriForce;
                         break;
                     case 3:
                         warnTimer = 0;
@@ -282,7 +285,7 @@ public class Hexaboss extends AI implements Disposable {
     public void attack(float dt){
         switch (pattern) {
             case SpinOne:
-                warnTimer+=dt;
+                warnTimer += dt;
 
                 bulletPoints.clear();
                 bulletAngles.clear();
@@ -291,15 +294,15 @@ public class Hexaboss extends AI implements Disposable {
                 addFirePoints(3);
                 addFirePoints(4);
 
-                if(cooldown>timeBetweenShots && warningTime < warnTimer){
+                if(cooldown > timeBetweenShots && warningTime < warnTimer){
                     shooting = true;
                     cooldown = 0;
                 }
-                angle += (MathUtil.PI/2)*dt*MathUtil.sin(timeRunning*5);
+                angle += (MathUtil.PI / 2f) * dt * MathUtil.sin(timeRunning * 5);
                 break;
             case SpinTwo:
 
-                warnTimer+=dt;
+                warnTimer += dt;
 
                 bulletPoints.clear();
                 bulletAngles.clear();
@@ -312,9 +315,9 @@ public class Hexaboss extends AI implements Disposable {
                     shooting = true;
                     cooldown = 0;
                 }
-                angle -= (MathUtil.PI/3)*dt;
+                angle -= (MathUtil.PI / 3f) * dt;
                 break;
-            case Triforce:
+            case TriForce:
                 warnTimer += dt;
 
                 bulletPoints.clear();
@@ -324,15 +327,15 @@ public class Hexaboss extends AI implements Disposable {
                 addFirePoints(4);
 
 
-                if(cooldown>timeBetweenShots && warningTime < warnTimer){
+                if(cooldown > timeBetweenShots && warningTime < warnTimer) {
                     shooting = true;
                     cooldown = 0;
                 }
-                angle -= (MathUtil.PI/2.5f)*dt;
+                angle -= (MathUtil.PI / 2.5f) * dt;
                 break;
             case StandOne:
                 body.setAngularVelocity(0);
-                if(timeRunning>6){
+                if(timeRunning > 6) {
                     bulletPoints.clear();
                     bulletAngles.clear();
                     addFirePoints(0);
@@ -352,7 +355,7 @@ public class Hexaboss extends AI implements Disposable {
                     warningTime = 2;
 
                 }
-                else if(timeRunning < 3){
+                else if(timeRunning < 3) {
                     bulletPoints.clear();
                     bulletAngles.clear();
                     addFirePoints(2);
@@ -361,9 +364,11 @@ public class Hexaboss extends AI implements Disposable {
                     addFirePoints(0);
                     warningTime = 1;
                 }
-                if(warningTime > warnTimer)
-                    warnTimer+=dt;
-                else if(cooldown>timeBetweenShots){
+
+                if(warningTime > warnTimer) {
+                    warnTimer += dt;
+                }
+                else if(cooldown > timeBetweenShots){
                     shooting = true;
                     cooldown = 0;
                 }
@@ -384,33 +389,27 @@ public class Hexaboss extends AI implements Disposable {
     public void receiveMessage(Message message) {
         if (message.getType() == Message.Type.Collision) {
             CollisionMessage cm = (CollisionMessage) message;
-            boolean hit = cm.getBodyA().getData().getType() == Type.Bullet || cm.getBodyB().getData().getType() == Type.Bullet;
+            boolean hit = cm.getBodyA().getData().getType() == Type.Bullet
+                    || cm.getBodyB().getData().getType() == Type.Bullet;
+
             if(hit) {
                 lives--;
-                renderColour = Color.WHITE;
+                display.setFillColor(Color.WHITE);
                 lastHit = 0;
             }
         }
     }
+
     private void addFirePoints(int face) {
-        Vector2f pointOne;
-        Vector2f pointTwo;
-        switch (face) {
-            case 5:
-                pointOne = getBody().getShape().getTransformed()[0];
-                pointTwo = getBody().getShape().getTransformed()[5];
-                break;
-            default:
-                pointOne = getBody().getShape().getTransformed()[face];
-                pointTwo = getBody().getShape().getTransformed()[face + 1];
-                break;
-        }
+
+        Vector2f pointOne = body.getShape().getTransformed()[(face + 1) % 6];
+        Vector2f pointTwo = body.getShape().getTransformed()[face];
 
         float xAdd = 40 * MathUtil.sin(angle + (face) * 60 * MathUtil.DEG_TO_RAD);
         float yAdd = -40 * MathUtil.cos(angle + (face) * 60 * MathUtil.DEG_TO_RAD);
 
-        pointOne = new Vector2f(pointOne.x+xAdd, pointOne.y+yAdd);
-        pointTwo = new Vector2f(pointTwo.x+xAdd, pointTwo.y+yAdd);
+        pointOne = new Vector2f(pointOne.x + xAdd, pointOne.y + yAdd);
+        pointTwo = new Vector2f(pointTwo.x + xAdd, pointTwo.y + yAdd);
         bulletPoints.add(pointOne);
         bulletPoints.add(pointTwo);
 
@@ -434,28 +433,29 @@ public class Hexaboss extends AI implements Disposable {
 
         Vector2f mid3_4 = MathUtil.midPoint(mid2_2, pointOne);
         bulletPoints.add(mid3_4);
+
         for(int i = 0; i < 9; i++)
-            bulletAngles.add((face)*60*MathUtil.DEG_TO_RAD);
+            bulletAngles.add((face) * 60 * MathUtil.DEG_TO_RAD);
 
     }
     @Override
-    public void render(RenderWindow window){
-        damage.render(window);
-        super.render(window);
-        if(warningTime>warnTimer)
-        {
-            RectangleShape warning;
-            for(Vector2f v: bulletPoints) {
-                warning = new RectangleShape();
-                warning.setFillColor(new Color(255,0,0));
-                warning.setSize(new Vector2f(4,4));
-                warning.setPosition(v);
-                window.draw(warning);
+    public void render(RenderWindow renderer) {
+        damage.render(renderer);
+
+        super.render(renderer);
+
+        if(warningTime > warnTimer) {
+            CircleShape warning;
+            for(Vector2f position : bulletPoints) {
+                warning = new CircleShape(5, 5);
+                warning.setFillColor(Color.RED);
+                warning.setPosition(position);
+                renderer.draw(warning);
             }
         }
 
         for(Bullet bullet : bullets) {
-            bullet.render(window);
+            bullet.render(renderer);
         }
     }
 
@@ -464,6 +464,9 @@ public class Hexaboss extends AI implements Disposable {
         for(Bullet bullet : bullets) {
             body.getWorld().removeBody(bullet.getBody());
         }
+
+        bulletPoints.clear();
+        bulletAngles.clear();
         bullets.clear();
     }
 
@@ -475,9 +478,7 @@ public class Hexaboss extends AI implements Disposable {
         return bulletAngles;
     }
 
-    public void setShooting(boolean shooting){
-        this.shooting = shooting;
-    }
+    public void setShooting(boolean shooting) { this.shooting = shooting; }
 
     public void setLives(int players){
         lives = 360*players;

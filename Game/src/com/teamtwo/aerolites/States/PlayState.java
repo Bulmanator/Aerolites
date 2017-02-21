@@ -1,10 +1,5 @@
 package com.teamtwo.aerolites.States;
 
-import com.teamtwo.aerolites.Entities.AI.Hexaboss;
-import com.teamtwo.aerolites.Entities.AI.StandardAI;
-import com.teamtwo.aerolites.Entities.AI.Swarmer;
-import com.teamtwo.aerolites.Entities.AI.SwarmerBase;
-import com.teamtwo.aerolites.Configs.LevelConfig;
 import com.teamtwo.aerolites.Entities.AI.*;
 import com.teamtwo.aerolites.Entities.Asteroid;
 import com.teamtwo.aerolites.Entities.Bullet;
@@ -74,6 +69,12 @@ public class PlayState extends State {
 
         this.config = config;
 
+        // Load content and then play the level music
+        loadContent(config.textured);
+        Music bgm = ContentManager.instance.getMusic("PlayMusic");
+        bgm.setVolume(10f);
+        //bgm.play();
+
         gameOver = false;
         world = new World(Vector2f.ZERO);
         World.BODY_COLOUR = new Color(104, 149, 237);
@@ -102,12 +103,6 @@ public class PlayState extends State {
 
         accumulator = 0;
         alertPlaying = false;
-
-        // Load content and then play the level music
-        loadContent(config.textured);
-        Music bgm = ContentManager.instance.getMusic("PlayMusic");
-        bgm.setVolume(10f);
-        bgm.play();
     }
 
     @Override
@@ -125,11 +120,11 @@ public class PlayState extends State {
         if(bossTimer - 6 > config.bossSpawnTime && !bossSpawned && entities.size() == 0) {
             switch (bossType){
                 case PascalBoss:
-                    boss2 = new PascalBoss(world,config.bossLives/4,false);
-                    boss = new PascalBoss(world,config.bossLives/4,true);
+                    boss2 = new PascalBoss(world,config.bossBaseLives / 4,false);
+                    boss = new PascalBoss(world,config.bossBaseLives / 4,true);
                     break;
                 case Hexaboss:
-                    boss = new Hexaboss(world, config.bossLives);
+                    boss = new Hexaboss(world, config.bossBaseLives);
                     break;
             }
             bossSpawned = true;
@@ -396,9 +391,9 @@ public class PlayState extends State {
         ContentManager.instance.getSound("Alert").setVolume(50f);
 
         // Load Music
-        ContentManager.instance.loadMusic("PlayMusic", "music.wav");
-        ContentManager.instance.loadMusic("Hexagon", "focus.ogg");
-        ContentManager.instance.loadMusic("Pascal", "pascal.ogg");
+        ContentManager.instance.loadMusic("PlayMusic", "Music.wav");
+        ContentManager.instance.loadMusic("Hexagon", "Focus.ogg");
+        ContentManager.instance.loadMusic("Pascal", "Pascal.ogg");
     }
 
     public Player[] getPlayers() { return players; }

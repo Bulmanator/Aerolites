@@ -30,6 +30,7 @@ public class Player extends Entity implements Disposable {
     // TODO Add jet stream colours
 
     // #### Static Begin ####
+    // Various constants which are the same across players
 
     // The base vertices which make up the player ship shape
     private static final Vector2f[] vertices = new Vector2f[] {
@@ -42,7 +43,6 @@ public class Player extends Entity implements Disposable {
     private static final float forceFromJet = 100000f;
     // The delay between shots
     private static final float timeBetweenShots = 0.15f;
-
 
     // #### Static End ####
 
@@ -69,9 +69,7 @@ public class Player extends Entity implements Disposable {
     //Scoring
     private Score score;
 
-    public Player(World world, PlayerNumber player) {
-        this(world, player, -1);
-    }
+    public Player(World world, PlayerNumber player) { this(world, player, -1); }
 
     public Player(World world, PlayerNumber player, int controllerNumber) {
         this.player = player;
@@ -81,10 +79,9 @@ public class Player extends Entity implements Disposable {
 
         controller = controllerNumber >= 0;
 
-
         if(this.controllerNumber == null) controller = false;
 
-        lives = 2;
+        lives = 19;
         alive = true;
 
         immuneTime = 0;
@@ -108,6 +105,8 @@ public class Player extends Entity implements Disposable {
         body.setData(this);
         body.registerObserver(this, Message.Type.Collision);
 
+        display = new ConvexShape(body.getShape().getVertices());
+        display.setTexture(ContentManager.instance.getTexture("Player"));
 
         offScreenAllowance = new Vector2f(15, 15);
 
@@ -129,8 +128,9 @@ public class Player extends Entity implements Disposable {
 
         jet = new ParticleEmitter(pConfig, 40f, 400);
 
+        defaultColour = Color.WHITE;
         setColours();
-        renderColour = defaultColour;
+        display.setFillColor(defaultColour);
 
         bullets = new ArrayList<>();
     }
@@ -240,12 +240,12 @@ public class Player extends Entity implements Disposable {
         shootCooldown += dt;
         score.incrementTimeAlive(dt);
 
-        renderColour = defaultColour;
+        display.setFillColor(defaultColour);
 
         if(immuneTime > 0) {
             immuneTime -= dt;
             if (MathUtil.round(immuneTime % 0.3f, 1) == 0)
-                renderColour = Color.WHITE;
+                display.setFillColor(Color.WHITE);
         }
 
         // Update base
@@ -290,15 +290,12 @@ public class Player extends Entity implements Disposable {
     public void render(RenderWindow renderer) {
         if(!alive) return;
 
+        display.setPosition(body.getTransform().getPosition());
+        display.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
+
         // Draw the jet and shape
         jet.render(renderer);
-        ConvexShape bodyShape = new ConvexShape(body.getShape().getVertices());
-        bodyShape.setPosition(body.getTransform().getPosition());
-        bodyShape.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
-        bodyShape.setFillColor(renderColour);
-        bodyShape.setTexture(ContentManager.instance.getTexture("Player"));
-        renderer.draw(bodyShape);
-        //super.render(renderer);
+        renderer.draw(display);
 
         for(Bullet bullet : bullets) {
             bullet.render(renderer);
@@ -365,6 +362,7 @@ public class Player extends Entity implements Disposable {
     public void dispose() {
         for(Bullet bullet : bullets) {
             body.getWorld().removeBody(bullet.getBody());
+            score.bulletMissed();
         }
         bullets.clear();
     }
