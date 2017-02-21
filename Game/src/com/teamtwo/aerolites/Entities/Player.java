@@ -14,6 +14,7 @@ import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.Color;
+import org.jsfml.graphics.ConvexShape;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
@@ -38,9 +39,10 @@ public class Player extends Entity implements Disposable {
 
     // Constant values for movement
     private static final float rotationSpeed = MathUtil.PI * 1.2f;
-    private static final float forceFromJet = 100000;
+    private static final float forceFromJet = 100000f;
     // The delay between shots
     private static final float timeBetweenShots = 0.15f;
+
 
     // #### Static End ####
 
@@ -106,6 +108,7 @@ public class Player extends Entity implements Disposable {
         body.setData(this);
         body.registerObserver(this, Message.Type.Collision);
 
+
         offScreenAllowance = new Vector2f(15, 15);
 
         // Generating the particle configuration for the jet stream
@@ -136,6 +139,8 @@ public class Player extends Entity implements Disposable {
         switch (player) {
             case One:
                 defaultColour = new Color(61, 64, 255);
+                jet.getConfig().colours[0] = new Color(255,255,0);
+                jet.getConfig().colours[1] = new Color(255,0,0);
                 break;
             case Two:
                 defaultColour = new Color(255, 228, 94);
@@ -287,7 +292,13 @@ public class Player extends Entity implements Disposable {
 
         // Draw the jet and shape
         jet.render(renderer);
-        super.render(renderer);
+        ConvexShape bodyShape = new ConvexShape(body.getShape().getVertices());
+        bodyShape.setPosition(body.getTransform().getPosition());
+        bodyShape.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
+        bodyShape.setFillColor(renderColour);
+        bodyShape.setTexture(ContentManager.instance.getTexture("Player"));
+        renderer.draw(bodyShape);
+        //super.render(renderer);
 
         for(Bullet bullet : bullets) {
             bullet.render(renderer);

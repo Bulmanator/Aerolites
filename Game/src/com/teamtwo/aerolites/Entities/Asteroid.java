@@ -74,6 +74,7 @@ public class Asteroid extends Entity {
         body.setData(this);
         body.registerObserver(this, Message.Type.Collision);
         offScreenAllowance = new Vector2f(body.getShape().getRadius()*4,body.getShape().getRadius()*4);
+        //renderColour = new Color(MathUtil.randomInt(40,255),MathUtil.randomInt(40,255),MathUtil.randomInt(40,255));
     }
 
     public Asteroid(World world, Vector2f pos, Vector2f vel, float radius) {
@@ -96,6 +97,7 @@ public class Asteroid extends Entity {
         body.setData(this);
         body.registerObserver(this, Message.Type.Collision);
         offScreenAllowance = new Vector2f(body.getShape().getRadius()*4,body.getShape().getRadius()*4);
+        //renderColour = new Color(MathUtil.randomInt(40,255),MathUtil.randomInt(40,255),MathUtil.randomInt(40,255));
     }
 
     @Override

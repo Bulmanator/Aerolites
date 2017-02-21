@@ -51,6 +51,9 @@ public class LevelConfig {
     /** The number of hits the boss can take per player, default = 180 */
     public int bossBaseLives;
 
+    /**whether or not the game will use the textures or it will run in retro solid colour mode*/
+    public boolean textured;
+
     /** The input types of each player, this also defines how many players,
      * default = 1 player, using {@link InputType#Keyboard} */
     public final InputType[] players;

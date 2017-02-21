@@ -176,10 +176,13 @@ public class LevelOver extends State {
                 scores.setPosition(backgroundPos - WORLD_SIZE.x*1.5f, WORLD_SIZE.y / 2 - backgroundYMovement);
                 window.draw(scores);
 
-                float playerWidth = (1920-(90 + 40*(playerCount+1)))/(playerCount+1);
-                int font = 20;
-                if(playerCount > 3)
-                    font = 20;
+                float playerWidth = (1920-(90 + 40*(playerCount)))/(playerCount);
+                int font = 36;
+                if(playerCount > 5) {
+                    font = 16;
+                }
+                else if(playerCount > 3)
+                    font = 28;
                 for(int i = 0; i < playerCount; i++){
                     box = new RectangleShape();
                     box.setPosition(30+40*(i+1)+playerWidth*i,WORLD_SIZE.y / 2 - backgroundYMovement + 100);
@@ -199,17 +202,17 @@ public class LevelOver extends State {
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 110);
                         window.draw(text);
 
-                        text = new Text("Score: ", ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Score: "+ score.getScore(), ContentManager.instance.getFont("Ubuntu"), font);
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 190);
                         window.draw(text);
 
-                        text = new Text("Asteroids Destroyed: ", ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Asteroids Destroyed: " +score.getAsteroids(), ContentManager.instance.getFont("Ubuntu"), font);
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 230);
                         window.draw(text);
 
-                        text = new Text("Enemies Killed: ", ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Enemies Killed: " + score.getEnemies(), ContentManager.instance.getFont("Ubuntu"), font);
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 270);
                         window.draw(text);
