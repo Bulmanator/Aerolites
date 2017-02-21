@@ -1,176 +1,191 @@
 package com.teamtwo.engine.Input.Controllers;
 
-import static org.jsfml.window.Joystick.Axis;
+import com.teamtwo.engine.Engine;
+import org.jsfml.window.Joystick;
 
-public class Controller {
+/**
+ * A class which represents a single mapped controller
+ */
+class Controller {
 
-    /**
-     * An enumeration which represents the players which can be connected
-     */
-    public enum Player {
-        /** The first player in the game */
-        One,
-        /** The second player in the game */
-        Two,
-        /** The third player in the game */
-        Three,
-        /** The fourth player in the game */
-        Four
-    }
+    private static final int[] ps3Buttons;
+    private static final int[] ps4Buttons;
+    private static final int[] xboxButtons;
 
-    /**
-     * An enumeration which represents the controllers which are supported
-     */
-    public enum Type {
-        /** A Playstation 3 controller */
-        PS3(0x054c, 0x0268, 19),
-        /** A Playstation 4 controller */
-        PS4(0x054c, 0x09cc, 14),
-        /** An Xbox 360 controller */
-        Xbox_360(0x045e, 0x028e, 11),
-        /** An Xbox one controller */
-        Xbox_One(0x045e, 0x02ee, 11),
-        /** An Xbox one elite controller */
-        Xbox_Elite(0x045e, 0x02e3, 15),
-        /** The type of an unknown controller */
-        Unknown(-1, -1, 0);
+    private static final int[] ps3Triggers;
+    private static final Joystick.Axis[] ps4Triggers;
+    private static final Joystick.Axis[] xboxTriggers;
 
-        final int vendor;
-        final int product;
-        final int buttonCount;
+    private static final int[] ps3Dpad;
+    private static final Joystick.Axis[] ps4Dpad;
+    private static final Joystick.Axis[] xboxDpad;
 
-        Type(int vendor, int product, int buttonCount) {
-            this.vendor = vendor;
-            this.product = product;
-            this.buttonCount = buttonCount;
+    private static final Joystick.Axis[] ps3Thumbsticks;
+    private static final Joystick.Axis[] ps4Thumbsticks;
+    private static final Joystick.Axis[] xboxThumbsticks;
+
+    /* Controller mapping initialisation */
+    static {
+        if(Engine.WINDOWS) {
+            // TODO
+            ps4Buttons = new int[] {
+                    1, 2, 0, 3,
+                    4, 10,
+                    5, 11,
+                    9, 8, 12
+            };
+
+            ps4Triggers = new Joystick.Axis[] { Joystick.Axis.V, Joystick.Axis.U };
+
+            ps4Thumbsticks = new Joystick.Axis[] { Joystick.Axis.X, Joystick.Axis.Y, Joystick.Axis.Z, Joystick.Axis.R };
+
+            ps4Dpad = new Joystick.Axis[] {
+                    Joystick.Axis.POV_Y, Joystick.Axis.POV_Y,
+                    Joystick.Axis.POV_X, Joystick.Axis.POV_X
+            };
+
+            ps3Buttons = null;
+            ps3Dpad = null;
+            ps3Thumbsticks = null;
+            ps3Triggers = null;
+
+            xboxButtons = new int[] {
+                    0, 1, 2, 3,
+                    4, 8,
+                    5, 9,
+                    7, 6, 12
+            };
+
+            xboxDpad = new Joystick.Axis[] {
+                    Joystick.Axis.POV_Y, Joystick.Axis.POV_Y,
+                    Joystick.Axis.POV_X, Joystick.Axis.POV_X
+            };
+            xboxThumbsticks = new Joystick.Axis[] {
+                    Joystick.Axis.X, Joystick.Axis.Y,
+                    Joystick.Axis.U, Joystick.Axis.R
+            };
+            xboxTriggers = new Joystick.Axis[] {
+                    Joystick.Axis.Z, Joystick.Axis.Z
+            };
+        }
+        else if(Engine.LINUX) {
+            ps3Buttons = new int[] {
+                    14, 13, 15, 12,
+                    10, 1,
+                    11, 2,
+                    3, 0, 16
+            };
+
+            ps4Buttons = new int[] {
+                    1, 2, 0, 3,
+                    4, 10,
+                    5, 11,
+                    9, 8, 12
+            };
+
+            xboxButtons = new int[] {
+                    0, 1, 2, 3,
+                    4, 9,
+                    5, 10,
+                    7, 6, 8
+            };
+
+            ps3Triggers = new int[] { 8, 9 };
+            ps4Triggers = new Joystick.Axis[] { Joystick.Axis.U, Joystick.Axis.V };
+            xboxTriggers = new Joystick.Axis[] { Joystick.Axis.Z, Joystick.Axis.R };
+
+            ps3Dpad = new int[] { 4, 6, 7, 5 };
+            ps4Dpad = new Joystick.Axis[] {
+                    Joystick.Axis.POV_Y, Joystick.Axis.POV_Y,
+                    Joystick.Axis.POV_X, Joystick.Axis.POV_X
+            };
+            xboxDpad = new Joystick.Axis[] {
+                    Joystick.Axis.POV_Y, Joystick.Axis.POV_Y,
+                    Joystick.Axis.POV_X, Joystick.Axis.POV_X
+            };
+
+            ps3Thumbsticks = new Joystick.Axis[] { Joystick.Axis.X, Joystick.Axis.Y, Joystick.Axis.Z, Joystick.Axis.R };
+            ps4Thumbsticks = new Joystick.Axis[] { Joystick.Axis.X, Joystick.Axis.Y, Joystick.Axis.Z, Joystick.Axis.R };
+            xboxThumbsticks = new Joystick.Axis[] { Joystick.Axis.X, Joystick.Axis.Y, Joystick.Axis.U, Joystick.Axis.V };
+        }
+        else if(Engine.MAC_OS) {
+            throw new IllegalStateException("Error: Unfortunately macOS is not supported");
+        }
+        else {
+            throw new IllegalStateException("Error: \"" + Engine.OS_NAME + "\" is not supported");
         }
     }
 
-    /**
-     * An enumeration for the supported buttons (in Xbox variant)
-     */
-    public enum Button {
-        /** The A or Cross button */
-        A(14, 1, 0),
-        /** The B or Circle button */
-        B(13, 2, 1),
-        /** The X or Square button */
-        X(15, 0, 2),
-        /** The Y or Triangle button */
-        Y(12, 3, 3),
+    /** Whether or not the controller is connected */
+    private boolean connected;
+    /** The Controller Number */
+    PlayerNumber player;
+    /** The type of controller */
+    protected Controllers.Type type;
 
-        /** The L3 button */
-        L3(1, 10, 9),
-        /** The LB or L1 button */
-        LB(10, 4, 4),
-        /** The LT or L2 button */
-        LT(8, 6, -1),
+    /** The numbers which correspond to the matching buttons */
+    int[] buttons;
 
-        /** The R3 button */
-        R3(2, 11, 10),
-        /** The RB or R1 button */
-        RB(11, 5, 5),
-        /** The RT or R2 button */
-        RT(9, 7, -1),
+    /** The Axes which correspond to the Dpad */
+    Joystick.Axis[] dpad;
+    /** The player which correspond to the Dpad for PS3 controllers */
+    int[] intDpad;
 
-        /** Up on the DPad */
-        DPad_Up(4, 97, 97),
-        /** Down on the DPad */
-        DPad_Down(6, 98, 98),
-        /** Left on the DPad */
-        DPad_Left(7, 99, 99),
-        /** Right on the DPad */
-        DPad_Right(5, 100, 100),
+    /** The axes which correspond to the thumbsticks */
+    Joystick.Axis[] thumbsticks;
 
-        /** The Start or Options button */
-        Start(3, 9, 7),
-        /** The Back/ Select or Share button */
-        Back(0, 8, 6),
-        /** The Xbox or Playstation Button */
-        Xbox(16, 12, 8);
+    /** The axes which correspond to the triggers */
+    Joystick.Axis[] triggers;
+    /** The numbers which correspond to the triggers for PS3 controllers */
+    int[] intTriggers;
 
-        final int ps3;
-        final int ps4;
-        final int xbox;
+    Controller(PlayerNumber player) {
+        this.player = player;
+        connected = false;
+    }
 
-        Button(int ps3, int ps4, int xbox) {
-            this.ps3 = ps3;
-            this.ps4 = ps4;
-            this.xbox = xbox;
-        }
+    boolean isConnected() { return connected; }
 
-        int toValue(Type type) {
+    void setConnected(boolean connected) {
+        if(connected && !this.connected) {
+            Joystick.Identification id = Joystick.getIdentification(player.ordinal());
+            type = Controllers.Type.value(id.vendorId, id.productId);
             switch (type) {
                 case PS3:
-                    return ps3;
+                    if(Engine.WINDOWS) {
+                        connected = false;
+                        type = null;
+                    }
+                    else {
+                        buttons = ps3Buttons;
+                        intTriggers = ps3Triggers;
+                        thumbsticks = ps3Thumbsticks;
+                        intDpad = ps3Dpad;
+                    }
+                    break;
                 case PS4:
-                    return ps4;
+                    buttons = ps4Buttons;
+                    triggers = ps4Triggers;
+                    thumbsticks = ps4Thumbsticks;
+                    dpad = ps4Dpad;
+                    break;
                 case Xbox_360:
                 case Xbox_One:
                 case Xbox_Elite:
-                    return xbox;
-                default:
-                    return -1;
+                    buttons = xboxButtons;
+                    triggers = xboxTriggers;
+                    thumbsticks = xboxThumbsticks;
+                    dpad = xboxDpad;
+                    break;
+                case Unknown:
+                    this.connected = false;
+                    break;
             }
         }
-    }
-
-    /**
-     * An enumeration which represents the back triggers of the controllers
-     */
-    public enum Trigger {
-        /** The LT or L2 trigger */
-        LT(Axis.U, Axis.R),
-        /** The RT or R2 trigger */
-        RT(Axis.V, Axis.Z);
-
-        final Axis ps4;
-        final Axis xbox;
-
-        Trigger(Axis ps4, Axis xbox) {
-            this.ps4 = ps4;
-            this.xbox = xbox;
+        else if(!connected) {
+            type = null;
         }
 
-        /**
-         * Converts each trigger into their respective {@link Button}
-         * @return The button which represents the trigger
-         */
-        public Button toButton() {
-            if(this == LT) {
-                return Button.LT;
-            }
-
-            return Button.RT;
-        }
-
-        Axis toAxis(Type type) {
-            switch (type) {
-                case PS4:
-                    return ps4;
-                case Xbox_360:
-                case Xbox_One:
-                case Xbox_Elite:
-                    return xbox;
-            }
-
-            return null;
-        }
-    }
-
-    /** An enumeration which represents the thumbsticks of the controllers */
-    public enum Thumbstick {
-        /** The left thumbstick*/
-        Left(new Axis[] { Axis.Y, Axis.X }, new Axis[] { Axis.Y, Axis.X }),
-        /** The right thumbstick */
-        Right(new Axis[] { Axis.R, Axis.Z }, new Axis[] { Axis.V, Axis.U });
-
-        final Axis[] ps;
-        final Axis[] xbox;
-
-        Thumbstick(Axis[] ps, Axis[] xbox) {
-            this.ps = ps;
-            this.xbox = xbox;
-        }
+        this.connected = connected;
     }
 }

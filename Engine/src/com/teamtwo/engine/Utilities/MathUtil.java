@@ -212,4 +212,17 @@ public final class MathUtil {
     public static float cross(Vector2f a, Vector2f b) {
         return (a.x * b.y) - (a.y * b.x);
     }
+
+    /**
+     * returns the mid point of two vectors
+     * @param a the first vector
+     * @param b the second vector
+     * @return the mid point vector
+     */
+    public static Vector2f midPoint(Vector2f a, Vector2f b){
+        float x = a.x+b.x;
+        float y = a.y+b.y;
+
+        return new Vector2f(x/2,y/2);
+    }
 }

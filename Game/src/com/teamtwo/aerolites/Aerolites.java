@@ -1,7 +1,9 @@
 package com.teamtwo.aerolites;
 
+import com.teamtwo.aerolites.Configs.LevelConfig;
 import com.teamtwo.aerolites.States.MenuState;
 import com.teamtwo.aerolites.States.PlayState;
+import com.teamtwo.aerolites.Utilities.InputType;
 import com.teamtwo.engine.Game;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 
@@ -13,7 +15,22 @@ public class Aerolites extends Game {
     /** This method is called once before the game begins running */
     public void initialise() {
         stateManager = new GameStateManager(this);
-        stateManager.addState(new MenuState(stateManager));
+
+        int playerCount = 2;
+
+        LevelConfig config = new LevelConfig();
+        config.asteroidBaseRate = 2.4f / (playerCount * 1.8f);
+        config.swarmerBaseRate = 16.0f / (float) playerCount;
+        config.aiBaseRate = 14.0f / (float) playerCount;
+        config.textured = true;
+
+        config.bossLives = 360 * playerCount;
+        config.bossSpawnTime = 120;
+
+        config.players[0] = InputType.Controller;
+        config.players[1] = InputType.Controller;
+
+        stateManager.addState(new PlayState(stateManager, config));
     }
 
     /**

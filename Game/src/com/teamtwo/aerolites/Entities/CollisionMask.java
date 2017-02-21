@@ -1,7 +1,7 @@
 package com.teamtwo.aerolites.Entities;
 
 /**
- * Created by james on 07/02/17.
+ * @author James Bulman
  */
 public class CollisionMask {
 
@@ -12,7 +12,9 @@ public class CollisionMask {
     public static final int STANDARD_AI = 0x10;
     public static final int SWARMER_BASE = 0x20;
     public static final int SWARMER = 0x40;
-    public static final int POWERUP = 0x100;
-    public static final int AI = STANDARD_AI | SWARMER | SWARMER_BASE;
+    public static final int HEXABOSS = 0x80;
+    public static final int PASCALBOSS = 0x100;
+    public static final int POWERUP = 0x200;
+    public static final int AI = STANDARD_AI | SWARMER | SWARMER_BASE | HEXABOSS | PASCALBOSS;
     public static final int ALL = PLAYER | ASTEROID | AI | BULLET | ENEMY_BULLET;
 }

@@ -19,20 +19,19 @@ import org.jsfml.system.Vector2f;
 public class Asteroid extends Entity {
 
     private boolean onScreen;
-    private boolean expload;
+    private boolean explode;
 
     /**
      * Constructs a new procedurally generated asteroid
      * @param world The world which is used to create the body
      */
     public Asteroid(World world) {
-        super();
-        expload = false;
+        explode = false;
         onScreen = true;
         BodyConfig config = new BodyConfig();
 
-        config.mask = CollisionMask.ASTEROID;
-        config.category = CollisionMask.ALL & ~CollisionMask.POWERUP;
+        config.category = CollisionMask.ASTEROID;
+        config.mask = CollisionMask.ALL;
 
         int screenSide = MathUtil.randomInt(0,4);
         int x = 0, y = 0, velocityX = 0, velocityY = 0;
@@ -75,12 +74,12 @@ public class Asteroid extends Entity {
         body.setData(this);
         body.registerObserver(this, Message.Type.Collision);
         offScreenAllowance = new Vector2f(body.getShape().getRadius()*4,body.getShape().getRadius()*4);
+        //renderColour = new Color(MathUtil.randomInt(40,255),MathUtil.randomInt(40,255),MathUtil.randomInt(40,255));
     }
 
     public Asteroid(World world, Vector2f pos, Vector2f vel, float radius) {
-        super();
         this.onScreen = true;
-        this.expload = false;
+        this.explode = false;
         BodyConfig config = new BodyConfig();
 
         config.position = pos;
@@ -90,11 +89,15 @@ public class Asteroid extends Entity {
         config.velocity = vel;
         config.angularVelocity = MathUtil.randomFloat(0, MathUtil.PI / 4f);
 
+        config.category = CollisionMask.ASTEROID;
+        config.mask = CollisionMask.ALL;
+
         config.density = 0.6f;
         body = world.createBody(config);
         body.setData(this);
         body.registerObserver(this, Message.Type.Collision);
         offScreenAllowance = new Vector2f(body.getShape().getRadius()*4,body.getShape().getRadius()*4);
+        //renderColour = new Color(MathUtil.randomInt(40,255),MathUtil.randomInt(40,255),MathUtil.randomInt(40,255));
     }
 
     @Override
@@ -103,9 +106,8 @@ public class Asteroid extends Entity {
         bodyShape.setPosition(body.getTransform().getPosition());
         bodyShape.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
         bodyShape.setFillColor(renderColour);
-        //bodyShape.setTexture(ContentManager.instance.getTexture("Asteroid"));
+        bodyShape.setTexture(ContentManager.instance.getTexture("Asteroid"));
         renderer.draw(bodyShape);
-
     }
 
 
@@ -115,7 +117,9 @@ public class Asteroid extends Entity {
             CollisionMessage cm = (CollisionMessage) message;
             Type typeA = (Type)cm.getBodyA().getData().getType();
             Type typeB = (Type)cm.getBodyB().getData().getType();
-            expload = typeB == Type.Bullet || typeB == Type.EnemyBullet || typeA == Type.Bullet || typeA == Type.EnemyBullet;
+
+            explode = typeB == Type.Bullet || typeB == Type.EnemyBullet;
+            explode |= typeA == Type.Bullet || typeA == Type.EnemyBullet;
         }
     }
 
@@ -133,13 +137,11 @@ public class Asteroid extends Entity {
     }
 
     @Override
-    public void checkOffScreen(){
-        if(body.getTransform().getPosition().x < -offScreenAllowance.x || body.getTransform().getPosition().x > State.WORLD_SIZE.x + offScreenAllowance.x){
-            this.onScreen = false;
-        }
-        else
-            this.onScreen = !(body.getTransform().getPosition().y < -offScreenAllowance.y
-                    || body.getTransform().getPosition().y > State.WORLD_SIZE.y + offScreenAllowance.y);
+    public void checkOffScreen() {
+        onScreen = !(body.getTransform().getPosition().x < -offScreenAllowance.x
+                || body.getTransform().getPosition().x > State.WORLD_SIZE.x + offScreenAllowance.x)
+                && !(body.getTransform().getPosition().y < -offScreenAllowance.y
+                || body.getTransform().getPosition().y > State.WORLD_SIZE.y + offScreenAllowance.y);
     }
 
     @Override
@@ -150,7 +152,7 @@ public class Asteroid extends Entity {
     @Override
     public Type getType() { return Type.Asteroid; }
 
-    public boolean shouldExpload() {
-        return expload;
+    public boolean shouldExplode() {
+        return explode;
     }
 }
