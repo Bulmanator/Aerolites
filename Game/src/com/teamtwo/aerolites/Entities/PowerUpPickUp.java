@@ -1,7 +1,6 @@
 package com.teamtwo.aerolites.Entities;
 
 import com.teamtwo.engine.Messages.Message;
-import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
@@ -16,21 +15,20 @@ import org.jsfml.system.Vector2f;
 public class PowerUpPickUp extends Entity {
 
     private float lifeTime;
-    private final float MAX_LIFE_TIME;
-    int[] PowerUpType = new int[4];
-    //The powers up are:
-    //ToDo above powerups
+    private final float maxLifeTime;
+    int[] PowerUpType = new int[3];
 
-    public PowerUpPickUp(float lifeTime, Vector2f position, World world) {
-        for(int i = 0; i < PowerUpType.length; i++)
-        {
-            PowerUpType[i] = i;
-        }
+    private Type type;
 
+    //PowerUps 0 = shield, 1 = life, 2 = increase shoot speed
 
-        MAX_LIFE_TIME = lifeTime;
+    public PowerUpPickUp(Type type, float lifeTime, Vector2f position, World world) {
+
+        maxLifeTime = lifeTime;
         this.lifeTime = 0;
         onScreen = true;
+
+        this.type = type;
 
         BodyConfig config = new BodyConfig();
 
@@ -45,25 +43,39 @@ public class PowerUpPickUp extends Entity {
 
         config.shape = new Polygon(shape);
         config.position = position;
-        config.mask = CollisionMask.POWERUP;
-        config.category = CollisionMask.PLAYER;
+        config.category = CollisionMask.POWERUP;
+        config.mask = CollisionMask.PLAYER;
         config.angularVelocity = MathUtil.randomFloat(-0.2f, 0.2f);
 
         body = world.createBody(config);
+        body.registerObserver(this, Message.Type.Collision);
         body.setData(this);
 
-        this.renderColour = Color.BLUE;
+        renderColour = Color.BLUE;
+        switch (type) {
+            case Shield:
+                renderColour = Color.BLUE;
+                break;
+            case ShotSpeed:
+                renderColour = Color.RED;
+                break;
+            case Life:
+                renderColour = Color.GREEN;
+                break;
+        }
 
     }
 
     @Override
-    public void receiveMessage(Message message){
-
+    public void receiveMessage(Message message) {
+        if(message.getType() == Message.Type.Collision) {
+            onScreen = false;
+        }
     }
 
     @java.lang.Override
     public Entity.Type getType() {
-        return Type.PowerUp;
+        return type;
     }
 
     @Override
@@ -79,9 +91,11 @@ public class PowerUpPickUp extends Entity {
     public void update(float dt) {
         super.update(dt);
         lifeTime += dt;
-        if (lifeTime > MAX_LIFE_TIME) {
+        if (lifeTime > maxLifeTime) {
             onScreen = false;
         }
     }
+
+
 
 }

@@ -1,6 +1,5 @@
 package com.teamtwo.aerolites.States;
 
-import com.teamtwo.aerolites.ExampleInput;
 import com.teamtwo.aerolites.UI.Button;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
@@ -10,7 +9,6 @@ import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
 import org.jsfml.window.Mouse;
-import org.jsfml.window.Window;
 
 
 /**
@@ -67,9 +65,9 @@ public class ControllerSelectState extends State {
 
             if (Buttons[i].isClicked() && !Mouse.isButtonPressed(Mouse.Button.LEFT)) {
                 if (Buttons[i].getLabel().equals("Keyboard")) {
-                    gsm.addState(new PlayState(gsm, 0)); //change here to one for keyboard and controller
+                    //gsm.addState(new PlayState(gsm)); //change here to one for keyboard and controller
                 } else if (Buttons[i].getLabel().equals("Controller")) {
-                    gsm.addState(new PlayState(gsm, -1)); //change here to one for keyboard and controller
+                    //gsm.addState(new PlayState(gsm)); //change here to one for keyboard and controller
                 }
             }
 

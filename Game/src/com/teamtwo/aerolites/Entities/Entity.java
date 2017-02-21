@@ -25,8 +25,9 @@ public abstract class Entity implements EntityRenderable, Updateable, Observer, 
         EnemyBullet,
         StandardAI,
         Swamer,
-        PowerUp,
-        SwamerBase
+        Shield,
+        Life,
+        ShotSpeed,
         SwamerBase,
         Hexaboss,
         PascalBoss
