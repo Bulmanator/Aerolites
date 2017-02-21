@@ -63,6 +63,11 @@ public class LevelOver extends State {
         }
 
         previousSpace = Keyboard.isKeyPressed(Keyboard.Key.SPACE);
+
+        ContentManager.instance.getMusic("Hexagon").stop();
+        ContentManager.instance.getMusic("Pascal").stop();
+        ContentManager.instance.getMusic("PlayMusic").setVolume(10f);
+        ContentManager.instance.getMusic("PlayMusic").play();
     }
 
     @Override

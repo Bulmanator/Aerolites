@@ -164,7 +164,7 @@ public class PascalBoss extends AI {
                     position = new Vector2f(State.WORLD_SIZE.x / 6 * 1.5f, position.y);
                     inPlace = true;
                     ContentManager.instance.getMusic("PlayMusic").stop();
-                    //ContentManager.instance.getMusic("Pascal").play();
+                    ContentManager.instance.getMusic("Pascal").play();
                 }
             }
             else {
@@ -172,7 +172,7 @@ public class PascalBoss extends AI {
                     position = new Vector2f(State.WORLD_SIZE.x / 6 * 4.5f, position.y);
                     inPlace = true;
                     ContentManager.instance.getMusic("PlayMusic").stop();
-                    //ContentManager.instance.getMusic("Pascal").play();
+                    ContentManager.instance.getMusic("Pascal").play();
                 }
             }
         }

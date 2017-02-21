@@ -81,7 +81,7 @@ public class Player extends Entity implements Disposable {
 
         if(this.controllerNumber == null) controller = false;
 
-        lives = 19;
+        lives = 4;
         alive = true;
 
         immuneTime = 0;

@@ -28,6 +28,9 @@ public class StarMap extends State {
     }
 
     private Node current;
+    private int lastPhase = -1;
+    private boolean prevPress;
+
     private ArrayList<Node> prevNodes;
 
     private boolean generated;
@@ -44,17 +47,15 @@ public class StarMap extends State {
 
         font = ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
 
-        int playerCount = 1;
-
         config = new LevelConfig();
 
-        config.asteroidBaseRate = 2.4f / (playerCount * 1.8f);
-        config.swarmerBaseRate = 16.0f / (float) playerCount;
-        config.aiBaseRate = 14.0f / (float) playerCount;
+        config.asteroidBaseRate = 2.4f;
+        config.swarmerBaseRate = 16.0f;
+        config.aiBaseRate = 14.0f;
         config.textured = true;
 
         config.bossBaseLives = 360;
-        config.bossSpawnTime = 0;
+        config.bossSpawnTime = 60;
 
         config.players[0] = InputType.Controller;
 
@@ -67,6 +68,8 @@ public class StarMap extends State {
     private void generate() {
         //if(generated) return;
       //  generated = true;
+
+        int hardCount = 2;
 
         starSize = 16;
 
@@ -92,6 +95,13 @@ public class StarMap extends State {
                 shape = new CircleShape(starSize, 4);
                 shape.setPosition(x * (i + 1), ((starCount - j) * y) + MathUtil.randomFloat(-y / 4f, y / 4f));
                 difficulty = LevelConfig.Difficulty.values()[MathUtil.randomInt(0, 3)];
+                if(hardCount == 0 && difficulty == LevelConfig.Difficulty.Hard) {
+                    difficulty = LevelConfig.Difficulty.values()[MathUtil.randomInt(0, 2)];
+                }
+                else if(difficulty == LevelConfig.Difficulty.Hard) {
+                    hardCount--;
+                }
+
                 stars.add(new Node(difficulty, shape, i + 1));
             }
         }
@@ -117,15 +127,19 @@ public class StarMap extends State {
         boolean pressed = Mouse.isButtonPressed(Mouse.Button.LEFT);
         Vector2f mousePos = window.mapPixelToCoords(mouse);
 
+
         for(Node node : stars) {
             Vector2f pos = node.display.getPosition();
             if(mousePos.x > pos.x && mousePos.x < pos.x + (starSize * 2)) {
                 if(mousePos.y > pos.y && mousePos.y < pos.y + (starSize * 2)) {
-                    if(pressed && node != current) {
-                        prevNodes.add(current);
-                        current = node;
+                    if(pressed && !prevPress && node != current) {
+                        if(node.phase == current.phase + 1) {
+                            prevNodes.add(current);
+                            current = node;
+                        }
                     }
-                    else if(pressed && node == current) {
+                    else if(pressed && !prevPress && node == current) {
+                        prevPress = true;
                         gsm.addState(new PlayState(gsm, config));
                     }
                 }
@@ -133,6 +147,7 @@ public class StarMap extends State {
         }
 
         r = Keyboard.isKeyPressed(Keyboard.Key.R);
+        prevPress = Mouse.isButtonPressed(Mouse.Button.LEFT);
     }
 
     public void render() {

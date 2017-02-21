@@ -73,11 +73,11 @@ public class PlayState extends State {
         loadContent(config.textured);
         Music bgm = ContentManager.instance.getMusic("PlayMusic");
         bgm.setVolume(10f);
-        //bgm.play();
+        bgm.play();
 
         gameOver = false;
         world = new World(Vector2f.ZERO);
-        World.BODY_COLOUR = new Color(104, 149, 237);
+        World.BODY_COLOUR = Color.RED;
 
         entities = new ArrayList<>();
 
@@ -100,6 +100,12 @@ public class PlayState extends State {
                 players[i] = new Player(world, PlayerNumber.values()[i]);
             }
         }
+
+        config.asteroidBaseRate /= (1.8f * playerCount);
+        config.swarmerBaseRate /= (float) playerCount;
+        config.aiBaseRate /= (float) playerCount;
+
+        config.bossBaseLives *= playerCount;
 
         accumulator = 0;
         alertPlaying = false;

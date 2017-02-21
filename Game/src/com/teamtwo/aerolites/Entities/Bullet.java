@@ -60,7 +60,7 @@ public class Bullet extends Entity {
                 break;
         }
 
-        config.mask |= (CollisionMask.ASTEROID & CollisionMask.PASCALBOSS);
+        config.mask |= (CollisionMask.ASTEROID);
 
         body = world.createBody(config);
 

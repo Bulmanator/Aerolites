@@ -26,8 +26,14 @@ public class Aerolites extends Game {
         config.bossBaseLives = 360;
         config.bossSpawnTime = 0;
 
-        config.players[0] = InputType.Controller;
-      //  config.players[1] = InputType.Controller;
+        config.players[0] = InputType.Keyboard;
+        config.players[1] = InputType.Keyboard;
+        config.players[2] = InputType.Keyboard;
+        config.players[3] = InputType.Keyboard;
+        config.players[4] = InputType.Keyboard;
+        config.players[5] = InputType.Keyboard;
+        config.players[6] = InputType.Keyboard;
+        config.players[7] = InputType.Keyboard;
 
         stateManager.addState(new StarMap(stateManager));
     }
