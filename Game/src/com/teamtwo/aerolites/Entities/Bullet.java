@@ -61,7 +61,7 @@ public class Bullet extends Entity {
                 break;
         }
 
-        config.mask |= CollisionMask.ASTEROID;
+        config.mask |= (CollisionMask.ASTEROID | CollisionMask.PASCALBOSS);
 
         this.body = world.createBody(config);
 
@@ -92,6 +92,7 @@ public class Bullet extends Entity {
             onScreen = false;
             alive = false;
         }
+        limitSpeed();
     }
 
     @Override
@@ -119,6 +120,8 @@ public class Bullet extends Entity {
                 enemy = typeA == Type.StandardAI || typeB == Type.StandardAI;
                 enemy |= typeA == Type.Swamer || typeB == Type.Swamer;
                 enemy |= typeA == Type.SwamerBase || typeB == Type.SwamerBase;
+                enemy |= typeA == Type.Hexaboss || typeB == Type.Hexaboss;
+                enemy |= typeA == Type.PascalBoss || typeB == Type.PascalBoss;
 
                 hit = asteroid || enemy;
             }

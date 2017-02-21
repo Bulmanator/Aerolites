@@ -3,6 +3,7 @@ package com.teamtwo.aerolites.Entities.AI;
 import com.teamtwo.aerolites.Entities.CollisionMask;
 import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.aerolites.Entities.Player;
+import com.teamtwo.engine.Graphics.Animation;
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
 import com.teamtwo.engine.Messages.Message;
@@ -10,8 +11,10 @@ import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
+import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.MathUtil;
 import org.jsfml.graphics.Color;
+import org.jsfml.graphics.ConvexShape;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 
@@ -24,6 +27,7 @@ public class Swarmer extends AI {
 
     private ParticleEmitter jet;
     private Entity target;
+    private Animation animation;
 
     public Swarmer(World world, Vector2f pos) {
         this.onScreen = true;
@@ -73,6 +77,8 @@ public class Swarmer extends AI {
 
         pConfig.position = body.getTransform().getPosition();
         jet = new ParticleEmitter(pConfig, 40f, 400);
+        animation = new Animation(ContentManager.instance.getTexture("Swarmer"),1,5,0.5f);
+        animation.setScale(30,30);
     }
 
     @Override
@@ -81,6 +87,10 @@ public class Swarmer extends AI {
 
         jet.update(dt);
         jet.getConfig().position = body.getShape().getTransformed()[0];
+
+        animation.update(dt);
+        animation.setPosition(body.getTransform().getPosition());
+        animation.setRotation(body.getTransform().getAngle()*MathUtil.RAD_TO_DEG+180);
 
         if(target != null) {
             Vector2f position = body.getTransform().getPosition();
@@ -120,7 +130,12 @@ public class Swarmer extends AI {
     @Override
     public void render(RenderWindow window) {
         jet.render(window);
-        super.render(window);
+        ConvexShape bodyShape = new ConvexShape(body.getShape().getVertices());
+        bodyShape.setPosition(body.getTransform().getPosition());
+        bodyShape.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
+        bodyShape.setFillColor(renderColour);
+        window.draw(bodyShape);
+        //animation.render(window);
     }
 
     @Override

@@ -102,7 +102,7 @@ public class PascalBoss extends AI {
         config.shape = new Polygon(vertices);
 
         config.category = CollisionMask.PASCALBOSS;
-        config.mask = CollisionMask.ALL & (~CollisionMask.ENEMY_BULLET);
+        config.mask = CollisionMask.ALL;// & (~CollisionMask.ENEMY_BULLET);
 
         body = world.createBody(config);
         body.setData(this);
