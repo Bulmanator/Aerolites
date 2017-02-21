@@ -1,10 +1,7 @@
 package com.teamtwo.aerolites.States;
 
 import com.teamtwo.aerolites.Entities.AI.*;
-import com.teamtwo.aerolites.Entities.Asteroid;
-import com.teamtwo.aerolites.Entities.Bullet;
-import com.teamtwo.aerolites.Entities.Entity;
-import com.teamtwo.aerolites.Entities.Player;
+import com.teamtwo.aerolites.Entities.*;
 import com.teamtwo.aerolites.Utilities.InputType;
 import com.teamtwo.aerolites.Utilities.LevelConfig;
 import com.teamtwo.engine.Input.Controllers.PlayerNumber;
@@ -20,7 +17,7 @@ import org.jsfml.window.Keyboard;
 
 import java.util.ArrayList;
 
-import static com.teamtwo.aerolites.Entities.Entity.Type.EnemyBullet;
+import static com.teamtwo.aerolites.Entities.Entity.Type.*;
 
 /**
  * @author Matthew Threlfall
@@ -265,7 +262,35 @@ public class PlayState extends State {
 
     public int updateAsteroid(Asteroid a){
         int index = entities.indexOf(a);
+
+        Vector2f pos = a.getBody().getTransform().getPosition();
+
         if(a.shouldExplode()) {
+
+            int powerUp = MathUtil.randomInt(1, 10);
+            if(powerUp == 1)
+            {
+                powerUp = MathUtil.randomInt(1, 4);
+                Entity.Type type;
+                switch (powerUp) {
+                    case 1:
+                        type = Shield;
+                        break;
+                    case 2:
+                        type = Life;
+                        break;
+                    case 3:
+                        type = ShotSpeed;
+                        break;
+                    default:
+                        type = null;
+                }
+
+
+                entities.add(new PowerUpPickUp(type, 20, pos, world));
+            }
+
+
             if(a.getBody().getShape().getRadius() / 2 > 15) {
                 Vector2f position = a.getBody().getTransform().getPosition();
                 Vector2f velocity = new Vector2f(a.getBody().getVelocity().x * 1.2f, a.getBody().getVelocity().y * 1.2f);

@@ -122,8 +122,7 @@ public class ContentManager {
         Texture t = new Texture();
         try {
             // Tries to load if from the filename provided
-            t.loadFromFile(Paths.get(System.getProperty("user.dir")
-                    + File.separator + "Textures" + File.separator + filename));
+            t.loadFromFile(Paths.get(System.getProperty("user.dir") + File.separator + "Textures" + File.separator + filename));
         }
         catch (IOException ex) {
             // If it fails the exit
@@ -155,8 +154,7 @@ public class ContentManager {
         Font f = new Font();
         try {
             // Tries to load it from the filename provided
-            f.loadFromFile(Paths.get(System.getProperty("user.dir")
-                    + File.separator + "Fonts" + File.separator + filename));
+            f.loadFromFile(Paths.get(System.getProperty("user.dir") + File.separator + "Fonts" + File.separator + filename));
         }
         catch (IOException ex) {
             // If it fails the exit

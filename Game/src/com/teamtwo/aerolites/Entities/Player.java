@@ -42,10 +42,12 @@ public class Player extends Entity implements Disposable {
     private static final float rotationSpeed = MathUtil.PI * 1.2f;
     private static final float forceFromJet = 100000f;
     // The delay between shots
-    private static final float timeBetweenShots = 0.15f;
+
 
     // #### Static End ####
 
+    private float timeBetweenShots = 0.15f;
+    private float powerUpTime;
 
     // Whether or not the Player is controlled via a controller
     private boolean controller;
@@ -248,6 +250,14 @@ public class Player extends Entity implements Disposable {
                 display.setFillColor(Color.WHITE);
         }
 
+        if(powerUpTime > 0){
+            powerUpTime -= dt;
+        }
+        else{
+            powerUpTime = 0;
+            timeBetweenShots = 0.15f;
+        }
+
         // Update base
         super.update(dt);
 
@@ -312,14 +322,30 @@ public class Player extends Entity implements Disposable {
             Type typeA = (Entity.Type) cm.getBodyA().getData().getType();
             Type typeB = (Entity.Type) cm.getBodyB().getData().getType();
 
-            if(typeA != Type.Bullet && typeB != Type.Bullet){
-                if(typeA != Type.Player || typeB != Type.Player) {
-                    if(immuneTime <= 0) {
-                        lives--;
-                        if(lives < 0) alive = false;
-                        immuneTime = 3;
-                    }
+            Type other = typeA == Type.Player ? typeB : typeA;
+
+            boolean hit = other != Type.Shield && other != Type.Life && other != Type.ShotSpeed;
+
+            if(hit) {
+                if (immuneTime <= 0) {
+                    lives--;
+                    if (lives < 0) alive = false;
+                    immuneTime = 3;
                 }
+            }
+
+
+            switch (other) {
+                case Shield:
+                    immuneTime = 10;
+                    break;
+                case Life:
+                    lives++;
+                    break;
+                case ShotSpeed:
+                    timeBetweenShots = 0.07f;
+                    powerUpTime = 10;
+                    break;
             }
         }
     }
@@ -365,5 +391,26 @@ public class Player extends Entity implements Disposable {
             score.bulletMissed();
         }
         bullets.clear();
+    }
+
+
+
+    private void playerPowerUp(int powerUpNumber)
+    {
+        if(powerUpNumber == 1)
+        {
+            //shield
+            System.out.print("Shield");
+        }
+        if(powerUpNumber == 2)
+        {
+            //life
+            System.out.print("life");
+        }
+        if(powerUpNumber == 3)
+        {
+            //Increase fire speed
+            System.out.print("fire speed");
+        }
     }
 }
