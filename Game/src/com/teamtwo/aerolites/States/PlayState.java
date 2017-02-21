@@ -48,6 +48,8 @@ public class PlayState extends State {
 
     private Entity.Type bossType;
 
+    private RectangleShape background;
+
     //TODO shoot bullets out of ait
     //TODO make power ups work
     //TODO star map
@@ -69,7 +71,7 @@ public class PlayState extends State {
         // Load content and then play the level music
         loadContent(config.textured);
         Music bgm = ContentManager.instance.getMusic("PlayMusic");
-        bgm.setVolume(10f);
+        bgm.setVolume(100f);
         bgm.play();
 
         gameOver = false;
@@ -106,6 +108,10 @@ public class PlayState extends State {
 
         accumulator = 0;
         alertPlaying = false;
+
+        background = new RectangleShape(State.WORLD_SIZE);
+        background.setPosition(0, 0);
+        background.setTexture(ContentManager.instance.getTexture("Space"));
     }
 
     @Override
@@ -267,7 +273,7 @@ public class PlayState extends State {
 
         if(a.shouldExplode()) {
 
-            int powerUp = MathUtil.randomInt(1, 10);
+            int powerUp = MathUtil.randomInt(1, 75);
             if(powerUp == 1)
             {
                 powerUp = MathUtil.randomInt(1, 4);
@@ -287,7 +293,7 @@ public class PlayState extends State {
                 }
 
 
-                entities.add(new PowerUpPickUp(type, 20, pos, world));
+                entities.add(new Powerup(type, 20, pos, world));
             }
 
 
@@ -336,6 +342,8 @@ public class PlayState extends State {
     public void render() {
 
         window.setTitle("FPS: " + game.getEngine().getFps());
+
+        window.draw(background);
 
         for(Entity entity : entities) {
             entity.render(window);
@@ -409,6 +417,8 @@ public class PlayState extends State {
             ContentManager.instance.loadTexture("Asteroid", "Retro.png");
             ContentManager.instance.loadTexture("Player", "Retro.png");
         }
+
+        ContentManager.instance.loadTexture("Space", "Space.png");
 
         // Load Fonts
         ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");

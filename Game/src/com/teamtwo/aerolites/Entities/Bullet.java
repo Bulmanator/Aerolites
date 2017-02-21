@@ -33,7 +33,7 @@ public class Bullet extends Entity {
     private boolean enemy;
 
     public Bullet(float lifeTime, Vector2f position, Type owner, float angle, World world) {
-
+        this.owner = owner;
         totalLifeTime = lifeTime;
         this.lifeTime = 0;
 
@@ -44,7 +44,7 @@ public class Bullet extends Entity {
 
         config.shape = new Polygon(vertices);
 
-        this.owner = owner;
+        config.density = 0.001f;
 
         Color colour = Color.WHITE;
         switch (owner) {
@@ -74,6 +74,8 @@ public class Bullet extends Entity {
 
         display = new ConvexShape(body.getShape().getVertices());
         display.setFillColor(colour);
+
+
 
         maxSpeed = 350f;
         onScreen = true;

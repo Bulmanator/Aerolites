@@ -83,7 +83,7 @@ public class Player extends Entity implements Disposable {
 
         if(this.controllerNumber == null) controller = false;
 
-        lives = 4;
+        lives = 2;
         alive = true;
 
         immuneTime = 0;
@@ -250,7 +250,7 @@ public class Player extends Entity implements Disposable {
                 display.setFillColor(Color.WHITE);
         }
 
-        if(powerUpTime > 0){
+        if(powerUpTime > 0) {
             powerUpTime -= dt;
         }
         else{
@@ -324,7 +324,7 @@ public class Player extends Entity implements Disposable {
 
             Type other = typeA == Type.Player ? typeB : typeA;
 
-            boolean hit = other != Type.Shield && other != Type.Life && other != Type.ShotSpeed;
+            boolean hit = other != Type.Shield && other != Type.Life && other != Type.ShotSpeed && other != Type.Player;
 
             if(hit) {
                 if (immuneTime <= 0) {
@@ -380,9 +380,7 @@ public class Player extends Entity implements Disposable {
 
     public void setAlive(boolean alive) { this.alive = alive; }
 
-    public Score getScore() {
-        return score;
-    }
+    public Score getScore() { return score; }
 
     @Override
     public void dispose() {
@@ -391,26 +389,5 @@ public class Player extends Entity implements Disposable {
             score.bulletMissed();
         }
         bullets.clear();
-    }
-
-
-
-    private void playerPowerUp(int powerUpNumber)
-    {
-        if(powerUpNumber == 1)
-        {
-            //shield
-            System.out.print("Shield");
-        }
-        if(powerUpNumber == 2)
-        {
-            //life
-            System.out.print("life");
-        }
-        if(powerUpNumber == 3)
-        {
-            //Increase fire speed
-            System.out.print("fire speed");
-        }
     }
 }

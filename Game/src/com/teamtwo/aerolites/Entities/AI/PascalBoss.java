@@ -233,18 +233,14 @@ public class PascalBoss extends AI {
         damage.render(renderer);
 
         if(shootCoolDown > shootTimer) {
-            RectangleShape mark;
+            CircleShape mark;
             for(Vector2f v : bulletPoints) {
-                mark = new RectangleShape();
-                mark.setFillColor(new Color(255,0,0));
-                mark.setSize(new Vector2f(3,4));
+                mark = new CircleShape(4f);
+                mark.setFillColor(Color.RED);
                 mark.setPosition(v);
                 renderer.draw(mark);
             }
         }
-
-        CircleShape health = new CircleShape(120, 3);
-        health.setOrigin(120, 120);
 
         float lifeRatio = 1 - (lives / (float) totalLives);
         Color fill;

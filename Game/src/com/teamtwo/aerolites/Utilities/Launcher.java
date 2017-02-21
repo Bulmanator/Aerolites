@@ -13,9 +13,6 @@ public class Launcher {
         config.width = 1920;
         config.height = 1080;
         config.style = WindowStyle.FULLSCREEN;
-        config.width = 1280;
-        config.height = 720;
-        config.style |= Window.RESIZE;
         config.title = "Aerolites";
         config.fpsLimit = 60;
 

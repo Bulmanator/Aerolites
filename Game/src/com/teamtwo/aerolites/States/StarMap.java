@@ -47,18 +47,6 @@ public class StarMap extends State {
 
         font = ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
 
-        config = new LevelConfig();
-
-        config.asteroidBaseRate = 2.4f;
-        config.swarmerBaseRate = 16.0f;
-        config.aiBaseRate = 14.0f;
-        config.textured = true;
-
-        config.bossBaseLives = 360;
-        config.bossSpawnTime = 60;
-
-        config.players[0] = InputType.Controller;
-
         stars = new ArrayList<>();
         prevNodes = new ArrayList<>();
         generated = false;
@@ -140,6 +128,7 @@ public class StarMap extends State {
                     }
                     else if(pressed && !prevPress && node == current) {
                         prevPress = true;
+                        reset();
                         gsm.addState(new PlayState(gsm, config));
                     }
                 }
@@ -215,6 +204,23 @@ public class StarMap extends State {
         Text t = new Text("Mouse: [" + mouse.x + ":" + mouse.y + "]", font, 20);
         t.setPosition(100, 100);
         window.draw(t);
+    }
+
+    private void reset() {
+        config = new LevelConfig();
+
+        config.asteroidBaseRate = 2.4f;
+        config.swarmerBaseRate = 16.0f;
+        config.aiBaseRate = 14.0f;
+        config.textured = false;
+
+        config.bossBaseLives = 10000;
+        config.bossSpawnTime = 0;
+
+        config.players[0] = InputType.Controller;
+        // config.players[1] = InputType.Controller;
+
+        config.textured = false;
     }
 
     public void dispose() {}

@@ -184,7 +184,7 @@ public class Hexaboss extends AI implements Disposable {
                 inPlace = true;
                 Music hexagon = ContentManager.instance.getMusic("Hexagon");
                 hexagon.play();
-                hexagon.setVolume(10f);
+                hexagon.setVolume(100f);
                 hexagon.setLoop(true);
                 ContentManager.instance.getMusic("PlayMusic").stop();
             }
@@ -196,7 +196,7 @@ public class Hexaboss extends AI implements Disposable {
         else {
             body.applyForce(new Vector2f(0, 5000000));
             ContentManager.instance.getMusic("PlayMusic").setVolume(fadeout);
-            fadeout -= 35f*dt;
+            fadeout -= 35f * dt;
         }
 
         if(shooting) {
@@ -447,7 +447,7 @@ public class Hexaboss extends AI implements Disposable {
         if(warningTime > warnTimer) {
             CircleShape warning;
             for(Vector2f position : bulletPoints) {
-                warning = new CircleShape(5, 5);
+                warning = new CircleShape(4f);
                 warning.setFillColor(Color.RED);
                 warning.setPosition(position);
                 renderer.draw(warning);
