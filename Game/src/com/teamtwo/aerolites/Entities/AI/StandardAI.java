@@ -16,6 +16,7 @@ import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.Color;
+import org.jsfml.graphics.ConvexShape;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 
@@ -99,7 +100,8 @@ public class StandardAI extends AI implements Disposable {
 
         planTime = 0;
 
-        renderColour = Color.RED;
+        display = new ConvexShape(body.getShape().getVertices());
+        display.setFillColor(Color.RED);
 
         // Create the particle configuration and emitter
         ParticleConfig pConfig = new ParticleConfig();
@@ -167,14 +169,17 @@ public class StandardAI extends AI implements Disposable {
             float yAI = getBody().getTransform().getPosition().y;
             float distanceTo= MathUtil.square(x - xAI) + MathUtil.square(y - yAI);
             if(distanceTo>MathUtil.square(200)){
-                move(0,-forceFromJet *6);
+                Vector2f force = body.getTransform().applyRotation(new Vector2f(0, -forceFromJet * 6));
+                body.applyForce(force);
                 jet.setActive(true);
             }
             else
                 jet.setActive(false);
         }
         else {
-            move(0,-forceFromJet);
+
+            Vector2f force = body.getTransform().applyRotation(new Vector2f(0, -forceFromJet));
+            body.applyForce(force);
             body.setAngularVelocity(0);
             jet.setActive(true);
         }
@@ -182,7 +187,7 @@ public class StandardAI extends AI implements Disposable {
         super.update(dt);
     }
 
-    public void trackToTarget(Vector2f pos, float dt) {
+    private void trackToTarget(Vector2f pos, float dt) {
         float x = body.getTransform().getPosition().x;
         float y = body.getTransform().getPosition().y;
 
@@ -230,7 +235,9 @@ public class StandardAI extends AI implements Disposable {
 
     @Override
     public void render(RenderWindow renderer) {
+
         jet.render(renderer);
+
         super.render(renderer);
 
         for(Bullet bullet : bullets) {

@@ -13,6 +13,7 @@ public class CollisionMask {
     public static final int SWARMER_BASE = 0x20;
     public static final int SWARMER = 0x40;
     public static final int HEXABOSS = 0x80;
-    public static final int AI = STANDARD_AI | SWARMER | SWARMER_BASE | HEXABOSS;
+    public static final int PASCALBOSS = 0x100;
+    public static final int AI = STANDARD_AI | SWARMER | SWARMER_BASE | HEXABOSS | PASCALBOSS;
     public static final int ALL = PLAYER | ASTEROID | AI | BULLET | ENEMY_BULLET;
 }

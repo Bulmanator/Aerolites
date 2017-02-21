@@ -1,5 +1,6 @@
 package com.teamtwo.aerolites.States;
 
+import com.teamtwo.aerolites.Utilities.InputType;
 import com.teamtwo.aerolites.Utilities.LevelConfig;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.MathUtil;
@@ -36,10 +37,26 @@ public class StarMap extends State {
 
     private Font font;
 
+    private LevelConfig config;
+
     public StarMap(GameStateManager gsm) {
         super(gsm);
 
         font = ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
+
+        int playerCount = 1;
+
+        config = new LevelConfig();
+
+        config.asteroidBaseRate = 2.4f / (playerCount * 1.8f);
+        config.swarmerBaseRate = 16.0f / (float) playerCount;
+        config.aiBaseRate = 14.0f / (float) playerCount;
+        config.textured = true;
+
+        config.bossBaseLives = 360;
+        config.bossSpawnTime = 0;
+
+        config.players[0] = InputType.Controller;
 
         stars = new ArrayList<>();
         prevNodes = new ArrayList<>();
@@ -107,6 +124,9 @@ public class StarMap extends State {
                     if(pressed && node != current) {
                         prevNodes.add(current);
                         current = node;
+                    }
+                    else if(pressed && node == current) {
+                        gsm.addState(new PlayState(gsm, config));
                     }
                 }
             }

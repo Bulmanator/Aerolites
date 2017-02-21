@@ -78,22 +78,6 @@ public class LevelOver extends State {
                 else if(backgroundPos > 1920) {
                     backgroundPos = 1920;
                 }
-
-                for(int i = 0; i < playerCount; i++) {
-                    Player player = players[i];
-                    if(player.isController()) {
-                        ControllerState state = Controllers.getState(player.getControllerNumber());
-                        if(state.button(Button.A) && !previousStates[i].button(Button.A)) {
-                            current = Stage.Scores;
-                        }
-                        previousStates[i] = state;
-                    }
-                    else if(Keyboard.isKeyPressed(Keyboard.Key.SPACE) && !previousSpace) {
-                        current = Stage.Scores;
-                    }
-
-                    previousSpace = Keyboard.isKeyPressed(Keyboard.Key.SPACE);
-                }
                 break;
             case Scores:
                 if(backgroundPos < 1920 * 2) {
@@ -116,6 +100,33 @@ public class LevelOver extends State {
                         playerInfoSize = 700;
                     }
                 }
+        }
+
+
+        for(int i = 0; i < playerCount; i++) {
+            Player player = players[i];
+            if(player.isController()) {
+                ControllerState state = Controllers.getState(player.getControllerNumber());
+                if(state.button(Button.A) && !previousStates[i].button(Button.A)) {
+                    if(current == Stage.GameOver) {
+                        current = Stage.Scores;
+                    }
+                    else {
+                        gsm.popState();
+                    }
+                }
+                previousStates[i] = state;
+            }
+            else if(Keyboard.isKeyPressed(Keyboard.Key.SPACE) && !previousSpace) {
+                if(current == Stage.GameOver) {
+                    current = Stage.Scores;
+                }
+                else {
+                    gsm.popState();
+                }
+            }
+
+            previousSpace = Keyboard.isKeyPressed(Keyboard.Key.SPACE);
         }
     }
 
@@ -166,7 +177,7 @@ public class LevelOver extends State {
                 gameOverText.setColor(Color.WHITE);
 
                 gameOverBounds = gameOverText.getLocalBounds();
-                gameOverText.setOrigin(gameOverBounds.width / 2, gameOverBounds.height );
+                gameOverText.setOrigin(gameOverBounds.width / 2, gameOverBounds.height);
                 gameOverText.setPosition(backgroundPos - WORLD_SIZE.x / 2, WORLD_SIZE.y / 2 - backgroundYMovement);
                 window.draw(gameOverText);
 
@@ -176,10 +187,13 @@ public class LevelOver extends State {
                 scores.setPosition(backgroundPos - WORLD_SIZE.x*1.5f, WORLD_SIZE.y / 2 - backgroundYMovement);
                 window.draw(scores);
 
-                float playerWidth = (1920-(90 + 40*(playerCount+1)))/(playerCount+1);
-                int font = 20;
-                if(playerCount > 3)
-                    font = 20;
+                float playerWidth = (1920-(90 + 40*(playerCount)))/(playerCount);
+                int font = 36;
+                if(playerCount > 5) {
+                    font = 16;
+                }
+                else if(playerCount > 3)
+                    font = 28;
                 for(int i = 0; i < playerCount; i++){
                     box = new RectangleShape();
                     box.setPosition(30+40*(i+1)+playerWidth*i,WORLD_SIZE.y / 2 - backgroundYMovement + 100);
@@ -199,17 +213,17 @@ public class LevelOver extends State {
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 110);
                         window.draw(text);
 
-                        text = new Text("Score: ", ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Score: "+ score.getScore(), ContentManager.instance.getFont("Ubuntu"), font);
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 190);
                         window.draw(text);
 
-                        text = new Text("Asteroids Destroyed: ", ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Asteroids Destroyed: " +score.getAsteroids(), ContentManager.instance.getFont("Ubuntu"), font);
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 230);
                         window.draw(text);
 
-                        text = new Text("Enemies Killed: ", ContentManager.instance.getFont("Ubuntu"), font);
+                        text = new Text("Enemies Killed: " + score.getEnemies(), ContentManager.instance.getFont("Ubuntu"), font);
                         text.setOrigin(0, 0);
                         text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 2 - backgroundYMovement + 270);
                         window.draw(text);

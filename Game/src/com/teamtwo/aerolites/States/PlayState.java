@@ -1,9 +1,6 @@
 package com.teamtwo.aerolites.States;
 
-import com.teamtwo.aerolites.Entities.AI.Hexaboss;
-import com.teamtwo.aerolites.Entities.AI.StandardAI;
-import com.teamtwo.aerolites.Entities.AI.Swarmer;
-import com.teamtwo.aerolites.Entities.AI.SwarmerBase;
+import com.teamtwo.aerolites.Entities.AI.*;
 import com.teamtwo.aerolites.Entities.Asteroid;
 import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.Entity;
@@ -23,6 +20,8 @@ import org.jsfml.window.Keyboard;
 
 import java.util.ArrayList;
 
+import static com.teamtwo.aerolites.Entities.Entity.Type.EnemyBullet;
+
 /**
  * @author Matthew Threlfall
  */
@@ -39,7 +38,8 @@ public class PlayState extends State {
 
     private float accumulator;
 
-    private Hexaboss boss;
+    private Entity boss;
+    private Entity boss2;
     private float bossTimer;
     private boolean bossSpawned;
 
@@ -49,15 +49,14 @@ public class PlayState extends State {
     private float aiTimer;
     private float asteroidTimer;
 
+    private Entity.Type bossType;
 
     //TODO shoot bullets out of ait
     //TODO make power ups work
     //TODO star map
     //TODO shop and stuff
-    //TODO make another boss
     //TODO make Tijans shit work
     //TODO tie everything together
-    //TODO fix LevelOver multiple player next shite
 
     /**
      * Creates a new level from the configuration provided
@@ -66,8 +65,15 @@ public class PlayState extends State {
      */
     public PlayState(GameStateManager gsm, LevelConfig config) {
         super(gsm);
+        bossType = Entity.Type.PascalBoss;
 
         this.config = config;
+
+        // Load content and then play the level music
+        loadContent(config.textured);
+        Music bgm = ContentManager.instance.getMusic("PlayMusic");
+        bgm.setVolume(10f);
+        //bgm.play();
 
         gameOver = false;
         world = new World(Vector2f.ZERO);
@@ -97,28 +103,31 @@ public class PlayState extends State {
 
         accumulator = 0;
         alertPlaying = false;
-
-        // Load content and then play the level music
-        loadContent();
-        Music bgm = ContentManager.instance.getMusic("PlayMusic");
-        bgm.setVolume(10f);
-        bgm.play();
     }
 
     @Override
     public void update(float dt) {
 
         world.update(dt);
-        bossTimer += dt;
+        if(!gameOver)
+            bossTimer += dt;
 
         int alivePlayers = 0;
         for(Player player : players) {
             if(player.isAlive()) alivePlayers++;
         }
 
-        if(bossTimer - 6 > config.bossSpawnTime && !bossSpawned) {
+        if(bossTimer - 6 > config.bossSpawnTime && !bossSpawned && entities.size() == 0) {
+            switch (bossType){
+                case PascalBoss:
+                    boss2 = new PascalBoss(world,config.bossBaseLives / 4,false);
+                    boss = new PascalBoss(world,config.bossBaseLives / 4,true);
+                    break;
+                case Hexaboss:
+                    boss = new Hexaboss(world, config.bossBaseLives);
+                    break;
+            }
             bossSpawned = true;
-            boss = new Hexaboss(world, config.bossBaseLives * players.length);
         }
         else if(bossTimer < config.bossSpawnTime) {
             spawnEntities(dt);
@@ -126,6 +135,8 @@ public class PlayState extends State {
         else if(bossSpawned && !gameOver) {
 
             boolean bossAlive = boss.isAlive();
+            if(bossType == Entity.Type.PascalBoss)
+                bossAlive = bossAlive || boss2.isAlive();
             if(!bossAlive) {
                 for(Player player : players) {
                     player.setAlive(false);
@@ -141,10 +152,23 @@ public class PlayState extends State {
             gameOver = true;
             gsm.setState(new LevelOver(gsm, this, false));
         }
-
-        if(bossSpawned && boss.isAlive()) {
+        boolean alive = false;
+        if(bossSpawned) {
+            alive = boss.isAlive();
+            if (bossType == Entity.Type.PascalBoss) alive = alive || boss2.isAlive();
+        }
+        if(bossSpawned && alive) {
             boss.update(dt);
-          //  updateHexaboss(boss);
+            switch (bossType) {
+                case Hexaboss:
+                    updateHexaboss((Hexaboss) boss);
+                    break;
+                case PascalBoss:
+                    boss2.update(dt);
+                    updatePascalBoss((PascalBoss) boss);
+                    updatePascalBoss((PascalBoss) boss2);
+                    break;
+            }
         }
 
         for(int i = 0; i < entities.size(); i++) {
@@ -160,6 +184,10 @@ public class PlayState extends State {
             else {
                 Entity e = entities.get(i);
                 switch (e.getType()) {
+                    case Hexaboss:
+                        break;
+                    case PascalBoss:
+                        break;
                     case Asteroid:
                         i = updateAsteroid((Asteroid) e);
                         break;
@@ -214,6 +242,19 @@ public class PlayState extends State {
             }
         }
         return entities.indexOf(h);
+    }
+
+    public void updatePascalBoss(PascalBoss p){
+        if(p.isShooting() && p.isAlive()) {
+            for(Vector2f v : p.getBulletPoints()) {
+                entities.add(new Bullet(10f, v, EnemyBullet, p.getBody().getTransform().getAngle() + p.getBulletAngles().get(p.getBulletPoints().indexOf(v)), world));
+                entities.get(entities.size() - 1).setMaxSpeed(250);
+                p.setShooting(false);
+            }
+        }
+        if(!p.isAlive()){
+            world.removeBody(p.getBody());
+        }
     }
 
     public int updateAsteroid(Asteroid a){
@@ -286,7 +327,13 @@ public class PlayState extends State {
                 }
             }
         }
+        Text text = new Text("Time Survived " + MathUtil.round(bossTimer,2)+"s", ContentManager.instance.getFont("Ubuntu"), 28);
+        text.setStyle(TextStyle.BOLD);
+        text.setPosition(15, 25 + ((players.length) * 60));
+        window.draw(text);
 
+        if(bossSpawned && bossType == Entity.Type.PascalBoss)
+            if(boss2.isAlive()) boss2.render(window);
         if(bossSpawned && boss.isAlive()) {
             boss.render(window);
         }
@@ -296,7 +343,7 @@ public class PlayState extends State {
 
         if(showText) {
 
-            Text text = new Text("Danger! Boss Approaching!", ContentManager.instance.getFont("Ubuntu"), 36);
+            text = new Text("Danger! Boss Approaching!", ContentManager.instance.getFont("Ubuntu"), 36);
             text.setStyle(Text.BOLD | TextStyle.UNDERLINED);
             text.setColor(Color.RED);
             FloatRect screenRect = text.getLocalBounds();
@@ -319,10 +366,18 @@ public class PlayState extends State {
     @Override
     public void dispose() {}
 
-    private void loadContent() {
+    private void loadContent(boolean textured) {
+
 
         // Load Textures
-        ContentManager.instance.loadTexture("Asteroid", "Asteroid.png");
+        if(textured) {
+            ContentManager.instance.loadTexture("Asteroid", "Asteroid.png");
+            ContentManager.instance.loadTexture("Player", "Player.png");
+        }
+        else {
+            ContentManager.instance.loadTexture("Asteroid", "Retro.png");
+            ContentManager.instance.loadTexture("Player", "Retro.png");
+        }
 
         // Load Fonts
         ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");
@@ -333,11 +388,12 @@ public class PlayState extends State {
         ContentManager.instance.loadSound("Explode_2", "explode2.wav");
         ContentManager.instance.loadSound("Explode_3", "explode3.wav");
         ContentManager.instance.loadSound("Alert", "alert.wav");
+        ContentManager.instance.getSound("Alert").setVolume(50f);
 
         // Load Music
         ContentManager.instance.loadMusic("PlayMusic", "Music.wav");
         ContentManager.instance.loadMusic("Hexagon", "Focus.ogg");
-        ContentManager.instance.loadMusic("HexagonLoop", "FocusLoop.ogg");
+        ContentManager.instance.loadMusic("Pascal", "Pascal.ogg");
     }
 
     public Player[] getPlayers() { return players; }
