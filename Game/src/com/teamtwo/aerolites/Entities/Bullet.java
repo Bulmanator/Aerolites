@@ -46,6 +46,7 @@ public class Bullet extends Entity {
         this.offScreenAllowance = new Vector2f(Vector2i.ZERO);
 
         config.shape = new Polygon(vertices);
+        config.density = 0.001f;
 
         this.owner = owner;
         switch (owner) {
@@ -61,7 +62,7 @@ public class Bullet extends Entity {
                 break;
         }
 
-        config.mask |= (CollisionMask.ASTEROID | CollisionMask.PASCALBOSS);
+        config.mask |= (CollisionMask.ASTEROID | CollisionMask.PASCALBOSS | CollisionMask.QUADTRON);
 
         this.body = world.createBody(config);
 
@@ -122,7 +123,7 @@ public class Bullet extends Entity {
                 enemy |= typeA == Type.SwamerBase || typeB == Type.SwamerBase;
                 enemy |= typeA == Type.Hexaboss || typeB == Type.Hexaboss;
                 enemy |= typeA == Type.PascalBoss || typeB == Type.PascalBoss;
-
+                enemy |= typeA == Type.Quadtron || typeB == Type.Quadtron;
                 hit = asteroid || enemy;
             }
         }

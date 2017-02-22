@@ -316,7 +316,7 @@ public class Player extends Entity implements Disposable {
 
             Type other = typeA == Type.Player ? typeB : typeA;
 
-            boolean hit = other != Type.Shield && other != Type.Life && other != Type.ShotSpeed;
+            boolean hit = other != Type.Shield && other != Type.Life && other != Type.ShotSpeed && other != Type.Player;
 
             if(hit) {
                 if (immuneTime <= 0) {

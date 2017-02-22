@@ -21,12 +21,13 @@ public class Aerolites extends Game {
         config.asteroidBaseRate = 2.4f / (playerCount * 1.8f);
         config.swarmerBaseRate = 16.0f / (float) playerCount;
         config.aiBaseRate = 14.0f / (float) playerCount;
-        config.textured = true;
+        config.textured = false;
 
-        config.bossLives = 360 * playerCount;
-        config.bossSpawnTime = 120;
+        config.bossLives = 180 * playerCount;
+        config.bossSpawnTime = 60;
 
         config.players[0] = InputType.Controller;
+        //config.players[1] = InputType.Controller;
 
 
         stateManager.addState(new PlayState(stateManager, config));

@@ -274,7 +274,7 @@ public class Hexaboss extends AI {
                     shooting = true;
                     cooldown = 0;
                 }
-                angle -= (MathUtil.PI/2.5f)*dt;
+                angle -= (MathUtil.PI/2f)*dt;
                 break;
             case StandOne:
                 body.setAngularVelocity(0);

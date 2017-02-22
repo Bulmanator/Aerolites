@@ -77,8 +77,8 @@ public class Swarmer extends AI {
 
         pConfig.position = body.getTransform().getPosition();
         jet = new ParticleEmitter(pConfig, 40f, 400);
-        animation = new Animation(ContentManager.instance.getTexture("Swarmer"),1,5,0.5f);
-        animation.setScale(30,30);
+        //animation = new Animation(ContentManager.instance.getTexture("Swarmer"),1,5,0.5f);
+        //animation.setScale(30,30);
     }
 
     @Override
@@ -88,9 +88,9 @@ public class Swarmer extends AI {
         jet.update(dt);
         jet.getConfig().position = body.getShape().getTransformed()[0];
 
-        animation.update(dt);
-        animation.setPosition(body.getTransform().getPosition());
-        animation.setRotation(body.getTransform().getAngle()*MathUtil.RAD_TO_DEG+180);
+        //animation.update(dt);
+        //animation.setPosition(body.getTransform().getPosition());
+        //animation.setRotation(body.getTransform().getAngle()*MathUtil.RAD_TO_DEG+180);
 
         if(target != null) {
             Vector2f position = body.getTransform().getPosition();

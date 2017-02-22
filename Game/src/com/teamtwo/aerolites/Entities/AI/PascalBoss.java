@@ -40,6 +40,7 @@ public class PascalBoss extends AI {
     private int totalLives;
     private float fadeout;
 
+
     private ParticleEmitter damage;
 
     private ArrayList<Vector2f> bulletPoints;
@@ -102,7 +103,7 @@ public class PascalBoss extends AI {
         config.shape = new Polygon(vertices);
 
         config.category = CollisionMask.PASCALBOSS;
-        config.mask = CollisionMask.ALL;// & (~CollisionMask.ENEMY_BULLET);
+        config.mask = CollisionMask.ALL;
 
         body = world.createBody(config);
         body.setData(this);
