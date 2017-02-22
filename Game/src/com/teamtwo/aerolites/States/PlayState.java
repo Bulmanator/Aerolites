@@ -1,7 +1,13 @@
 package com.teamtwo.aerolites.States;
 
+import com.teamtwo.aerolites.Entities.AI.Hexaboss;
+import com.teamtwo.aerolites.Entities.AI.PascalBoss;
+import com.teamtwo.aerolites.Entities.AI.StandardAI;
 import com.teamtwo.aerolites.Entities.AI.*;
+import com.teamtwo.aerolites.Entities.Asteroid;
+import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.*;
+import com.teamtwo.aerolites.Entities.Player;
 import com.teamtwo.aerolites.Utilities.InputType;
 import com.teamtwo.aerolites.Utilities.LevelConfig;
 import com.teamtwo.engine.Input.Controllers.PlayerNumber;
@@ -64,7 +70,7 @@ public class PlayState extends State {
      */
     public PlayState(GameStateManager gsm, LevelConfig config) {
         super(gsm);
-        bossType = Entity.Type.PascalBoss;
+        bossType = Entity.Type.Hexaboss;
 
         this.config = config;
 

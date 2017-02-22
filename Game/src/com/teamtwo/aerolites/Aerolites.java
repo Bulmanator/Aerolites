@@ -1,8 +1,6 @@
 package com.teamtwo.aerolites;
 
 import com.teamtwo.aerolites.States.StarMap;
-import com.teamtwo.aerolites.Utilities.InputType;
-import com.teamtwo.aerolites.Utilities.LevelConfig;
 import com.teamtwo.engine.Game;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 

@@ -1,5 +1,6 @@
 package com.teamtwo.engine.Utilities;
 
+import org.jsfml.graphics.Color;
 import org.jsfml.system.Vector2f;
 
 /**
@@ -88,6 +89,21 @@ public final class MathUtil {
         return (end * value) + (begin * (1 - value));
     }
 
+    /**
+     * Gets the linear interpolation colour between the two given colours
+     * @param beginColour The beginning colour
+     * @param endColour The ending colour
+     * @param value The progression between the begin and end colours
+     * @return The linear interpolation colour between the given ones
+     */
+    public static Color lerpColour(Color beginColour, Color endColour, float value) {
+        value = clamp(value, 0, 1);
+        int r = (int) ((endColour.r * value) + (beginColour.r * (1 - value)));
+        int g = (int) ((endColour.g * value) + (beginColour.g * (1 - value)));
+        int b = (int) ((endColour.b * value) + (beginColour.b * (1 - value)));
+
+        return new Color(r, g, b);
+    }
 
     /**
      * Clamps the given value between the min and max values

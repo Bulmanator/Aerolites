@@ -45,7 +45,7 @@ public class ExampleInput implements InputProcessor {
         System.out.println(" -- Name: " + name.name);
         System.out.printf(" -- Vendor ID: 0x%04x\n", name.vendorId);
         System.out.printf(" -- Product ID: 0x%04x\n", name.productId);
-        System.out.println(" -- Total Button Count: " + Joystick.getButtonCount(id));
+        System.out.println(" -- Total UIButton Count: " + Joystick.getButtonCount(id));
     }
 
     public void controllerDisconnected(int id) {
@@ -53,11 +53,11 @@ public class ExampleInput implements InputProcessor {
     }
 
     public void controllerButtonPressed(int id, int button) {
-        System.out.println("Controller " + id + " Pressed Button " + button);
+        System.out.println("Controller " + id + " Pressed UIButton " + button);
     }
 
     public void controllerButtonReleased(int id, int button) {
-       // System.out.println("Controller " + id + " Released Button " + button);
+       // System.out.println("Controller " + id + " Released UIButton " + button);
     }
 
     public void controllerAxisMoved(int id, Joystick.Axis axis, float position) {

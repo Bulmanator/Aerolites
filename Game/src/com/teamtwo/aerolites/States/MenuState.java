@@ -1,62 +1,142 @@
 package com.teamtwo.aerolites.States;
 
-import com.teamtwo.aerolites.ExampleInput;
-import com.teamtwo.aerolites.UI.Button;
+import com.teamtwo.aerolites.Entities.AI.StandardAI;
+import com.teamtwo.aerolites.Entities.AI.Swarmer;
+import com.teamtwo.aerolites.Entities.Asteroid;
+import com.teamtwo.aerolites.Entities.Entity;
+import com.teamtwo.aerolites.Entities.Player;
+import com.teamtwo.aerolites.UI.UIButton;
+import com.teamtwo.engine.Input.Controllers.*;
+import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.ContentManager;
+import com.teamtwo.engine.Utilities.Interfaces.Disposable;
+import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
-import org.jsfml.graphics.Color;
-import org.jsfml.graphics.Text;
+import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
 import org.jsfml.window.Mouse;
-import org.jsfml.window.Window;
+
+import java.util.ArrayList;
 
 
 /**
  * @author Tijan Weir
  */
 public class MenuState extends State {
-    Button[] Buttons = new Button[5];
-    Text text;
-    Boolean clicked;
 
-    private ExampleInput hoverBoxChoices;
+    private class Transition {
+        private Text[] selected;
+        private UIButton current;
+        private Vector2f offset;
 
-    public void render() {
-        for (int i = 0; i < Buttons.length; i++) {
-            Buttons[i].render(window);
+        private boolean transition;
+        private float transitionTimer;
+
+        private Transition(int fontSize) {
+            Font font = ContentManager.instance.getFont("Ubuntu");
+
+            offset = new Vector2f(fontSize / 2f, (fontSize / 5f) - 1);
+
+            selected = new Text[2];
+            selected[0] = new Text("[", font, fontSize);
+            selected[0].setStyle(TextStyle.BOLD);
+            selected[0].setPosition(Vector2f.sub(buttons[0].getPosition(), offset));
+
+            selected[1] = new Text("]", font, fontSize);
+            selected[1].setStyle(TextStyle.BOLD);
+            float width = buttons[0].getText().getLocalBounds().width;
+            float height = buttons[0].getText().getLocalBounds().height;
+            selected[1].setPosition(Vector2f.add(buttons[0].getPosition(), new Vector2f(width + offset.x, -offset.y)));
+
+            current = buttons[0];
+
+            transition = false;
+            transitionTimer = 0;
+        }
+
+        private void transition(float dt) {
+            if(!transition) return;
+
+            transitionTimer += dt;
+            float x = MathUtil.lerp(selected[0].getPosition().x, current.getPosition().x - offset.x,
+                    transitionTimer / timeToSwitch);
+
+            float y = MathUtil.lerp(selected[0].getPosition().y, current.getPosition().y - offset.y,
+                    transitionTimer / timeToSwitch);
+
+            selected[0].setPosition(x, y);
+
+            float width = current.getText().getLocalBounds().width;
+            x = MathUtil.lerp(selected[1].getPosition().x, current.getPosition().x + width + offset.x,
+                    transitionTimer / timeToSwitch);
+            y = MathUtil.lerp(selected[1].getPosition().y, current.getPosition().y - offset.y,
+                    transitionTimer / timeToSwitch);
+
+            selected[1].setPosition(x, y);
+
+            if(transitionTimer >= timeToSwitch) {
+                transitionTimer = 0;
+                transition = false;
+            }
         }
     }
 
-    @Override
-    public void dispose() {
+    private static final float timeToSwitch = 1f;
 
-    }
+    private UIButton[] buttons;
+    private Text title;
+    private ControllerState prevState;
+    private Transition selection;
 
-    //
-    // This is the menu game state
-    // Game states can be used to implement separate parts of the game
-    // Such as levels, menus etc.
-    // Just extend the State class to make a new State and you can add/ remove states from the Game State Manager
-    //
+    private int controllerIndex;
+
+    private boolean prevMouse;
+    private boolean prevEscape;
+
+    private RectangleShape background;
+
+    private World world;
+    private ArrayList<Entity> entities;
+    private float accumulator, spawn;
+    private int swarmerCount;
+
     public MenuState(GameStateManager gsm) {
         super(gsm);
+
         ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
+        ContentManager.instance.loadTexture("Asteroid", "Asteroid.png");
+        Texture bg = ContentManager.instance.loadTexture("Background", "Space.png");
 
-        text = new Text("Aerolites", ContentManager.instance.getFont("Ubuntu"));
-        text.setPosition(window.getSize().x / 2 - text.getLocalBounds().width / 2, window.getSize().y / 2);
-        text.setColor(Color.BLACK);
+        background = new RectangleShape(State.WORLD_SIZE);
+        background.setPosition(0, 0);
+        background.setTexture(bg);
 
+        title = new Text("Aerolites", ContentManager.instance.getFont("Ubuntu"), 100);
+        title.setPosition(State.WORLD_SIZE.x / 2f - title.getLocalBounds().width / 2f, 55f);
+        title.setStyle(TextStyle.BOLD);
+        title.setColor(Color.WHITE);
 
-        Buttons[0] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 8, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Singleplayer");
-        Buttons[1] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 12, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Multiplayer");
-        Buttons[2] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 16, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Options");
-        Buttons[3] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 20, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Credits");
-        Buttons[4] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 4, (int) State.WORLD_SIZE.y / 2, window.getSize().y / 10, "Aerolites");
+        buttons = new UIButton[4];
+        String[] labels = new String[] { "Singleplayer", "Multiplayer", "Options", "Credits" };
+        for(int i = 0; i < buttons.length; i++) {
+            buttons[i] = new UIButton(State.WORLD_SIZE.x / 2f, 310 + (i * 120), labels[i], 45);
+        }
 
+        world = new World(Vector2f.ZERO);
+        entities = new ArrayList<>();
 
+        prevMouse = false;
 
+        spawn = 1.2f;
+        accumulator = 0;
+        swarmerCount = 0;
+
+        selection = new Transition(45);
+
+        prevState = Controllers.getState(PlayerNumber.One);
+        prevEscape = false;
     }
 
     /**
@@ -65,27 +145,144 @@ public class MenuState extends State {
      * @param dt The amount of time passed since last frame
      */
     public void update(float dt) {
+        accumulator += dt;
 
-
-        //checks if the mouse is inside a box
-        for (int i = 0; i < Buttons.length; i++) {
-            Vector2f pos = window.mapPixelToCoords(Mouse.getPosition(window));
-
-            //TODO I need to record the values given when clicked and comapre to next state to stop autoclicking througn pages
-
-            if (Buttons[i].isClicked() && !Mouse.isButtonPressed(Mouse.Button.LEFT)) {
-                if (Buttons[i].getLabel().equals("Singleplayer")) {
-                    gsm.addState(new ControllerSelectState(gsm)); //change here to one for keyboard and controller
-                } else if (Buttons[i].getLabel().equals("Multiplayer")) {
-                    gsm.addState(new MultiplayerMenuState(gsm));
-                } else if (Buttons[i].getLabel().equals("Credits")) {
-                    gsm.addState(new CreditState(gsm));
-                }
+        if(accumulator > spawn) {
+            accumulator = 0;
+            int type = MathUtil.randomInt(0, 10);
+            switch (type) {
+                case 0:
+                    entities.add(new StandardAI(world));
+                    break;
+                case 1:
+                    float x = MathUtil.randomFloat(0, WORLD_SIZE.x);
+                    float y = MathUtil.randomFloat(0, WORLD_SIZE.y);
+                    entities.add(new Swarmer(world, new Vector2f(x, y)));
+                    swarmerCount++;
+                    break;
+                default:
+                    entities.add(new Asteroid(world));
+                    break;
             }
-            Buttons[i].checkInBox(pos);
-
         }
 
+        for(int i = 0; i < entities.size(); i ++) {
+            Entity entity = entities.get(i);
+            if(!entity.isOnScreen()) {
+                world.removeBody(entity.getBody());
+                if(entity instanceof Disposable) ((Disposable) entity).dispose();
+                entities.remove(i);
+                i--;
+            }
+            else if(entity.getType() == Entity.Type.Swamer && swarmerCount > 7) {
+                world.removeBody(entity.getBody());
+                entities.remove(i);
+                i--;
+                swarmerCount--;
+            }
+            else {
+                switch (entity.getType()) {
+                    case StandardAI:
+                        ((StandardAI) entity).findTarget(entities, new Player[0]);
+                        entity.update(dt);
+                        break;
+                    case Swamer:
+                    case Asteroid:
+                        entity.update(dt);
+                        break;
+                }
+            }
+        }
+
+        world.update(dt);
+
+        //checks if the mouse is inside a box
+
+        Vector2f pos = window.mapPixelToCoords(Mouse.getPosition(window));
+        for(int i = 0; i < buttons.length; i++) {
+            UIButton button = buttons[i];
+            if(button.isClicked()) {
+                if(button != selection.current) {
+                    selection.transition = true;
+                    selection.transitionTimer = 0;
+                    selection.current = button;
+
+                    controllerIndex = i;
+                }
+
+                if(Mouse.isButtonPressed(Mouse.Button.LEFT) && !prevMouse) {
+                    switch (button.getLabel()) {
+                        case "Singleplayer":
+                            System.out.println("Singleplayer Selected!");
+                            break;
+                        case "Multiplayer":
+                            System.out.println("Multiplayer Selected!");
+                            break;
+                        case "Options":
+                            // TODO Make options menu
+                            System.out.println("Options Selected!");
+                            break;
+                        case "Credits":
+                            System.out.println("Credits Selected!");
+                            gsm.addState(new CreditState(gsm));
+                            break;
+                    }
+                }
+            }
+
+            button.checkInBox(pos);
+        }
+
+        ControllerState state = Controllers.getState(PlayerNumber.One);
+
+        if(state.thumbstick(Thumbstick.Left).y < -25 && Math.abs(prevState.thumbstick(Thumbstick.Left).y) < 25) {
+            controllerIndex = controllerIndex - 1 < 0 ? 3 : controllerIndex - 1;
+            selection.current = buttons[controllerIndex];
+            selection.transition = true;
+            selection.transitionTimer = 0;
+        }
+        else if(state.thumbstick(Thumbstick.Left).y > 25 && Math.abs(prevState.thumbstick(Thumbstick.Left).y) < 25) {
+            controllerIndex = controllerIndex + 1 > 3 ? 0 : controllerIndex + 1;
+            selection.current = buttons[controllerIndex];
+            selection.transition = true;
+            selection.transitionTimer = 0;
+        }
+
+        if(!state.button(Button.A) && prevState.button(Button.A)) {
+            System.out.println(buttons[controllerIndex].getLabel() + " Selected!");
+        }
+
+        if(!Keyboard.isKeyPressed(Keyboard.Key.ESCAPE) && prevEscape) {
+            game.getEngine().close();
+        }
+
+        // Store the previous input to prevent multiple runs
+        prevMouse = Mouse.isButtonPressed(Mouse.Button.LEFT);
+        prevEscape = Keyboard.isKeyPressed(Keyboard.Key.ESCAPE);
+        prevState = state;
+
+        selection.transition(dt);
+    }
+
+    public void render() {
+        window.draw(background);
+        window.draw(title);
+
+        for(Entity entity : entities) {
+            entity.render(window);
+        }
+
+        for(UIButton button : buttons) {
+            button.render(window);
+        }
+
+        for(Text text : selection.selected) {
+            window.draw(text);
+        }
+    }
+
+    @Override
+    public void dispose() {
 
     }
 

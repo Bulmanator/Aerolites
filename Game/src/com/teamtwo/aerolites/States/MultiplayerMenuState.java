@@ -1,7 +1,7 @@
 package com.teamtwo.aerolites.States;
 
 import com.teamtwo.aerolites.ExampleInput;
-import com.teamtwo.aerolites.UI.Button;
+import com.teamtwo.aerolites.UI.UIButton;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
@@ -16,7 +16,7 @@ import org.jsfml.window.Mouse;
  * @author Tijan Weir
  */
 public class MultiplayerMenuState extends State {
-    Button[] Buttons = new Button[4];
+    UIButton[] Buttons = new UIButton[4];
     Text text;
     Boolean clicked;
 
@@ -48,10 +48,10 @@ public class MultiplayerMenuState extends State {
         text.setColor(Color.BLACK);
 
 
-        Buttons[0] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 4, (int) State.WORLD_SIZE.y / 2, window.getSize().y / 10, "Aerolites");
-        Buttons[1] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 8, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "2 Players");
-        Buttons[2] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 12, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "3 Players");
-        Buttons[3] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 16, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "4 Players");
+        /*Buttons[0] = new UIButton((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 4, (int) State.WORLD_SIZE.y / 2, window.getSize().y / 10, "Aerolites");
+        Buttons[1] = new UIButton((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 8, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "2 Players");
+        Buttons[2] = new UIButton((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 12, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "3 Players");
+        Buttons[3] = new UIButton((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 16, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "4 Players");*/
 
 
 
@@ -67,7 +67,7 @@ public class MultiplayerMenuState extends State {
             Vector2f pos = window.mapPixelToCoords(Mouse.getPosition(window));
 
 
-           // if (Buttons[i].checkInBox(pos) && Mouse.isButtonPressed(Mouse.Button.LEFT))
+           // if (buttons[i].checkInBox(pos) && Mouse.isButtonPressed(Mouse.UIButton.LEFT))
               //  System.out.println("Currently Not Implemented");
         }
         if (Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)) {

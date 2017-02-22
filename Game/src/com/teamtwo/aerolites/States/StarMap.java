@@ -214,7 +214,7 @@ public class StarMap extends State {
         config.aiBaseRate = 14.0f;
         config.textured = false;
 
-        config.bossBaseLives = 10000;
+        config.bossBaseLives = 360;
         config.bossSpawnTime = 0;
 
         config.players[0] = InputType.Controller;
