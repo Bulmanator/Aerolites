@@ -33,7 +33,7 @@ public class Player extends Entity implements Disposable {
     // Various constants which are the same across players
 
     // The base vertices which make up the player ship shape
-    private static final Vector2f[] vertices = new Vector2f[] {
+    public static final Vector2f[] vertices = new Vector2f[] {
             new Vector2f(0, -15), new Vector2f(15, 30),
             new Vector2f(0, 35), new Vector2f(-15, 30)
     };

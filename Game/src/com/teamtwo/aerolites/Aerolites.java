@@ -1,5 +1,7 @@
 package com.teamtwo.aerolites;
 
+import com.teamtwo.aerolites.States.MainMenu;
+import com.teamtwo.aerolites.States.PlayState;
 import com.teamtwo.aerolites.States.StarMap;
 import com.teamtwo.engine.Game;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
@@ -13,7 +15,7 @@ public class Aerolites extends Game {
     public void initialise() {
         stateManager = new GameStateManager(this);
 
-        stateManager.addState(new StarMap(stateManager));
+        stateManager.addState(new MainMenu(stateManager));
     }
 
     /**

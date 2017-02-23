@@ -1,5 +1,6 @@
 package com.teamtwo.aerolites.States;
 
+import com.teamtwo.aerolites.Entities.Player;
 import com.teamtwo.aerolites.Utilities.InputType;
 import com.teamtwo.aerolites.Utilities.LevelConfig;
 import com.teamtwo.engine.Utilities.ContentManager;
@@ -27,6 +28,8 @@ public class StarMap extends State {
         }
     }
 
+    private InputType[] players;
+
     private Node current;
     private int lastPhase = -1;
     private boolean prevPress;
@@ -42,10 +45,12 @@ public class StarMap extends State {
 
     private LevelConfig config;
 
-    public StarMap(GameStateManager gsm) {
+    public StarMap(GameStateManager gsm, InputType[] players) {
         super(gsm);
 
         font = ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
+
+        this.players = players;
 
         stars = new ArrayList<>();
         prevNodes = new ArrayList<>();
@@ -203,7 +208,7 @@ public class StarMap extends State {
 
         Text t = new Text("Mouse: [" + mouse.x + ":" + mouse.y + "]", font, 20);
         t.setPosition(100, 100);
-        window.draw(t);
+     //   window.draw(t);
     }
 
     private void reset() {
@@ -217,8 +222,7 @@ public class StarMap extends State {
         config.bossBaseLives = 360;
         config.bossSpawnTime = 0;
 
-        config.players[0] = InputType.Controller;
-        // config.players[1] = InputType.Controller;
+        System.arraycopy(players, 0, config.players, 0, players.length);
 
         config.textured = false;
     }

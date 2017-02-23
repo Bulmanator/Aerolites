@@ -6,6 +6,7 @@ import com.teamtwo.aerolites.Entities.Asteroid;
 import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.aerolites.Entities.Player;
 import com.teamtwo.aerolites.UI.UIButton;
+import com.teamtwo.aerolites.Utilities.InputType;
 import com.teamtwo.engine.Input.Controllers.*;
 import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.ContentManager;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
 /**
  * @author Tijan Weir
  */
-public class MenuState extends State {
+public class MainMenu extends State {
 
     private class Transition {
         private Text[] selected;
@@ -90,6 +91,7 @@ public class MenuState extends State {
     private ControllerState prevState;
     private Transition selection;
 
+    private boolean selected;
     private int controllerIndex;
 
     private boolean prevMouse;
@@ -102,7 +104,7 @@ public class MenuState extends State {
     private float accumulator, spawn;
     private int swarmerCount;
 
-    public MenuState(GameStateManager gsm) {
+    public MainMenu(GameStateManager gsm) {
         super(gsm);
 
         ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
@@ -210,24 +212,7 @@ public class MenuState extends State {
                     controllerIndex = i;
                 }
 
-                if(Mouse.isButtonPressed(Mouse.Button.LEFT) && !prevMouse) {
-                    switch (button.getLabel()) {
-                        case "Singleplayer":
-                            System.out.println("Singleplayer Selected!");
-                            break;
-                        case "Multiplayer":
-                            System.out.println("Multiplayer Selected!");
-                            break;
-                        case "Options":
-                            // TODO Make options menu
-                            System.out.println("Options Selected!");
-                            break;
-                        case "Credits":
-                            System.out.println("Credits Selected!");
-                            gsm.addState(new CreditState(gsm));
-                            break;
-                    }
-                }
+                selected = Mouse.isButtonPressed(Mouse.Button.LEFT) && !prevMouse;
             }
 
             button.checkInBox(pos);
@@ -248,11 +233,31 @@ public class MenuState extends State {
             selection.transitionTimer = 0;
         }
 
-        if(!state.button(Button.A) && prevState.button(Button.A)) {
-            System.out.println(buttons[controllerIndex].getLabel() + " Selected!");
+        boolean controller = !state.button(Button.A) && prevState.button(Button.A);
+        selected |= controller;
+
+        InputType input = controller ? InputType.Controller : InputType.Keyboard;
+        if(selected) {
+            switch(buttons[controllerIndex].getLabel()) {
+                case "Singleplayer":
+                    gsm.addState(new StarMap(gsm, new InputType[] { input }));
+                    break;
+                case "Multiplayer":
+                    gsm.addState(new PlayerSelect(gsm, input));
+                    break;
+                case "Options":
+                    gsm.addState(new Options(gsm));
+                    break;
+                case "Credits":
+                    gsm.addState(new CreditState(gsm));
+                    break;
+            }
         }
 
         if(!Keyboard.isKeyPressed(Keyboard.Key.ESCAPE) && prevEscape) {
+            game.getEngine().close();
+        }
+        else if(!state.button(Button.B) && prevState.button(Button.B)) {
             game.getEngine().close();
         }
 
@@ -260,6 +265,9 @@ public class MenuState extends State {
         prevMouse = Mouse.isButtonPressed(Mouse.Button.LEFT);
         prevEscape = Keyboard.isKeyPressed(Keyboard.Key.ESCAPE);
         prevState = state;
+
+        selected = false;
+        controller = false;
 
         selection.transition(dt);
     }

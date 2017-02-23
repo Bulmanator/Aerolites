@@ -3,6 +3,7 @@ package com.teamtwo.aerolites.Utilities;
 import com.teamtwo.aerolites.Aerolites;
 import com.teamtwo.engine.Engine;
 import com.teamtwo.engine.Launcher.LauncherConfig;
+import org.jsfml.window.WindowStyle;
 
 public class Launcher {
 

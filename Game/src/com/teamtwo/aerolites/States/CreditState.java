@@ -1,5 +1,10 @@
 package com.teamtwo.aerolites.States;
 
+import com.teamtwo.aerolites.UI.Slider;
+import com.teamtwo.engine.Input.Controllers.Button;
+import com.teamtwo.engine.Input.Controllers.ControllerState;
+import com.teamtwo.engine.Input.Controllers.Controllers;
+import com.teamtwo.engine.Input.Controllers.PlayerNumber;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
@@ -8,7 +13,10 @@ import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Font;
 import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.Text;
+import org.jsfml.system.Vector2f;
+import org.jsfml.system.Vector2i;
 import org.jsfml.window.Keyboard;
+import org.jsfml.window.Mouse;
 
 
 /**
@@ -25,8 +33,11 @@ public class CreditState extends State {
     private int currentColour;
 
     private boolean prevEscape;
+    private ControllerState prevState;
 
     private Color[] colours;
+
+    private Slider slider;
 
     public CreditState(GameStateManager gsm) {
         super(gsm);
@@ -65,6 +76,9 @@ public class CreditState extends State {
         }
 
         prevEscape = false;
+        prevState = Controllers.getState(PlayerNumber.One);
+
+        slider = new Slider("Test", 20, new Vector2f(50, 400), new Vector2f(500, 60));
     }
 
     /**
@@ -73,11 +87,21 @@ public class CreditState extends State {
      * @param dt The amount of time passed since last frame
      */
     public void update(float dt) {
+        ControllerState state = Controllers.getState(PlayerNumber.One);
+
         if (!Keyboard.isKeyPressed(Keyboard.Key.ESCAPE) && prevEscape) {
+            gsm.popState();
+        }
+        else if(!state.button(Button.B) && prevState.button(Button.B)) {
             gsm.popState();
         }
 
         colourTimer += dt;
+
+        mouse = Mouse.getPosition(window);
+
+        Vector2f pos = window.mapPixelToCoords(mouse);
+        slider.checkValue(pos);
 
         float ratio = colourTimer / timerPerColour;
 
@@ -91,12 +115,15 @@ public class CreditState extends State {
             currentColour++;
         }
 
+        prevState = state;
         prevEscape = Keyboard.isKeyPressed(Keyboard.Key.ESCAPE);
     }
 
     public void render() {
         window.draw(background);
         for(Text text : names) { window.draw(text); }
+
+        slider.render(window);
     }
 
     @Override
