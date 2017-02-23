@@ -60,7 +60,7 @@ public class Bullet extends Entity {
                 break;
         }
 
-        config.mask |= (CollisionMask.ASTEROID);
+        config.mask |= (CollisionMask.ASTEROID | CollisionMask.PASCALBOSS | CollisionMask.QUADTRON);
 
         body = world.createBody(config);
 
@@ -90,6 +90,7 @@ public class Bullet extends Entity {
             onScreen = false;
             alive = false;
         }
+        limitSpeed();
     }
 
     @Override
@@ -119,6 +120,8 @@ public class Bullet extends Entity {
                 enemy |= typeA == Type.SwamerBase || typeB == Type.SwamerBase;
                 enemy |= typeA == Type.Hexaboss || typeB == Type.Hexaboss;
                 enemy |= typeA == Type.PascalBoss || typeB == Type.PascalBoss;
+                enemy |= typeA == Type.Quadtron || typeB == Type.Quadtron;
+                hit = asteroid || enemy;
             }
         }
     }

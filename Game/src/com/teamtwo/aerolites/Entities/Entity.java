@@ -30,7 +30,8 @@ public abstract class Entity implements EntityRenderable, Updateable, Observer, 
         ShotSpeed,
         SwamerBase,
         Hexaboss,
-        PascalBoss
+        PascalBoss,
+        Quadtron
     }
 
     /** The physics body which represents the Entity */

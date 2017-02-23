@@ -70,7 +70,7 @@ public class PlayState extends State {
      */
     public PlayState(GameStateManager gsm, LevelConfig config) {
         super(gsm);
-        bossType = Entity.Type.Hexaboss;
+        bossType = Entity.Type.Quadtron;
 
         this.config = config;
 
@@ -82,6 +82,8 @@ public class PlayState extends State {
 
         gameOver = false;
         world = new World(Vector2f.ZERO);
+        World.DRAW_AABB = true;
+        World.DRAW_BODIES = true;
         World.BODY_COLOUR = Color.RED;
 
         entities = new ArrayList<>();
@@ -122,7 +124,6 @@ public class PlayState extends State {
 
     @Override
     public void update(float dt) {
-
         world.update(dt);
         if(!gameOver)
             bossTimer += dt;
@@ -140,6 +141,9 @@ public class PlayState extends State {
                     break;
                 case Hexaboss:
                     boss = new Hexaboss(world, config.bossBaseLives);
+                    break;
+                case Quadtron:
+                    boss = new Quadtron(world,config.bossLives);
                     break;
             }
             bossSpawned = true;
@@ -183,6 +187,10 @@ public class PlayState extends State {
                     updatePascalBoss((PascalBoss) boss);
                     updatePascalBoss((PascalBoss) boss2);
                     break;
+                case Quadtron:
+                    boss.update(dt);
+                    updateQuadtron((Quadtron) boss);
+                    break;
             }
         }
 
@@ -199,6 +207,8 @@ public class PlayState extends State {
             else {
                 Entity e = entities.get(i);
                 switch (e.getType()) {
+                    case Quadtron:
+                        break;
                     case Hexaboss:
                         break;
                     case PascalBoss:
@@ -229,7 +239,6 @@ public class PlayState extends State {
                         swarmer.findTarget(players);
                         break;
                 }
-
                 e.update(dt);
             }
         }
@@ -257,6 +266,20 @@ public class PlayState extends State {
             }
         }
         return entities.indexOf(h);
+    }
+
+    private void updateQuadtron(Quadtron q) {
+        if(!q.isAlive())
+            world.removeBody(q.getBody());
+        if(q.isShooting()) {
+            for(int i = 0; i < q.getBulletPoints().size();i++) {
+                    Vector2f v = q.getBulletPoints().get(i);
+                    float angle = q.getBulletAngles().get(i);
+                    entities.add(new Bullet(10f, v, Entity.Type.EnemyBullet, q.getBody().getTransform().getAngle() + angle, world));
+                    entities.get(entities.size() - 1).setMaxSpeed(250);
+                    q.setShooting(false);
+            }
+        }
     }
 
     public void updatePascalBoss(PascalBoss p){
@@ -441,6 +464,7 @@ public class PlayState extends State {
         ContentManager.instance.loadMusic("PlayMusic", "Music.wav");
         ContentManager.instance.loadMusic("Hexagon", "Focus.ogg");
         ContentManager.instance.loadMusic("Pascal", "Pascal.ogg");
+        ContentManager.instance.loadMusic("Quad", "Quad.ogg");
     }
 
     public Player[] getPlayers() { return players; }

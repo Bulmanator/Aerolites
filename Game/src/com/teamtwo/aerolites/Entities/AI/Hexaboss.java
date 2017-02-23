@@ -34,7 +34,7 @@ public class Hexaboss extends AI implements Disposable {
     public enum AttackPattern {
         SpinOne,
         SpinTwo,
-        TriForce,
+        Triforce,
         StandOne,
         Wait
     }
@@ -267,7 +267,7 @@ public class Hexaboss extends AI implements Disposable {
                         warningTime = 2;
                         timeBetweenShots = 0.18f;
                         attackTime = 6;
-                        pattern = AttackPattern.TriForce;
+                        pattern = AttackPattern.Triforce;
                         break;
                     case 3:
                         warnTimer = 0;
@@ -317,7 +317,7 @@ public class Hexaboss extends AI implements Disposable {
                 }
                 angle -= (MathUtil.PI / 3f) * dt;
                 break;
-            case TriForce:
+            case Triforce:
                 warnTimer += dt;
 
                 bulletPoints.clear();
@@ -331,7 +331,7 @@ public class Hexaboss extends AI implements Disposable {
                     shooting = true;
                     cooldown = 0;
                 }
-                angle -= (MathUtil.PI / 2.5f) * dt;
+                angle -= (MathUtil.PI / 2f) * dt;
                 break;
             case StandOne:
                 body.setAngularVelocity(0);

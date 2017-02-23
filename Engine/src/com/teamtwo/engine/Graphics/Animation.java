@@ -1,9 +1,11 @@
 package com.teamtwo.engine.Graphics;
 
-import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.Interfaces.EntityRenderable;
 import com.teamtwo.engine.Utilities.Interfaces.Updateable;
-import org.jsfml.graphics.*;
+import org.jsfml.graphics.IntRect;
+import org.jsfml.graphics.RenderWindow;
+import org.jsfml.graphics.Sprite;
+import org.jsfml.graphics.Texture;
 import org.jsfml.system.Vector2f;
 
 /**
@@ -45,6 +47,9 @@ public class Animation implements Updateable, EntityRenderable {
 
     /** How long has passed since the last frame, in seconds */
     private float accumulator;
+
+    /** The scale of the sprite*/
+    private Vector2f scale;
 
     /**
      * Creates an animation from the given texture key, with a time per frame of 0.1 seconds
@@ -89,6 +94,8 @@ public class Animation implements Updateable, EntityRenderable {
 
         // Resets the time accumulator
         accumulator = 0;
+
+        scale = new Vector2f(1,1);
     }
 
     /**
@@ -122,6 +129,7 @@ public class Animation implements Updateable, EntityRenderable {
 
         // Create a sprite and set its position
         Sprite sprite = new Sprite(texture);
+        sprite.setScale(scale);
         sprite.setOrigin(width / 2, height / 2);
         sprite.setPosition(position);
         sprite.setRotation(angle);
@@ -246,4 +254,11 @@ public class Animation implements Updateable, EntityRenderable {
      * @param timePerFrame The time each frame should last for, in seconds
      */
     public void setTimePerFrame(float timePerFrame) { this.timePerFrame = timePerFrame; }
+
+    public void setScale(float xSize, float ySize){
+        float x, y;
+        x = xSize / width;
+        y = ySize / height;
+        scale = new Vector2f(x, y);
+    }
 }
