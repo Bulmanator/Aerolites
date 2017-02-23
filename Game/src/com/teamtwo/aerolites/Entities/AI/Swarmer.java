@@ -25,28 +25,25 @@ public class Swarmer extends AI {
 
     private static final float maxForce = 800;
 
+    private static final Vector2f[] vertices = new Vector2f[] {
+            new Vector2f(0,0), new Vector2f(30,0), new Vector2f(15,30)
+    };
+
     private ParticleEmitter jet;
     private Entity target;
     private Animation animation;
 
     public Swarmer(World world, Vector2f pos) {
-        this.onScreen = true;
+
         BodyConfig config = new BodyConfig();
 
         config.category = CollisionMask.SWARMER;
         config.mask = CollisionMask.ALL;
 
-        setMaxSpeed(130);
         config.angularVelocity = MathUtil.PI2;
 
         config.position = pos;
 
-        renderColour = new Color(255,140,0);
-
-        Vector2f[] vertices = new Vector2f[3];
-        vertices[0] = new Vector2f(0,0);
-        vertices[1] = new Vector2f(30,0);
-        vertices[2] = new Vector2f(15,30);
         config.restitution = 1;
 
         config.shape = new Polygon(vertices);
@@ -54,26 +51,27 @@ public class Swarmer extends AI {
 
         body = world.createBody(config);
         body.setData(this);
+        body.registerObserver(this, Message.Type.Collision);
+
+        maxSpeed = 130f;
+        onScreen = true;
+
+        display = new ConvexShape(body.getShape().getVertices());
+        display.setFillColor(new Color(255, 140, 0));
 
         ParticleConfig pConfig = new ParticleConfig();
-
 
         pConfig.minAngle = 0;
         pConfig.maxAngle = 0;
         pConfig.speed = 70;
         pConfig.rotationalSpeed = 40;
         pConfig.pointCount = 0;
-        pConfig.colours[0] = Color.TRANSPARENT;
-        //pConfig.colours[0] = Color.MAGENTA;
-        pConfig.colours[1] = Color.YELLOW;
-        pConfig.colours[2] = Color.YELLOW;
+        pConfig.colours[0] = Color.YELLOW;
         pConfig.fadeOut = false;
         pConfig.startSize = 5;
         pConfig.endSize = 1;
         pConfig.minLifetime = 0.5f;
         pConfig.maxLifetime = 1;
-        body.registerObserver(this, Message.Type.Collision);
-
 
         pConfig.position = body.getTransform().getPosition();
         jet = new ParticleEmitter(pConfig, 40f, 400);
@@ -82,7 +80,7 @@ public class Swarmer extends AI {
     }
 
     @Override
-    public void update(float dt){
+    public void update(float dt) {
         super.update(dt);
 
         jet.update(dt);
@@ -128,14 +126,9 @@ public class Swarmer extends AI {
     }
 
     @Override
-    public void render(RenderWindow window) {
-        jet.render(window);
-        ConvexShape bodyShape = new ConvexShape(body.getShape().getVertices());
-        bodyShape.setPosition(body.getTransform().getPosition());
-        bodyShape.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
-        bodyShape.setFillColor(renderColour);
-        window.draw(bodyShape);
-        //animation.render(window);
+    public void render(RenderWindow renderer) {
+        jet.render(renderer);
+        super.render(renderer);
     }
 
     @Override

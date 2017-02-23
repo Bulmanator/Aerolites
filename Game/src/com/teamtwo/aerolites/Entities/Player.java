@@ -30,9 +30,10 @@ public class Player extends Entity implements Disposable {
     // TODO Add jet stream colours
 
     // #### Static Begin ####
+    // Various constants which are the same across players
 
     // The base vertices which make up the player ship shape
-    private static final Vector2f[] vertices = new Vector2f[] {
+    public static final Vector2f[] vertices = new Vector2f[] {
             new Vector2f(0, -15), new Vector2f(15, 30),
             new Vector2f(0, 35), new Vector2f(-15, 30)
     };
@@ -43,7 +44,6 @@ public class Player extends Entity implements Disposable {
     // The delay between shots
 
 
-
     // #### Static End ####
 
     private float timeBetweenShots = 0.15f;
@@ -51,8 +51,9 @@ public class Player extends Entity implements Disposable {
 
     // Whether or not the Player is controlled via a controller
     private boolean controller;
-    // The Player ID
+    // The Player ID & Controller ID if needed
     private PlayerNumber player;
+    private PlayerNumber controllerNumber;
 
     // The amount of lives the player has left
     private int lives;
@@ -68,20 +69,27 @@ public class Player extends Entity implements Disposable {
     private float immuneTime;
 
     //Scoring
-    Score score;
+    private Score score;
 
-    public Player(World world, PlayerNumber player) {
+    public Player(World world, PlayerNumber player) { this(world, player, -1); }
 
+    public Player(World world, PlayerNumber player, int controllerNumber) {
         this.player = player;
+        if(controllerNumber >= 0) {
+            this.controllerNumber = PlayerNumber.values()[controllerNumber];
+        }
 
-        BodyConfig config = new BodyConfig();
-        controller = false;
+        controller = controllerNumber >= 0;
+
+        if(this.controllerNumber == null) controller = false;
 
         lives = 2;
         alive = true;
 
         immuneTime = 0;
         score = new Score();
+
+        BodyConfig config = new BodyConfig();
 
         config.category = CollisionMask.PLAYER;
         config.mask = (CollisionMask.ALL & ~CollisionMask.BULLET);
@@ -99,6 +107,8 @@ public class Player extends Entity implements Disposable {
         body.setData(this);
         body.registerObserver(this, Message.Type.Collision);
 
+        display = new ConvexShape(body.getShape().getVertices());
+        display.setTexture(ContentManager.instance.getTexture("Player"));
 
         offScreenAllowance = new Vector2f(15, 15);
 
@@ -120,8 +130,9 @@ public class Player extends Entity implements Disposable {
 
         jet = new ParticleEmitter(pConfig, 40f, 400);
 
+        defaultColour = Color.WHITE;
         setColours();
-        renderColour = defaultColour;
+        display.setFillColor(defaultColour);
 
         bullets = new ArrayList<>();
     }
@@ -169,7 +180,7 @@ public class Player extends Entity implements Disposable {
         // Get whether the player is boosting,
         if(controller) {
             // Store the current controller state
-            ControllerState state = Controllers.getState(player);
+            ControllerState state = Controllers.getState(controllerNumber);
 
             // Get the button states for boost, shoot and rotate
             boost = state.button(Button.RB);
@@ -231,15 +242,15 @@ public class Player extends Entity implements Disposable {
         shootCooldown += dt;
         score.incrementTimeAlive(dt);
 
-        renderColour = defaultColour;
+        display.setFillColor(defaultColour);
 
         if(immuneTime > 0) {
             immuneTime -= dt;
             if (MathUtil.round(immuneTime % 0.3f, 1) == 0)
-                renderColour = Color.WHITE;
+                display.setFillColor(Color.WHITE);
         }
 
-        if(powerUpTime > 0){
+        if(powerUpTime > 0) {
             powerUpTime -= dt;
         }
         else{
@@ -289,15 +300,12 @@ public class Player extends Entity implements Disposable {
     public void render(RenderWindow renderer) {
         if(!alive) return;
 
+        display.setPosition(body.getTransform().getPosition());
+        display.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
+
         // Draw the jet and shape
         jet.render(renderer);
-        ConvexShape bodyShape = new ConvexShape(body.getShape().getVertices());
-        bodyShape.setPosition(body.getTransform().getPosition());
-        bodyShape.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
-        bodyShape.setFillColor(renderColour);
-        bodyShape.setTexture(ContentManager.instance.getTexture("Player"));
-        renderer.draw(bodyShape);
-        //super.render(renderer);
+        renderer.draw(display);
 
         for(Bullet bullet : bullets) {
             bullet.render(renderer);
@@ -339,7 +347,6 @@ public class Player extends Entity implements Disposable {
                     powerUpTime = 10;
                     break;
             }
-
         }
     }
 
@@ -365,44 +372,22 @@ public class Player extends Entity implements Disposable {
 
     public PlayerNumber getNumber() { return player; }
 
+    public PlayerNumber getControllerNumber() { return controllerNumber; }
+
     public Color getDefaultColour() { return defaultColour; }
 
     public void setLives(int lives) { this.lives = lives; }
 
     public void setAlive(boolean alive) { this.alive = alive; }
 
-    public void setController(boolean controller) { this.controller = controller; }
-
-    public Score getScore() {
-        return score;
-    }
+    public Score getScore() { return score; }
 
     @Override
     public void dispose() {
         for(Bullet bullet : bullets) {
             body.getWorld().removeBody(bullet.getBody());
+            score.bulletMissed();
         }
         bullets.clear();
-    }
-
-
-
-    private void playerPowerUp(int powerUpNumber)
-    {
-        if(powerUpNumber == 1)
-        {
-            //shield
-            System.out.print("Shield");
-        }
-        if(powerUpNumber == 2)
-        {
-            //life
-            System.out.print("life");
-        }
-        if(powerUpNumber == 3)
-        {
-            //Increase fire speed
-            System.out.print("fire speed");
-        }
     }
 }

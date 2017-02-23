@@ -1,6 +1,4 @@
-package com.teamtwo.aerolites.Configs;
-
-import com.teamtwo.aerolites.Utilities.InputType;
+package com.teamtwo.aerolites.Utilities;
 
 /**
  * @author Matthew Threlfall
@@ -50,8 +48,8 @@ public class LevelConfig {
     /** The amount of entities which need to be destroyed before the boss is spawned, default = 0 */
     public float bossSpawnEntitiy;
 
-    /** The number of hits the boss can take, default = 180 */
-    public int bossLives;
+    /** The number of hits the boss can take per player, default = 180 */
+    public int bossBaseLives;
 
     /**whether or not the game will use the textures or it will run in retro solid colour mode*/
     public boolean textured;
@@ -78,7 +76,7 @@ public class LevelConfig {
 
         bossSpawnEntitiy = 0;
 
-        bossLives = 180;
+        bossBaseLives = 180;
 
         players = new InputType[8];
         players[0] = InputType.Keyboard;

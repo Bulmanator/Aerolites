@@ -58,11 +58,16 @@ public class LevelOver extends State {
         previousStates = new ControllerState[playerCount];
         for(int i = 0; i < playerCount; i++) {
             if(players[i].isController()) {
-                previousStates[i] = Controllers.getState(players[i].getNumber());
+                previousStates[i] = Controllers.getState(players[i].getControllerNumber());
             }
         }
 
         previousSpace = Keyboard.isKeyPressed(Keyboard.Key.SPACE);
+
+        ContentManager.instance.getMusic("Hexagon").stop();
+        ContentManager.instance.getMusic("Pascal").stop();
+        ContentManager.instance.getMusic("PlayMusic").setVolume(10f);
+        ContentManager.instance.getMusic("PlayMusic").play();
     }
 
     @Override
@@ -77,22 +82,6 @@ public class LevelOver extends State {
                 }
                 else if(backgroundPos > 1920) {
                     backgroundPos = 1920;
-                }
-
-                for(int i = 0; i < playerCount; i++) {
-                    Player player = players[i];
-                    if(player.isController()) {
-                        ControllerState state = Controllers.getState(player.getNumber());
-                        if(state.button(Button.A) && !previousStates[i].button(Button.A)) {
-                            current = Stage.Scores;
-                        }
-                        previousStates[i] = state;
-                    }
-                    else if(Keyboard.isKeyPressed(Keyboard.Key.SPACE) && !previousSpace) {
-                        current = Stage.Scores;
-                    }
-
-                    previousSpace = Keyboard.isKeyPressed(Keyboard.Key.SPACE);
                 }
                 break;
             case Scores:
@@ -116,6 +105,33 @@ public class LevelOver extends State {
                         playerInfoSize = 700;
                     }
                 }
+        }
+
+
+        for(int i = 0; i < playerCount; i++) {
+            Player player = players[i];
+            if(player.isController()) {
+                ControllerState state = Controllers.getState(player.getControllerNumber());
+                if(state.button(Button.A) && !previousStates[i].button(Button.A)) {
+                    if(current == Stage.GameOver) {
+                        current = Stage.Scores;
+                    }
+                    else {
+                        gsm.popState();
+                    }
+                }
+                previousStates[i] = state;
+            }
+            else if(Keyboard.isKeyPressed(Keyboard.Key.SPACE) && !previousSpace) {
+                if(current == Stage.GameOver) {
+                    current = Stage.Scores;
+                }
+                else {
+                    gsm.popState();
+                }
+            }
+
+            previousSpace = Keyboard.isKeyPressed(Keyboard.Key.SPACE);
         }
     }
 
@@ -166,7 +182,7 @@ public class LevelOver extends State {
                 gameOverText.setColor(Color.WHITE);
 
                 gameOverBounds = gameOverText.getLocalBounds();
-                gameOverText.setOrigin(gameOverBounds.width / 2, gameOverBounds.height );
+                gameOverText.setOrigin(gameOverBounds.width / 2, gameOverBounds.height);
                 gameOverText.setPosition(backgroundPos - WORLD_SIZE.x / 2, WORLD_SIZE.y / 2 - backgroundYMovement);
                 window.draw(gameOverText);
 

@@ -1,6 +1,6 @@
 package com.teamtwo.aerolites.States;
 
-import com.teamtwo.aerolites.UI.Button;
+import com.teamtwo.aerolites.UI.UIButton;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
@@ -15,7 +15,7 @@ import org.jsfml.window.Mouse;
  * @author Tijan Weir
  */
 public class ControllerSelectState extends State {
-    Button[] Buttons = new Button[3];
+    UIButton[] Buttons = new UIButton[3];
     Text text;
     Boolean clicked;
 
@@ -46,9 +46,9 @@ public class ControllerSelectState extends State {
 
 
 
-        Buttons[0] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 4, (int) State.WORLD_SIZE.y / 2, window.getSize().y / 10, "Aerolites");
-        Buttons[1] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 8, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Keyboard");
-        Buttons[2] = new Button((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 12, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Controller");
+/*        Buttons[0] = new UIButton((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 4, (int) State.WORLD_SIZE.y / 2, window.getSize().y / 10, "Aerolites");
+        Buttons[1] = new UIButton((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 8, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Keyboard");
+        Buttons[2] = new UIButton((int) State.WORLD_SIZE.x / 2, window.getSize().y / 20 * 12, (int) State.WORLD_SIZE.y / 4, window.getSize().y / 10, "Controller");*/
     }
 
     /**

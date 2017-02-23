@@ -1,15 +1,22 @@
 package com.teamtwo.aerolites.States;
 
-import com.teamtwo.aerolites.Configs.LevelConfig;
+import com.teamtwo.aerolites.Entities.AI.Hexaboss;
+import com.teamtwo.aerolites.Entities.AI.PascalBoss;
+import com.teamtwo.aerolites.Entities.AI.StandardAI;
 import com.teamtwo.aerolites.Entities.AI.*;
+import com.teamtwo.aerolites.Entities.Asteroid;
+import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.*;
+import com.teamtwo.aerolites.Entities.Player;
 import com.teamtwo.aerolites.Utilities.InputType;
+import com.teamtwo.aerolites.Utilities.LevelConfig;
 import com.teamtwo.engine.Input.Controllers.PlayerNumber;
 import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
+import org.jsfml.audio.Music;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
@@ -47,6 +54,9 @@ public class PlayState extends State {
 
     private Entity.Type bossType;
 
+    private RectangleShape background;
+
+    //TODO shoot bullets out of ait
     //TODO make power ups work
     //TODO star map
     //TODO shop and stuff
@@ -63,11 +73,15 @@ public class PlayState extends State {
         bossType = Entity.Type.Quadtron;
         this.config = config;
 
+        // Load content and then play the level music
+        loadContent(config.textured);
+        Music bgm = ContentManager.instance.getMusic("PlayMusic");
+        bgm.setVolume(100f);
+        bgm.play();
+
         gameOver = false;
         world = new World(Vector2f.ZERO);
-        World.BODY_COLOUR = new Color(104, 149, 237);
-        World.DRAW_AABB = true;
-        World.DRAW_BODIES = true;
+        World.BODY_COLOUR = Color.RED;
 
         entities = new ArrayList<>();
 
@@ -81,22 +95,28 @@ public class PlayState extends State {
         }
 
         players = new Player[playerCount];
+        int controllerNumber = 0;
         for(int i = 0; i < playerCount; i++) {
-            players[i] = new Player(world, PlayerNumber.values()[i]);
             if(config.players[i] == InputType.Controller) {
-                players[i].setController(true);
+                players[i] = new Player(world, PlayerNumber.values()[i], controllerNumber++);
+            }
+            else {
+                players[i] = new Player(world, PlayerNumber.values()[i]);
             }
         }
+
+        config.asteroidBaseRate /= (1.8f * playerCount);
+        config.swarmerBaseRate /= (float) playerCount;
+        config.aiBaseRate /= (float) playerCount;
+
+        config.bossBaseLives *= playerCount;
 
         accumulator = 0;
         alertPlaying = false;
 
-        // Load content and then play the level music
-        loadContent(config.textured);
-        ContentManager.instance.getMusic("PlayMusic").play();
-        ContentManager.instance.getMusic("PlayMusic").setVolume(100f);
-
-
+        background = new RectangleShape(State.WORLD_SIZE);
+        background.setPosition(0, 0);
+        background.setTexture(ContentManager.instance.getTexture("Space"));
     }
 
     @Override
@@ -113,14 +133,14 @@ public class PlayState extends State {
         if(bossTimer - 6 > config.bossSpawnTime && !bossSpawned && entities.size() == 0) {
             switch (bossType){
                 case PascalBoss:
-                    boss2 = new PascalBoss(world,config.bossLives/4,false);
-                    boss = new PascalBoss(world,config.bossLives/4,true);
+                    boss2 = new PascalBoss(world,config.bossBaseLives / 4,false);
+                    boss = new PascalBoss(world,config.bossBaseLives / 4,true);
                     break;
                 case Hexaboss:
-                    boss = new Hexaboss(world, config.bossLives);
+                    boss = new Hexaboss(world, config.bossBaseLives);
                     break;
                 case Quadtron:
-                    boss = new Quadtron(world,config.bossLives);
+                    boss = new Quadtron(world, config.bossBaseLives);
                     break;
             }
             bossSpawned = true;
@@ -233,7 +253,7 @@ public class PlayState extends State {
 
     public int updateHexaboss(Hexaboss h) {
         if(h.isShooting()) {
-            for(int i = 0; i < h.getBulletPoints().size();i++) {
+            for(int i = 0; i < h.getBulletPoints().size(); i++) {
                 Vector2f v = h.getBulletPoints().get(i);
                 float angle = h.getBulletAngles().get(i);
                 entities.add(new Bullet(10f, v, Entity.Type.EnemyBullet, h.getBody().getTransform().getAngle()+angle, world));
@@ -278,7 +298,7 @@ public class PlayState extends State {
 
         if(a.shouldExplode()) {
 
-            int powerUp = MathUtil.randomInt(1, 10);
+            int powerUp = MathUtil.randomInt(1, 75);
             if(powerUp == 1)
             {
                 powerUp = MathUtil.randomInt(1, 4);
@@ -298,7 +318,7 @@ public class PlayState extends State {
                 }
 
 
-                entities.add(new PowerUpPickUp(type, 20, pos, world));
+                entities.add(new Powerup(type, 20, pos, world));
             }
 
 
@@ -347,6 +367,8 @@ public class PlayState extends State {
     public void render() {
 
         window.setTitle("FPS: " + game.getEngine().getFps());
+
+        window.draw(background);
 
         for(Entity entity : entities) {
             entity.render(window);
@@ -421,6 +443,8 @@ public class PlayState extends State {
             ContentManager.instance.loadTexture("Player", "Retro.png");
         }
 
+        ContentManager.instance.loadTexture("Space", "Space.png");
+
         // Load Fonts
         ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");
 
@@ -433,10 +457,10 @@ public class PlayState extends State {
         ContentManager.instance.getSound("Alert").setVolume(50f);
 
         // Load Music
-        ContentManager.instance.loadMusic("PlayMusic", "music.wav");
-        ContentManager.instance.loadMusic("Hexagon", "focus.ogg");
-        ContentManager.instance.loadMusic("Pascal", "pascal.ogg");
         ContentManager.instance.loadMusic("Quad", "Quad.ogg");
+        ContentManager.instance.loadMusic("PlayMusic", "Music.wav");
+        ContentManager.instance.loadMusic("Hexagon", "Focus.ogg");
+        ContentManager.instance.loadMusic("Pascal", "Pascal.ogg");
     }
 
     public Player[] getPlayers() { return players; }

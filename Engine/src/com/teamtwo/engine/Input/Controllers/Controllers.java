@@ -11,7 +11,7 @@ public class Controllers {
         PS3(0x054c, 0x0268),
         PS4(0x054c, 0x09cc),
         Xbox_360(0x045e, 0x028e),
-        Xbox_One(0x045e, 0x02dd),
+        Xbox_One(0x045e, 0x02dd | 0x02ff),
         Xbox_Elite(0x045e, 0x02e3),
         Unknown(0, 0);
 
@@ -25,8 +25,8 @@ public class Controllers {
 
         static Type value(int vendorID, int productID) {
             for(Type type : values()) {
-                if(type.productID == productID) {
-                    if(type.vendorID == vendorID) {
+                if((type.productID & productID) == productID) {
+                    if((type.vendorID & vendorID) == vendorID) {
                         return type;
                     }
                 }

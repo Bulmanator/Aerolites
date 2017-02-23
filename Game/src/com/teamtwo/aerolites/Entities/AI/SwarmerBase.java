@@ -24,8 +24,7 @@ public class SwarmerBase extends AI {
     private boolean split;
 
     public SwarmerBase(World world) {
-        this.onScreen = true;
-        split = false;
+
         BodyConfig config = new BodyConfig();
 
         config.category = CollisionMask.SWARMER_BASE;
@@ -65,14 +64,19 @@ public class SwarmerBase extends AI {
         config.angularVelocity = MathUtil.randomFloat(0, MathUtil.PI / 4f);
         config.position = new Vector2f(x,y);
         config.velocity = new Vector2f(velocityX,velocityY);
-        renderColour = Color.WHITE;
 
         config.shape = new Polygon(MathUtil.randomFloat(40,45));
-
 
         body = world.createBody(config);
         body.setData(this);
         body.registerObserver(this, Message.Type.Collision);
+
+        onScreen = true;
+        split = false;
+
+        display = new ConvexShape(body.getShape().getVertices());
+        display.setFillColor(Color.WHITE);
+        display.setTexture(ContentManager.instance.getTexture("Asteroid"));
     }
 
     @Override
@@ -83,13 +87,12 @@ public class SwarmerBase extends AI {
         }
     }
     @Override
-    public void render(RenderWindow window){
-        ConvexShape bodyShape = new ConvexShape(body.getShape().getVertices());
-        bodyShape.setPosition(body.getTransform().getPosition());
-        bodyShape.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
-        bodyShape.setFillColor(renderColour);
-        bodyShape.setTexture(ContentManager.instance.getTexture("Asteroid"));
-        window.draw(bodyShape);
+    public void render(RenderWindow renderer) {
+
+        display.setPosition(body.getTransform().getPosition());
+        display.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
+
+        renderer.draw(display);
     }
 
     @Override
