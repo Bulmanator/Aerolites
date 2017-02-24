@@ -70,7 +70,7 @@ public class PlayState extends State {
      */
     public PlayState(GameStateManager gsm, LevelConfig config) {
         super(gsm);
-        bossType = Entity.Type.Quadtron;
+        bossType = Entity.Type.Hexaboss;
 
         this.config = config;
 
@@ -143,7 +143,7 @@ public class PlayState extends State {
                     boss = new Hexaboss(world, config.bossBaseLives);
                     break;
                 case Quadtron:
-                    boss = new Quadtron(world,config.bossLives);
+                    boss = new Quadtron(world,config.bossBaseLives);
                     break;
             }
             bossSpawned = true;

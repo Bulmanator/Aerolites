@@ -16,10 +16,7 @@ import com.teamtwo.engine.Utilities.Interfaces.Typeable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.audio.SoundSource;
-import org.jsfml.graphics.CircleShape;
-import org.jsfml.graphics.Color;
-import org.jsfml.graphics.RectangleShape;
-import org.jsfml.graphics.RenderWindow;
+import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Window;
 
@@ -93,6 +90,9 @@ public class Quadtron extends Entity{
         body = world.createBody(config);
         body.setData(this);
 
+        display = new ConvexShape(body.getShape().getVertices());
+        display.setFillColor(Color.CYAN);
+
         BodyConfig configA = new BodyConfig();
         verticies = new Vector2f[4];
         verticies[0] = new Vector2f(0,0);
@@ -129,7 +129,9 @@ public class Quadtron extends Entity{
     public void update(float dt) {
         shootTimer += dt;
         waitTimer += dt;
-        renderColour = new Color((int)MathUtil.lerp(0,255,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)));
+
+        display.setFillColor(MathUtil.lerpColour(Color.CYAN, Color.RED, 1 - (lives / totalLives)));
+
         if(lives < 0){
             onScreen = false;
             alive = false;
@@ -319,7 +321,7 @@ public class Quadtron extends Entity{
         r.setPosition(shield2.getTransform().getPosition());
         window.draw(r);
 
-        for(Vector2f v: bulletPoints){
+        for(Vector2f v: bulletPoints) {
             CircleShape s = new CircleShape();
             s.setPosition(v);
             s.setRadius(5);

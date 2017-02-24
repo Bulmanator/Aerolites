@@ -121,7 +121,6 @@ public class Bullet extends Entity {
                 enemy |= typeA == Type.Hexaboss || typeB == Type.Hexaboss;
                 enemy |= typeA == Type.PascalBoss || typeB == Type.PascalBoss;
                 enemy |= typeA == Type.Quadtron || typeB == Type.Quadtron;
-                hit = asteroid || enemy;
             }
         }
     }
