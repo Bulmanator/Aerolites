@@ -1,5 +1,6 @@
 package com.teamtwo.aerolites.Entities.AI;
 
+import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.CollisionMask;
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
@@ -11,7 +12,10 @@ import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
-import org.jsfml.graphics.*;
+import org.jsfml.graphics.CircleShape;
+import org.jsfml.graphics.Color;
+import org.jsfml.graphics.ConvexShape;
+import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 
 import java.util.ArrayList;
@@ -46,6 +50,7 @@ public class PascalBoss extends AI {
 
     private ArrayList<Vector2f> bulletPoints;
     private ArrayList<Float> bulletAngles;
+    private ArrayList<Bullet> bullets;
 
     public PascalBoss(World world, int lives, boolean second) {
 
@@ -56,9 +61,8 @@ public class PascalBoss extends AI {
         totalLives = lives;
         onScreen = true;
         inPlace = false;
-        offScreenAllowance = new Vector2f(170,170);
+        offScreenAllowance = new Vector2f(170, 170);
 
-        BodyConfig config = new BodyConfig();
         ParticleConfig pConfig = new ParticleConfig();
 
         pConfig.minAngle = 0;
@@ -73,9 +77,8 @@ public class PascalBoss extends AI {
         pConfig.maxLifetime = 3;
 
         Color colour;
+        BodyConfig config = new BodyConfig();
         if(second) {
-            config.position = new Vector2f(State.WORLD_SIZE.x/2 - 80, -150);
-            pConfig.position = config.position;
             colour = new Color(255, 153, 0);
             pConfig.colours[0] = colour;
             defaultColor = colour;
@@ -83,8 +86,6 @@ public class PascalBoss extends AI {
             angle = 0;
         }
         else {
-            config.position = new Vector2f(State.WORLD_SIZE.x/2 + 80, -150);
-            pConfig.position = config.position;
             colour = new Color(36, 25, 178);
             pConfig.colours[0] = colour;
             direction = 1;
@@ -92,7 +93,10 @@ public class PascalBoss extends AI {
             angle = 180 * MathUtil.DEG_TO_RAD;
         }
 
-        damage = new ParticleEmitter(pConfig,150,200);
+        config.position = new Vector2f(State.WORLD_SIZE.x / 2 + 80, -150);
+        pConfig.position = config.position;
+
+        damage = new ParticleEmitter(pConfig, 150, 200);
 
         position = new Vector2f(config.position.x, State.WORLD_SIZE.y / 2);
 
@@ -179,29 +183,33 @@ public class PascalBoss extends AI {
         }
     }
 
-    private void move(float dt){
-        float turnSpeed = 30 * MathUtil.DEG_TO_RAD * dt;
-        float x = State.WORLD_SIZE.x / 2f + (position.x - State.WORLD_SIZE.x / 2f) * MathUtil.cos(turnSpeed)
-                - (position.y - State.WORLD_SIZE.y / 2f) * MathUtil.sin(turnSpeed);
+    private void move(float dt) {
 
-        float y = State.WORLD_SIZE.y / 2f + (position.x - State.WORLD_SIZE.x / 2f) * MathUtil.sin(turnSpeed)
-                + (position.y - State.WORLD_SIZE.y / 2f) * MathUtil.cos(turnSpeed);
+        float turnSpeed = 30 * MathUtil.DEG_TO_RAD * dt;
+        float cos = MathUtil.cos(turnSpeed);
+        float sin = MathUtil.sin(turnSpeed);
+
+        float x = State.WORLD_SIZE.x / 2f + (position.x - State.WORLD_SIZE.x / 2f) * cos
+                - (position.y - State.WORLD_SIZE.y / 2f) * sin;
+
+        float y = State.WORLD_SIZE.y / 2f + (position.x - State.WORLD_SIZE.x / 2f) * sin
+                + (position.y - State.WORLD_SIZE.y / 2f) * cos;
 
         position = new Vector2f(x, y);
         body.setVelocity(Vector2f.ZERO);
         angle += direction * 30 * dt * MathUtil.DEG_TO_RAD;
     }
 
-    private void attack(float dt){
+    private void attack(float dt) {
         shootTimer += dt;
         bulletAngles.clear();
         bulletPoints.clear();
         addFirePoints(fireFace);
-        if(shootTimer>shootCoolDown) {
+        if(shootTimer > shootCoolDown) {
             shooting = true;
             if(shootCoolDown == 3)
                 shootCoolDown = 0.1f;
-            else if(barrage < 3){
+            else if(barrage < 3) {
                 barrage++;
             }
             else {
@@ -220,8 +228,10 @@ public class PascalBoss extends AI {
     public void receiveMessage(Message message) {
         if (message.getType() == Message.Type.Collision) {
             CollisionMessage cm = (CollisionMessage) message;
-            boolean damange = cm.getBodyA().getData().getType() == Type.Bullet || cm.getBodyB().getData().getType() == Type.Bullet;
-            if(damange) {
+            boolean damage = cm.getBodyA().getData().getType() == Type.Bullet
+                    || cm.getBodyB().getData().getType() == Type.Bullet;
+
+            if(damage) {
                 lives--;
                 display.setOutlineColor(Color.WHITE);
                 lastHit = 0;

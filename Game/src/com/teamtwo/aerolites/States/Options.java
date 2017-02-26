@@ -8,6 +8,7 @@ import org.jsfml.graphics.Font;
 import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
+import org.jsfml.window.Keyboard;
 import org.jsfml.window.Mouse;
 
 /**
@@ -26,6 +27,7 @@ public class Options extends State {
     private int currentRes;
     private Text resText;
 
+    private boolean prevEscape;
 
     public Options(GameStateManager gsm) {
         super(gsm);
@@ -50,6 +52,8 @@ public class Options extends State {
         if(currentRes == 0) window.setSize(new Vector2i(640, 360));
 
         resText = new Text("Current Resolution: " + resolutionStrings[currentRes], font, 120);
+
+        prevEscape = false;
     }
 
 
@@ -68,6 +72,12 @@ public class Options extends State {
         resText.setString("Current Resolution: " + resolutionStrings[currentRes]);
         float width = resText.getLocalBounds().width;
         resText.setPosition((State.WORLD_SIZE.x / 2f) - (width / 2f), 40f);
+
+        if(!Keyboard.isKeyPressed(Keyboard.Key.ESCAPE) && prevEscape) {
+            gsm.popState();
+        }
+
+        prevEscape = Keyboard.isKeyPressed(Keyboard.Key.ESCAPE);
     }
 
     public void render() {

@@ -2,6 +2,7 @@ package com.teamtwo.engine.Utilities;
 
 import org.jsfml.graphics.Color;
 import org.jsfml.system.Vector2f;
+import org.jsfml.system.Vector3f;
 
 /**
  * Various useful maths functions
@@ -230,15 +231,19 @@ public final class MathUtil {
     }
 
     /**
+     * Converts a Vector3f to a Vector2f using just the x and y components
+     * @param v The Vector3f to convert
+     * @return The x and y components as a Vector2f
+     */
+    public static Vector2f toVector2f(Vector3f v) { return new Vector2f(v.x, v.y); }
+
+    /**
      * returns the mid point of two vectors
      * @param a the first vector
      * @param b the second vector
      * @return the mid point vector
      */
     public static Vector2f midPoint(Vector2f a, Vector2f b){
-        float x = a.x+b.x;
-        float y = a.y+b.y;
-
-        return new Vector2f(x/2,y/2);
+        return new Vector2f((a.x + b.x) / 2f, (a.y + b.y) / 2f);
     }
 }

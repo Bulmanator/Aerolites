@@ -61,7 +61,7 @@ public class Engine implements Updateable, Renderable, Disposable {
     private InputProcessor input;
 
     // The fps of the game
-    private float fps;
+    private int fps;
 
     /**
      * Creates an Runnable Engine which will run the main Game loop
@@ -334,7 +334,9 @@ public class Engine implements Updateable, Renderable, Disposable {
         System.out.println();
     }
 
-    public float getFps(){
-        return fps;
-    }
+    /**
+     * Gets the current framerate that the Engine is running at
+     * @return The framerate of the engine
+     */
+    public int getFramerate() { return fps; }
 }

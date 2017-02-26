@@ -1,9 +1,9 @@
 package com.teamtwo.aerolites.States;
 
-import com.teamtwo.aerolites.Entities.AI.Hexaboss;
 import com.teamtwo.aerolites.Entities.AI.PascalBoss;
+import com.teamtwo.aerolites.Entities.AI.Quadtron;
 import com.teamtwo.aerolites.Entities.AI.StandardAI;
-import com.teamtwo.aerolites.Entities.AI.*;
+import com.teamtwo.aerolites.Entities.AI.SwarmerBase;
 import com.teamtwo.aerolites.Entities.Asteroid;
 import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.*;
@@ -11,6 +11,9 @@ import com.teamtwo.aerolites.Entities.Player;
 import com.teamtwo.aerolites.Utilities.InputType;
 import com.teamtwo.aerolites.Utilities.LevelConfig;
 import com.teamtwo.engine.Input.Controllers.PlayerNumber;
+import com.teamtwo.engine.Messages.Listener;
+import com.teamtwo.engine.Messages.Message;
+import com.teamtwo.engine.Messages.Observer;
 import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.MathUtil;
@@ -19,16 +22,42 @@ import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.audio.Music;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
-import org.jsfml.window.Keyboard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import static com.teamtwo.aerolites.Entities.Entity.Type.*;
 
 /**
  * @author Matthew Threlfall
  */
-public class PlayState extends State {
+public class PlayState extends State implements Listener {
+
+    private static boolean contentLoaded = false;
+
+    private class Timers {
+        private float asteroidRate;
+        private float asteroid;
+
+        private float swarmerRate;
+        private float swarmer;
+
+        private float aiRate;
+        private float ai;
+
+        private float bossRate;
+        private float bossTimer;
+
+        private void advance(float dt) {
+            asteroid += dt;
+            swarmer += dt;
+            ai += dt;
+            bossTimer += dt;
+        }
+    }
+
+    private RectangleShape background;
 
     private World world;
     private ArrayList<Entity> entities;
@@ -37,28 +66,14 @@ public class PlayState extends State {
 
     // The configuration for the level
     private LevelConfig config;
+    private Timers timer;
+
     private boolean gameOver;
 
-    private float accumulator;
-
-    private Entity boss;
-    private Entity boss2;
-    private float bossTimer;
-    private boolean bossSpawned;
-
-    private boolean alertPlaying;
-
-    private float swarmerTimer;
-    private float aiTimer;
-    private float asteroidTimer;
-
-    private Entity.Type bossType;
-
-    private RectangleShape background;
+    // Messages
+    private HashMap<Message.Type, List<Observer>> observers;
 
     //TODO shoot bullets out of ait
-    //TODO make power ups work
-    //TODO star map
     //TODO shop and stuff
     //TODO make Tijans shit work
     //TODO tie everything together
@@ -70,26 +85,20 @@ public class PlayState extends State {
      */
     public PlayState(GameStateManager gsm, LevelConfig config) {
         super(gsm);
-        bossType = Entity.Type.Hexaboss;
 
         this.config = config;
 
         // Load content and then play the level music
         loadContent(config.textured);
         Music bgm = ContentManager.instance.getMusic("PlayMusic");
-        bgm.setVolume(100f);
+        bgm.setVolume(Options.MUSIC_VOLUME);
         bgm.play();
 
         gameOver = false;
+
         world = new World(Vector2f.ZERO);
-        World.DRAW_AABB = true;
-        World.DRAW_BODIES = true;
-        World.BODY_COLOUR = Color.RED;
 
         entities = new ArrayList<>();
-
-        bossTimer = 0;
-        bossSpawned = false;
 
         int playerCount = 0;
         while (config.players[playerCount] != null) {
@@ -108,25 +117,74 @@ public class PlayState extends State {
             }
         }
 
-        config.asteroidBaseRate /= (1.8f * playerCount);
-        config.swarmerBaseRate /= (float) playerCount;
-        config.aiBaseRate /= (float) playerCount;
+        timer = new Timers();
 
-        config.bossBaseLives *= playerCount;
-
-        accumulator = 0;
-        alertPlaying = false;
+        timer.asteroidRate = config.difficulty.asteroid;
+        timer.swarmerRate = config.difficulty.swarmer;
+        timer.aiRate = config.difficulty.ai;
+        timer.bossRate = config.difficulty.boss;
 
         background = new RectangleShape(State.WORLD_SIZE);
         background.setPosition(0, 0);
         background.setTexture(ContentManager.instance.getTexture("Space"));
+
+        observers = new HashMap<>();
     }
 
-    @Override
+    public void update(float dt) {
+
+        /*
+         *
+         * Check for Alive players
+         *  -- If no alive players push the Level Over state
+         * Check difficulty
+         *  -- Easy: Check if time has expired, if not spawn entities
+         *  -- Medium: Check if time has expired, if not spawn entities
+         *  -- Hard: Check if time has reached the boss time, if not spawn entities, otherwise spawn the boss
+         * Check the boss spawn
+         *  -- If spawned, make sure if it is still alive, if not push the Level Over state
+         *  -- If not spawned -> perform Hard Difficulty check
+         * Update all entities
+         *  -- If the entity is no longer alive, remove its RigidBody and delete it
+         *  -- If asteroid destroyed, split and spawn power ups
+         * Update bosses if they have been spawned
+         * Update the physics world
+         *
+         */
+
+        int alive = 0;
+        for(Player player : players) { if(player.isAlive()) alive++; break; }
+
+        if(alive == 0) {
+            gameOver = true;
+        }
+
+        switch (config.difficulty) {
+            case Easy:
+            case Medium:
+                if(timer.bossTimer >= timer.bossRate) {
+                    gameOver = true;
+                }
+                break;
+            case Hard:
+                if(timer.bossTimer >= timer.bossRate) {
+                    // TODO Spawn the boss
+                }
+                break;
+        }
+
+        if(gameOver) return;
+
+        // Update the physics world
+        world.update(dt);
+    }
+
+    /*@Override
     public void update(float dt) {
         world.update(dt);
-        if(!gameOver)
-            bossTimer += dt;
+
+
+
 
         int alivePlayers = 0;
         for(Player player : players) {
@@ -134,7 +192,7 @@ public class PlayState extends State {
         }
 
         if(bossTimer - 6 > config.bossSpawnTime && !bossSpawned && entities.size() == 0) {
-            switch (bossType){
+            switch (bossType) {
                 case PascalBoss:
                     boss2 = new PascalBoss(world,config.bossBaseLives / 4,false);
                     boss = new PascalBoss(world,config.bossBaseLives / 4,true);
@@ -163,12 +221,16 @@ public class PlayState extends State {
                 }
 
                 gameOver = true;
+                LevelOverMessage message = new LevelOverMessage(players, true);
+                postMessage(message);
                 gsm.setState(new LevelOver(gsm, this, true));
             }
         }
 
         if(alivePlayers == 0 && !gameOver) {
             gameOver = true;
+            LevelOverMessage message = new LevelOverMessage(players, false);
+            postMessage(message);
             gsm.setState(new LevelOver(gsm, this, false));
         }
         boolean alive = false;
@@ -176,12 +238,10 @@ public class PlayState extends State {
             alive = boss.isAlive();
             if (bossType == Entity.Type.PascalBoss) alive = alive || boss2.isAlive();
         }
+
         if(bossSpawned && alive) {
             boss.update(dt);
             switch (bossType) {
-                case Hexaboss:
-                    updateHexaboss((Hexaboss) boss);
-                    break;
                 case PascalBoss:
                     boss2.update(dt);
                     updatePascalBoss((PascalBoss) boss);
@@ -207,12 +267,6 @@ public class PlayState extends State {
             else {
                 Entity e = entities.get(i);
                 switch (e.getType()) {
-                    case Quadtron:
-                        break;
-                    case Hexaboss:
-                        break;
-                    case PascalBoss:
-                        break;
                     case Asteroid:
                         i = updateAsteroid((Asteroid) e);
                         break;
@@ -253,20 +307,7 @@ public class PlayState extends State {
 
         // Temporary -- Close game on escape
         if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)) { game.getEngine().close(); }
-    }
-
-    public int updateHexaboss(Hexaboss h) {
-        if(h.isShooting()) {
-            for(int i = 0; i < h.getBulletPoints().size(); i++) {
-                Vector2f v = h.getBulletPoints().get(i);
-                float angle = h.getBulletAngles().get(i);
-                entities.add(new Bullet(10f, v, Entity.Type.EnemyBullet, h.getBody().getTransform().getAngle()+angle, world));
-                entities.get(entities.size() - 1).setMaxSpeed(250);
-                h.setShooting(false);
-            }
-        }
-        return entities.indexOf(h);
-    }
+    }*/
 
     private void updateQuadtron(Quadtron q) {
         if(!q.isAlive())
@@ -370,7 +411,7 @@ public class PlayState extends State {
     @Override
     public void render() {
 
-        window.setTitle("FPS: " + game.getEngine().getFps());
+        window.setTitle("FPS: " + game.getEngine().getFramerate());
 
         window.draw(background);
 
@@ -395,7 +436,7 @@ public class PlayState extends State {
                 }
             }
         }
-        Text text = new Text("Time Survived " + MathUtil.round(bossTimer,2)+"s", ContentManager.instance.getFont("Ubuntu"), 28);
+        Text text = new Text("Time Survived " + MathUtil.round(timer.bossTimer, 2) + "s", ContentManager.instance.getFont("Ubuntu"), 28);
         text.setStyle(TextStyle.BOLD);
         text.setPosition(15, 25 + ((players.length) * 60));
         window.draw(text);
@@ -431,11 +472,53 @@ public class PlayState extends State {
        world.render(window);
     }
 
+
+    @Override
+    public void registerObserver(Observer observer, Message.Type type) {
+        if(observers.containsKey(type)) {
+            observers.get(type).add(observer);
+        }
+        else {
+            ArrayList<Observer> list = new ArrayList<>();
+            list.add(observer);
+            observers.put(type, list);
+        }
+    }
+
+    @Override
+    public boolean removeObserver(Observer observer, Message.Type type) {
+        if(!observers.containsKey(type)) return false;
+
+        List<Observer> list = observers.get(type);
+        if(list == null) return false;
+
+        boolean result = list.remove(observer);
+
+        if(list.isEmpty()) {
+            observers.remove(type);
+        }
+
+        return result;
+    }
+
+    @Override
+    public void postMessage(Message message) {
+        if(!observers.containsKey(message.getType())) return;
+
+        List<Observer> list = observers.get(message.getType());
+        if(list == null) return;
+
+        for(Observer observer : list) {
+            observer.receiveMessage(message);
+        }
+    }
+
     @Override
     public void dispose() {}
 
     private void loadContent(boolean textured) {
-
+        if(contentLoaded) return;
+        contentLoaded = true;
 
         // Load Textures
         if(textured) {
