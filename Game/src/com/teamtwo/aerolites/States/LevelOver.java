@@ -68,6 +68,7 @@ public class LevelOver extends State {
 
         wasShooting = previousSpace;
         for(ControllerState state : previousStates) {
+            if(state == null) continue;
             wasShooting |= state.button(Button.A);
         }
 
@@ -141,6 +142,7 @@ public class LevelOver extends State {
 
             boolean other = previousSpace;
             for(ControllerState prev : previousStates) {
+                if(prev == null) continue;
                 other |= prev.button(Button.A);
             }
 
