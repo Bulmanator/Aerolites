@@ -183,13 +183,9 @@ class Particle implements Initialisable<ParticleConfig>, Updateable, EntityRende
 
                 float colRatio = (accumulator - (colourTime * colourIndex)) / colourTime;
 
-                int r, g, b;
+                Color colour = MathUtil.lerpColour(start, end, colRatio);
 
-                r = (int) MathUtil.lerp(start.r, end.r, colRatio);
-                g = (int) MathUtil.lerp(start.g, end.g, colRatio);
-                b = (int) MathUtil.lerp(start.b, end.b, colRatio);
-
-                display.setFillColor(new Color(r, g, b, a));
+                display.setFillColor(new Color(colour, a));
             }
             else {
                 display.setFillColor(new Color(colours[0], a));

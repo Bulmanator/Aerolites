@@ -14,9 +14,7 @@ public abstract class AI extends Entity {
     /**
      *
      */
-    public AI(){
-        shooting = false;
-    }
+    public AI() { shooting = false; }
 
     /**
      * Whether or not the AI is currently isShooting

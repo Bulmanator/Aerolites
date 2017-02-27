@@ -27,7 +27,6 @@ class Controller {
     /* Controller mapping initialisation */
     static {
         if(Engine.WINDOWS) {
-            // TODO
             ps4Buttons = new int[] {
                     1, 2, 0, 3,
                     4, 10,
@@ -178,7 +177,7 @@ class Controller {
                     dpad = xboxDpad;
                     break;
                 case Unknown:
-                    this.connected = false;
+                    connected = false;
                     break;
             }
         }

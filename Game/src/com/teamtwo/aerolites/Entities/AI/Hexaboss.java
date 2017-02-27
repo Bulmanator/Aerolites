@@ -1,6 +1,8 @@
 package com.teamtwo.aerolites.Entities.AI;
 
+import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.CollisionMask;
+import com.teamtwo.aerolites.States.Options;
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
 import com.teamtwo.engine.Messages.Message;
@@ -9,105 +11,166 @@ import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.ContentManager;
+import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
+import org.jsfml.audio.Music;
+import org.jsfml.graphics.CircleShape;
 import org.jsfml.graphics.Color;
-import org.jsfml.graphics.RectangleShape;
+import org.jsfml.graphics.ConvexShape;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
+import org.jsfml.system.Vector3f;
 
 import java.util.ArrayList;
-
-import static com.teamtwo.aerolites.Entities.AI.Hexaboss.AttackPattern.Wait;
 
 
 /**
  * @author Matthew Threlfall
  */
-public class Hexaboss extends AI {
+public class Hexaboss extends AI implements Disposable {
 
-    public enum AttackPattern{
+    /**
+     * The Different attack states the Hexaboss can be in
+     */
+    private enum AttackPattern {
+        /** A sinusoidal wave pattern */
         SpinOne,
+        /** Three faces on one half */
         SpinTwo,
+        /** Three alternating faces */
         Triforce,
+        /** No turning, switching periodically between faces */
         StandOne,
+        /** Pause, don't attack */
         Wait
     }
 
+    /**
+     * A class which contains all of the attack pattern variables
+     */
+    private class Attack {
+        private float warningTime;
+        private float timeBetweenShots;
+        private float attackTime;
+        private int[] faces;
+        private float turnSpeed;
+
+        private Vector3f[] bulletPositions;
+
+        private AttackPattern pattern;
+
+        private Attack(AttackPattern pattern) {
+            this.pattern = pattern;
+
+            switch (pattern) {
+                case SpinOne:
+                    warningTime = 2f;
+                    timeBetweenShots = 0.25f;
+                    attackTime = 12f;
+                    faces = new int[] { 0, 1, 3, 4 };
+                    turnSpeed = (MathUtil.PI / 8f);
+                    break;
+                case SpinTwo:
+                    warningTime = 2f;
+                    timeBetweenShots = 0.18f;
+                    attackTime = 12f;
+                    faces = new int[] { 0, 1, 2 };
+                    turnSpeed =  (MathUtil.PI / 6f) * (MathUtil.randomInt(0, 2) == 0 ? -1f : 1f);
+                    break;
+                case StandOne:
+                    warningTime = 2f;
+                    timeBetweenShots = 0.25f;
+                    attackTime = 18f;
+                    turnSpeed = 0;
+                    faces = new int[] { 2, 3, 5, 0 };
+                    break;
+                case Triforce:
+                    warningTime = 4f;
+                    timeBetweenShots = 0.18f;
+                    attackTime = 12f;
+                    faces = new int[] { 0, 2, 4 };
+                    turnSpeed = (MathUtil.PI / 5f);
+                    break;
+                case Wait:
+                    warningTime = 0;
+                    timeBetweenShots = 0;
+                    attackTime = 1f;
+                    faces = new int[0];
+                    turnSpeed = -(MathUtil.PI / 8f) * MathUtil.randomInt(-4, 4);
+                    break;
+            }
+
+            bulletPositions = new Vector3f[faces.length * 9];
+        }
+    }
+
+    /**
+     * The vertices which make up the Hexaboss
+     */
+    private static final Vector2f[] vertices = new Vector2f[] {
+            new Vector2f(-8 * 16, -25 * 9), new Vector2f(8 * 16, -25 * 9),
+            new Vector2f(16 * 16, 0), new Vector2f(8 * 16, 25 * 9),
+            new Vector2f(-8 * 16, 25 * 9), new Vector2f(-16 * 16, 0)
+    };
+
+    private static final float timeToSpawn = 5f;
+
     private float angle;
     private float cooldown;
-    private float timeBetweenShots;
 
     private float lives;
     private float totalLives;
 
     private ParticleEmitter damage;
 
+    private Attack attack;
+    private AttackPattern prevAttack;
+
     //music stuff
     private boolean inPlace;
-    private float fadeout;
 
-    private AttackPattern pattern;
-    private float attackTime;
     private float timeRunning;
-    private boolean waitNeeded;
-    private float warningTime;
-    private float warnTimer;
-    private float waitTurnSpeed;
     private float lastHit;
-    private int lastAttack;
+    private float warnTimer;
 
-
-    private ArrayList<Vector2f> bulletPoints;
-    private ArrayList<Float> bulletAngles;
+    private ArrayList<Bullet> bullets;
 
     public Hexaboss(World world, int lives) {
 
         this.lives = lives;
         totalLives = lives;
 
-        this.onScreen = true;
-        waitNeeded = false;
+        onScreen = true;
         inPlace = false;
-        fadeout = 100;
 
         BodyConfig config = new BodyConfig();
 
         config.category = CollisionMask.HEXABOSS;
         config.mask = CollisionMask.ALL & (~CollisionMask.ENEMY_BULLET);
 
-        Vector2f[] vertices = new Vector2f[6];
-        Vector2f sizes = new Vector2f(16, 9);
-        vertices[0] = new Vector2f(-8*sizes.x, -25*sizes.y);
-        vertices[1] = new Vector2f(8*sizes.x, -25*sizes.y);
-        vertices[2] = new Vector2f(16*sizes.x, 0);
-        vertices[3] = new Vector2f(8*sizes.x, 25*sizes.y);
-        vertices[4] = new Vector2f(-8*sizes.x, 25*sizes.y);
-        vertices[5] = new Vector2f(-16*sizes.x, 0);
-
         config.shape = new Polygon(vertices);
-        config.position = new Vector2f(State.WORLD_SIZE.x/2,-250);
+        config.position = new Vector2f(State.WORLD_SIZE.x / 2, -250);
 
         body = world.createBody(config);
         body.setData(this);
         body.registerObserver(this, Message.Type.Collision);
 
-        this.offScreenAllowance = new Vector2f(250,250);
-        renderColour = Color.CYAN;
+        offScreenAllowance = new Vector2f(250, 250);
 
-        timeBetweenShots = 5f;
+        display = new ConvexShape(body.getShape().getVertices());
+        display.setFillColor(Color.CYAN);
+
         cooldown = 0;
         lastHit = 0;
 
-        warningTime = 0;
         warnTimer = 0;
-        attackTime = 0;
         timeRunning = 0;
-        pattern = AttackPattern.Wait;
 
-        bulletPoints = new ArrayList<>();
-        bulletAngles = new ArrayList<>();
-        lastAttack = 0;
+        attack = new Attack(AttackPattern.Wait);
+        prevAttack = AttackPattern.Wait;
+
+        bullets = new ArrayList<>();
 
         ParticleConfig pConfig = new ParticleConfig();
 
@@ -127,297 +190,217 @@ public class Hexaboss extends AI {
 
         pConfig.position = body.getTransform().getPosition();
 
-        damage = new ParticleEmitter(pConfig,300,600);
+        damage = new ParticleEmitter(pConfig, 300, 600);
     }
-    private void updateParticles(){
+
+    private void updateParticles() {
         damage.getConfig().position = body.getTransform().getPosition();
-        damage.getConfig().endSize = MathUtil.lerp(12,1, 1-(lives/totalLives));
-        damage.getConfig().speed = MathUtil.clamp(200*0.5f*totalLives/lives,100,300);
-        damage.getConfig().maxLifetime = MathUtil.lerp(3,1.5f,1-(lives/totalLives));
-        damage.getConfig().minLifetime = MathUtil.lerp(1.5f,0.3f,1-(lives/totalLives));
-        damage.setEmissionRate(300*(totalLives/lives)*(totalLives/lives));
-        damage.getConfig().colours[0] = new Color((int)MathUtil.lerp(0,255,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)),0);
-        damage.getConfig().colours[1] = new Color((int)MathUtil.lerp(0,255,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)));
+        float lifeRatio = 1 - (lives / totalLives);
+        float invLifeRatio = (totalLives / lives);
+
+        damage.getConfig().endSize = MathUtil.lerp(12, 1, lifeRatio);
+        damage.getConfig().speed = MathUtil.clamp(100f * invLifeRatio, 100, 300);
+        damage.getConfig().maxLifetime = MathUtil.lerp(3, 1.5f, lifeRatio);
+        damage.getConfig().minLifetime = MathUtil.lerp(1.5f, 0.3f, lifeRatio);
+        damage.setEmissionRate(300 * invLifeRatio * invLifeRatio);
+
+        damage.getConfig().colours[0] = MathUtil.lerpColour(Color.GREEN, Color.RED, lifeRatio);
+        damage.getConfig().colours[1] = MathUtil.lerpColour(Color.CYAN, Color.RED, lifeRatio);
     }
 
     @Override
-    public void update(float dt){
+    public void update(float dt) {
         cooldown += dt;
-        lastHit+=dt;
+        lastHit += dt;
+
         damage.update(dt);
         updateParticles();
-        if(lastHit > 0.03f) renderColour = new Color((int)MathUtil.lerp(0,255,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)));
-        if(lives < 0){
+
+        if(lastHit > 0.03f) {
+            display.setFillColor(MathUtil.lerpColour(Color.CYAN, Color.RED, 1 - (lives / totalLives)));
+        }
+
+        if(lives < 0) {
             onScreen = false;
             alive = false;
         }
-        if(body.getTransform().getPosition().y>State.WORLD_SIZE.y/2){
-            if(!inPlace)
-            {
+
+        if(body.getTransform().getPosition().y >= State.WORLD_SIZE.y / 2f) {
+            if(!inPlace) {
                 inPlace = true;
-                ContentManager.instance.getMusic("Hexagon").play();
-                ContentManager.instance.getMusic("Hexagon").setVolume(60f);
-                ContentManager.instance.getMusic("Hexagon").setLoop(true);
+                Music hexagon = ContentManager.instance.getMusic("Hexagon");
+                hexagon.play();
+                hexagon.setVolume(Options.MUSIC_VOLUME * 100f);
+                hexagon.setLoop(true);
                 ContentManager.instance.getMusic("PlayMusic").stop();
             }
-            body.setVelocity(new Vector2f(0,0));
-            body.setTransform(new Vector2f(State.WORLD_SIZE.x/2, State.WORLD_SIZE.y/2),angle);
+
+            body.setVelocity(Vector2f.ZERO);
+            body.setTransform(new Vector2f(State.WORLD_SIZE.x / 2f, State.WORLD_SIZE.y / 2f), angle);
+
             pickPattern(dt);
             attack(dt);
         }
         else {
             body.applyForce(new Vector2f(0, 5000000));
-            ContentManager.instance.getMusic("PlayMusic").setVolume(fadeout);
-            fadeout -= 35f*dt;
+            float fadeout = MathUtil.lerp(Options.MUSIC_VOLUME, 0, (cooldown / timeToSpawn));
+            ContentManager.instance.getMusic("PlayMusic").setVolume(100f * fadeout);
         }
-    }
 
-    public void pickPattern(float dt){
-        timeRunning += dt;
-        if(timeRunning > attackTime+warningTime)
-        {
-            timeRunning = 0;
-            if(waitNeeded){
-                pattern = Wait;
-                waitNeeded = false;
-                waitTurnSpeed = (MathUtil.PI/8)*dt*MathUtil.randomInt(-4,4);
-                attackTime = 0.2f;
+        if(shooting) {
+            float bodyAngle = body.getTransform().getAngle();
+            for(Vector3f state : attack.bulletPositions) {
+                Bullet bullet = new Bullet(10f, MathUtil.toVector2f(state), Type.EnemyBullet,
+                        bodyAngle + state.z, body.getWorld());
+
+                bullet.setMaxSpeed(250);
+                bullets.add(bullet);
+            }
+            shooting = false;
+        }
+
+        for(int i = 0; i < bullets.size(); i++) {
+            Bullet bullet = bullets.get(i);
+            if(bullet.isOnScreen()) {
+                bullet.update(dt);
             }
             else {
-                waitNeeded = true;
-                attackTime = 2;
-                int option = MathUtil.randomInt(0, 4);
-                while(option == lastAttack)
-                    option = MathUtil.randomInt(0, 4);
-                lastAttack = option;
-                switch (option) {
-                    case 0:
-                        warnTimer = 0;
-                        warningTime = 1;
-                        timeBetweenShots = 0.18f;
-                        attackTime = 6;
-                        pattern = AttackPattern.SpinTwo;
-                        break;
-                    case 1:
-                        warnTimer = 0;
-                        warningTime = 1;
-                        timeBetweenShots = 0.25f;
-                        attackTime = 6;
-                        pattern = AttackPattern.SpinOne;
-                        break;
-                    case 2:
-                        warnTimer = 0;
-                        warningTime = 2;
-                        timeBetweenShots = 0.18f;
-                        attackTime = 6;
-                        pattern = AttackPattern.Triforce;
-                        break;
-                    case 3:
-                        warnTimer = 0;
-                        warningTime = 0.6f;
-                        timeBetweenShots = 0.25f;
-                        attackTime = 9;
-                        pattern = AttackPattern.StandOne;
-                        break;
-
+                if(!bullets.remove(bullet)) {
+                    throw new Error("Error: Failed to remove bullet");
                 }
+
+                body.getWorld().removeBody(bullet.getBody());
+
+                i--;
             }
         }
     }
 
-    public void attack(float dt){
-        switch (pattern) {
-            case SpinOne:
-                warnTimer+=dt;
+    private void pickPattern(float dt) {
+        timeRunning += dt;
 
-                bulletPoints.clear();
-                bulletAngles.clear();
-                addFirePoints(0);
-                addFirePoints(1);
-                addFirePoints(3);
-                addFirePoints(4);
+        if(timeRunning > attack.attackTime + attack.warningTime) {
 
-                if(cooldown>timeBetweenShots && warningTime < warnTimer){
-                    shooting = true;
-                    cooldown = 0;
-                }
-                angle += (MathUtil.PI/2)*dt*MathUtil.sin(timeRunning*5);
-                break;
-            case SpinTwo:
+            timeRunning = 0;
 
-                warnTimer+=dt;
-
-                bulletPoints.clear();
-                bulletAngles.clear();
-                addFirePoints(0);
-                addFirePoints(1);
-                addFirePoints(2);
-
-
-                if(cooldown>timeBetweenShots && warningTime < warnTimer){
-                    shooting = true;
-                    cooldown = 0;
-                }
-                angle -= (MathUtil.PI/3)*dt;
-                break;
-            case Triforce:
-                warnTimer += dt;
-
-                bulletPoints.clear();
-                bulletAngles.clear();
-                addFirePoints(0);
-                addFirePoints(2);
-                addFirePoints(4);
-
-
-                if(cooldown>timeBetweenShots && warningTime < warnTimer){
-                    shooting = true;
-                    cooldown = 0;
-                }
-                angle -= (MathUtil.PI/2.5f)*dt;
-                break;
-            case StandOne:
-                body.setAngularVelocity(0);
-                if(timeRunning>6){
-                    bulletPoints.clear();
-                    bulletAngles.clear();
-                    addFirePoints(0);
-                    addFirePoints(1);
-                    addFirePoints(3);
-                    addFirePoints(4);
-                    warningTime = 3;
-
-                }
-                else if(timeRunning > 3) {
-                    bulletPoints.clear();
-                    bulletAngles.clear();
-                    addFirePoints(1);
-                    addFirePoints(2);
-                    addFirePoints(4);
-                    addFirePoints(5);
-                    warningTime = 2;
-
-                }
-                else if(timeRunning < 3){
-                    bulletPoints.clear();
-                    bulletAngles.clear();
-                    addFirePoints(2);
-                    addFirePoints(3);
-                    addFirePoints(5);
-                    addFirePoints(0);
-                    warningTime = 1;
-                }
-                if(warningTime > warnTimer)
-                    warnTimer+=dt;
-                else if(cooldown>timeBetweenShots){
-                    shooting = true;
-                    cooldown = 0;
+            if(attack.pattern != AttackPattern.Wait) {
+                prevAttack = attack.pattern;
+                float warn = attack.warningTime;
+                attack = new Attack(AttackPattern.Wait);
+                attack.warningTime = warn;
+            }
+            else {
+                warnTimer = 0;
+                int pattern = MathUtil.randomInt(0, 4);
+                while (pattern == prevAttack.ordinal()) {
+                    pattern = MathUtil.randomInt(0, 4);
                 }
 
-                break;
-            case Wait:
-                angle -= waitTurnSpeed;
-                break;
+                attack = new Attack(AttackPattern.values()[pattern]);
+            }
+        }
+        else if(attack.pattern == AttackPattern.StandOne) {
+            if(timeRunning > 12f) {
+                attack.faces = new int[] { 0, 1, 3, 4 };
+                attack.warningTime = 6f;
+            }
+            else if(timeRunning > 6f) {
+               attack.faces = new int[] { 1, 2, 4, 5 };
+               attack.warningTime = 4f;
+            }
+        }
+    }
+
+    private void attack(float dt) {
+
+        if(attack.pattern != AttackPattern.StandOne) warnTimer += dt;
+
+        for (int i = 0; i < attack.faces.length; i++) {
+
+            int face = attack.faces[i];
+
+            Vector2f pointOne = body.getShape().getTransformed()[(face + 1) % 6];
+            Vector2f pointTwo = body.getShape().getTransformed()[face];
+
+            Vector2f dir = MathUtil.normalise(Vector2f.sub(pointTwo, pointOne));
+            Vector2f nor = new Vector2f(-dir.y, dir.x);
+
+            float faceAngle = face * 60f * MathUtil.DEG_TO_RAD;
+            pointOne = Vector2f.add(pointOne, Vector2f.mul(dir, 2f));
+
+            for(int j = 0; j < 9; j++) {
+                Vector2f pos = Vector2f.add(pointOne, Vector2f.mul(dir, 31 * j));
+                pos = Vector2f.add(pos, Vector2f.mul(nor, 20));
+
+                attack.bulletPositions[(i * 9) + j] = new Vector3f(pos.x, pos.y, faceAngle);
+            }
+        }
+
+        if(attack.pattern == AttackPattern.StandOne && attack.warningTime > warnTimer) {
+            warnTimer += dt;
+        }
+        else if(cooldown > attack.timeBetweenShots && attack.warningTime < warnTimer) {
+            shooting = true;
+            cooldown = 0;
+        }
+
+        if(attack.pattern == AttackPattern.SpinOne) {
+            angle += attack.turnSpeed * dt * MathUtil.sin(timeRunning * 5f) * 2;
+        }
+        else {
+            angle += attack.turnSpeed * dt;
         }
     }
 
     @Override
-    public Type getType() {
-        return Type.Hexaboss;
-    }
+    public Type getType() { return Type.Hexaboss; }
 
     @Override
     public void receiveMessage(Message message) {
         if (message.getType() == Message.Type.Collision) {
             CollisionMessage cm = (CollisionMessage) message;
-            boolean hit = cm.getBodyA().getData().getType() == Type.Bullet || cm.getBodyB().getData().getType() == Type.Bullet;
+            boolean hit = cm.getBodyA().getData().getType() == Type.Bullet
+                    || cm.getBodyB().getData().getType() == Type.Bullet;
+
             if(hit) {
                 lives--;
-                renderColour = Color.WHITE;
+                display.setFillColor(Color.WHITE);
                 lastHit = 0;
             }
         }
     }
-    private void addFirePoints(int face) {
-        Vector2f pointOne;
-        Vector2f pointTwo;
-        switch (face) {
-            case 5:
-                pointOne = getBody().getShape().getTransformed()[0];
-                pointTwo = getBody().getShape().getTransformed()[5];
-                break;
-            default:
-                pointOne = getBody().getShape().getTransformed()[face];
-                pointTwo = getBody().getShape().getTransformed()[face + 1];
-                break;
-        }
 
-        float xAdd = 40 * MathUtil.sin(angle + (face) * 60 * MathUtil.DEG_TO_RAD);
-        float yAdd = -40 * MathUtil.cos(angle + (face) * 60 * MathUtil.DEG_TO_RAD);
-
-        pointOne = new Vector2f(pointOne.x+xAdd, pointOne.y+yAdd);
-        pointTwo = new Vector2f(pointTwo.x+xAdd, pointTwo.y+yAdd);
-        bulletPoints.add(pointOne);
-        bulletPoints.add(pointTwo);
-
-        Vector2f mid = MathUtil.midPoint(pointOne, pointTwo);
-        bulletPoints.add(mid);
-
-        Vector2f mid2_1 = MathUtil.midPoint(mid, pointTwo);
-        bulletPoints.add(mid2_1);
-
-        Vector2f mid2_2 = MathUtil.midPoint(mid, pointOne);
-        bulletPoints.add(mid2_2);
-
-        Vector2f mid3_1 = MathUtil.midPoint(mid2_1, pointTwo);
-        bulletPoints.add(mid3_1);
-
-        Vector2f mid3_2 = MathUtil.midPoint(mid, mid2_1);
-        bulletPoints.add(mid3_2);
-
-        Vector2f mid3_3 = MathUtil.midPoint(mid, mid2_2);
-        bulletPoints.add(mid3_3);
-
-        Vector2f mid3_4 = MathUtil.midPoint(mid2_2, pointOne);
-        bulletPoints.add(mid3_4);
-        for(int i = 0; i < 9; i++)
-            bulletAngles.add((face)*60*MathUtil.DEG_TO_RAD);
-
-    }
     @Override
-    public void render(RenderWindow window){
-        damage.render(window);
-        super.render(window);
-        if(warningTime>warnTimer)
-        {
-            RectangleShape warning;
-            for(Vector2f v: bulletPoints) {
-                warning = new RectangleShape();
-                warning.setFillColor(new Color(255,0,0));
-                warning.setSize(new Vector2f(4,4));
-                warning.setPosition(v);
-                window.draw(warning);
+    public void render(RenderWindow renderer) {
+        damage.render(renderer);
+
+        super.render(renderer);
+
+        if(attack.warningTime > warnTimer) {
+            CircleShape warning;
+            for(Vector3f position : attack.bulletPositions) {
+                warning = new CircleShape(4f);
+                warning.setFillColor(Color.RED);
+                warning.setPosition(MathUtil.toVector2f(position));
+                renderer.draw(warning);
             }
         }
+
+        for(Bullet bullet : bullets) {
+            bullet.render(renderer);
+        }
     }
 
+    @Override
+    public void dispose() {
+        for(Bullet bullet : bullets) {
+            body.getWorld().removeBody(bullet.getBody());
+        }
 
-    public ArrayList<Vector2f> getBulletPoints() {
-        return bulletPoints;
+        bullets.clear();
     }
 
-    public ArrayList<Float> getBulletAngles() {
-        return bulletAngles;
-    }
-
-    public void setShooting(boolean shooting){
-        this.shooting = shooting;
-    }
-
-    public void setLives(int players){
-        lives = 360*players;
-        totalLives = 360*players;
-    }
+    public void setShooting(boolean shooting) { this.shooting = shooting; }
 
     public boolean isAlive() { return alive; }
 }

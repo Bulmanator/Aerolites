@@ -7,9 +7,8 @@ import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.Color;
-import org.jsfml.graphics.RenderWindow;
+import org.jsfml.graphics.ConvexShape;
 import org.jsfml.system.Vector2f;
-import org.jsfml.system.Vector2i;
 
 /**
  * @author Matthew Threlfall
@@ -28,70 +27,70 @@ public class Bullet extends Entity {
     // The owner of the bullet
     private Type owner;
 
-    private boolean hit;
+    // Whether the bullet has hit an asteroid
     private boolean asteroid;
+    // Whether the bullet has hit an enemy
     private boolean enemy;
 
-    public Bullet(float lifeTime, Vector2f position,Type owner, float angle, World world) {
-
+    public Bullet(float lifeTime, Vector2f position, Type owner, float angle, World world) {
+        this.owner = owner;
         totalLifeTime = lifeTime;
         this.lifeTime = 0;
 
-        hit = false;
         asteroid = false;
         enemy = false;
 
         BodyConfig config = new BodyConfig();
 
-        this.offScreenAllowance = new Vector2f(Vector2i.ZERO);
-
         config.shape = new Polygon(vertices);
 
-        this.owner = owner;
+        config.density = 0.001f;
+
+        Color colour = Color.WHITE;
         switch (owner) {
             case Bullet:
-                this.renderColour = Color.YELLOW;
+                colour = Color.YELLOW;
                 config.category = CollisionMask.BULLET;
                 config.mask = CollisionMask.AI;
                 break;
             case EnemyBullet:
-                this.renderColour = Color.RED;
+                colour = Color.RED;
                 config.category = CollisionMask.ENEMY_BULLET;
                 config.mask = CollisionMask.PLAYER;
                 break;
         }
 
-        config.mask |= CollisionMask.ASTEROID;
+        config.mask |= (CollisionMask.ASTEROID | CollisionMask.PASCALBOSS | CollisionMask.QUADTRON);
 
-        this.body = world.createBody(config);
+        body = world.createBody(config);
 
-        this.body.setVelocity(new Vector2f(0, -350));
-        this.setMaxSpeed(350);
-        this.body.rotateVelocity(angle);
-        this.body.setTransform(position,angle);
+        body.setVelocity(new Vector2f(0, -350));
+        body.rotateVelocity(angle);
+        body.setTransform(position,angle);
 
         body.setData(this);
 
         body.registerObserver(this, Message.Type.Collision);
 
+        display = new ConvexShape(body.getShape().getVertices());
+        display.setFillColor(colour);
+
+
+
+        maxSpeed = 350f;
         onScreen = true;
         alive = true;
     }
 
     @Override
-    public void render(RenderWindow window){
-        super.render(window);
-    }
-
-
-    @Override
-    public void update(float dt){
+    public void update(float dt) {
         super.update(dt);
         lifeTime += dt;
         if(lifeTime > totalLifeTime) {
             onScreen = false;
             alive = false;
         }
+        limitSpeed();
     }
 
     @Override
@@ -108,8 +107,8 @@ public class Bullet extends Entity {
                 if(typeA == Type.StandardAI || typeB == Type.StandardAI) {
                     alive = true;
                 }
-                else
-                {
+                else {
+                    alive = false;
                     onScreen = false;
                 }
             }
@@ -119,9 +118,30 @@ public class Bullet extends Entity {
                 enemy = typeA == Type.StandardAI || typeB == Type.StandardAI;
                 enemy |= typeA == Type.Swamer || typeB == Type.Swamer;
                 enemy |= typeA == Type.SwamerBase || typeB == Type.SwamerBase;
-
-                hit = asteroid || enemy;
+                enemy |= typeA == Type.Hexaboss || typeB == Type.Hexaboss;
+                enemy |= typeA == Type.PascalBoss || typeB == Type.PascalBoss;
+                enemy |= typeA == Type.Quadtron || typeB == Type.Quadtron;
             }
+        }
+    }
+
+
+
+    @Override
+    protected void checkOffScreen() {
+        switch (owner) {
+            case Bullet:
+                super.checkOffScreen();
+                break;
+            case EnemyBullet:
+                if(this.onScreen) {
+                    Vector2f pos = body.getTransform().getPosition();
+
+                    onScreen = pos.x < -offScreenAllowance.x || pos.x > State.WORLD_SIZE.x + offScreenAllowance.x;
+                    onScreen |= pos.y < -offScreenAllowance.y || pos.y > State.WORLD_SIZE.y + offScreenAllowance.y;
+                    onScreen = !onScreen;
+                }
+                break;
         }
     }
 
@@ -129,27 +149,7 @@ public class Bullet extends Entity {
 
     public boolean isAlive() { return alive; }
 
-    public boolean hasHit() { return hit; }
-
-    @Override
-    protected void checkOffScreen() {
-        switch (getType()){
-            case Bullet:
-                super.checkOffScreen();
-                break;
-            case EnemyBullet:
-                if(this.onScreen) {
-                    if (body.getTransform().getPosition().x < -offScreenAllowance.x || body.getTransform().getPosition().x > State.WORLD_SIZE.x + offScreenAllowance.x) {
-                        this.onScreen = false;
-                    }
-                    else {
-                        this.onScreen = !(body.getTransform().getPosition().y < -offScreenAllowance.y
-                                || body.getTransform().getPosition().y > State.WORLD_SIZE.y + offScreenAllowance.y);
-                    }
-                }
-                break;
-        }
-    }
+    public boolean hasHit() { return enemy || asteroid; }
 
     public boolean hitAsteroid() {
         return asteroid;

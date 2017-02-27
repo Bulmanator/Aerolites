@@ -114,7 +114,7 @@ public class ContentManager {
         // Makes sure a duplicate name has not been user
         // Stops loading if it has
         if(textures.containsKey(name)) {
-            Debug.log(Debug.LogLevel.WARNING, "A Texture of name \"" + name + "\" has already been loaded");
+            Debug.log(Debug.LogLevel.WARNING, "A Texture with the name \"" + name + "\" has already been loaded");
             return textures.get(name);
         }
 
@@ -146,7 +146,7 @@ public class ContentManager {
         // Makes sure a duplicate name has not been used
         // Stops loading if it has
         if(fonts.containsKey(name)) {
-            Debug.log(Debug.LogLevel.WARNING, "A Font of name \"" + name + "\" has already been loaded");
+            Debug.log(Debug.LogLevel.WARNING, "A Font with the name \"" + name + "\" has already been loaded");
             return fonts.get(name);
         }
 
@@ -178,7 +178,7 @@ public class ContentManager {
         // Makes sure a duplicate name has not been used
         // Stops loading if it has
         if(sounds.containsKey(name)) {
-            Debug.log(Debug.LogLevel.WARNING, "A Sound of name \"" + name + "\" has already been loaded");
+            Debug.log(Debug.LogLevel.WARNING, "A Sound with the name \"" + name + "\" has already been loaded");
             return sounds.get(name);
         }
 
@@ -214,7 +214,7 @@ public class ContentManager {
         // Makes sure a duplicate name has not been used
         // Stops loading if it has
         if(music.containsKey(name)) {
-            Debug.log(Debug.LogLevel.WARNING, "Music of the name \"" + name + "\" has already been loaded");
+            Debug.log(Debug.LogLevel.WARNING, "Music with the name \"" + name + "\" has already been loaded");
             return music.get(name);
         }
 
@@ -235,5 +235,57 @@ public class ContentManager {
         // If it succeeds then put it into the hash map
         music.put(name, m);
         return m;
+    }
+
+    /**
+     * Unloads the texture associated with the given name
+     * @param name The name of the texture to unload
+     */
+    public void unloadTexture(String name) {
+        if(!textures.containsKey(name)) {
+            Debug.log(Debug.LogLevel.WARNING, "A Texture with the name \"" + name + "\" was not loaded");
+            return;
+        }
+
+        textures.remove(name);
+    }
+
+    /**
+     * Unloads the font associated with the given name
+     * @param name The name of the font to unload
+     */
+    public void unloadFont(String name) {
+        if(!fonts.containsKey(name)) {
+            Debug.log(Debug.LogLevel.WARNING, "A Font with the name \"" + name + "\" was not loaded");
+            return;
+        }
+
+        fonts.remove(name);
+    }
+
+    /**
+     * Unloads the sound associated with the given name
+     * @param name The name of the sound to unload
+     */
+    public void unloadSound(String name) {
+        if(!sounds.containsKey(name)) {
+            Debug.log(Debug.LogLevel.WARNING, "A Sound with the name \"" + name + "\" was not loaded");
+            return;
+        }
+
+        sounds.remove(name);
+    }
+
+    /**
+     * Unloads the piece of music associated with the given name
+     * @param name The name of the music to unload
+     */
+    public void unloadMusic(String name) {
+        if(!music.containsKey(name)) {
+            Debug.log(Debug.LogLevel.WARNING, "Music with the name \"" + name + "\" was not loaded");
+            return;
+        }
+
+        music.remove(name);
     }
 }

@@ -15,6 +15,8 @@ public class CollisionMask {
     public static final int HEXABOSS = 0x80;
     public static final int PASCALBOSS = 0x100;
     public static final int POWERUP = 0x200;
-    public static final int AI = STANDARD_AI | SWARMER | SWARMER_BASE | HEXABOSS | PASCALBOSS;
+    public static final int QUADTRON = 0x400;
+    public static final int SHEILD = 0x800;
+    public static final int AI = STANDARD_AI | SWARMER | SWARMER_BASE | HEXABOSS | PASCALBOSS | QUADTRON | SHEILD;
     public static final int ALL = PLAYER | ASTEROID | AI | BULLET | ENEMY_BULLET | POWERUP;
 }

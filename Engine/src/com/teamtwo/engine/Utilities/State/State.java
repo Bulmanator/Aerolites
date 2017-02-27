@@ -48,7 +48,7 @@ public abstract class State implements Renderable, Updateable, Disposable {
 
         // Creates a new View and applies it
         view = new View(new Vector2f(0, 0), WORLD_SIZE);
-        view.move(1920/2, 1080/2);
+        view.move(WORLD_SIZE.x/2, WORLD_SIZE.y/2);
 
 
         // Initialises the Vector to 0, 0
