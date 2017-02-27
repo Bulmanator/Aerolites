@@ -83,7 +83,7 @@ public class Player extends Entity implements Disposable {
 
         if(this.controllerNumber == null) controller = false;
 
-        lives = 2;
+        lives = 19;
         alive = true;
 
         immuneTime = 0;
@@ -138,34 +138,51 @@ public class Player extends Entity implements Disposable {
     }
 
     private void setColours() {
+        // These can be tweaked but they'll do for now
+
         switch (player) {
             case One:
                 defaultColour = new Color(61, 64, 255);
-                jet.getConfig().colours[0] = new Color(255,255,0);
-                jet.getConfig().colours[1] = new Color(255,0,0);
+                jet.getConfig().colours[0] = new Color(62, 162, 255);
+                jet.getConfig().colours[1] = new Color(155, 61, 255);
                 break;
             case Two:
                 defaultColour = new Color(255, 228, 94);
+                jet.getConfig().colours[0] = new Color(255, 148, 94);
+                jet.getConfig().colours[1] = new Color(201, 255, 94);
                 break;
             case Three:
                 defaultColour = new Color(123, 255, 94);
+                jet.getConfig().colours[0] = new Color(204, 255, 94);
+                jet.getConfig().colours[1] = new Color(94, 255, 145);
                 break;
             case Four:
                 defaultColour = new Color(124, 255, 189);
+                jet.getConfig().colours[0] = new Color(124, 255, 124);
+                jet.getConfig().colours[1] = new Color(124, 255, 255);
                 break;
             case Five:
                 defaultColour = new Color(124, 235, 255);
+                jet.getConfig().colours[0] = new Color(124, 255, 209);
+                jet.getConfig().colours[1] = new Color(124, 170, 255);
                 break;
             case Six:
                 defaultColour = new Color(244, 75, 66);
+                jet.getConfig().colours[0] = new Color(244, 66, 146);
+                jet.getConfig().colours[1] = new Color(244, 164, 66);
                 break;
             case Seven:
                 defaultColour = new Color(204, 86, 255);
+                jet.getConfig().colours[0] = new Color(120, 86, 255);
+                jet.getConfig().colours[1] = new Color(255, 86, 221);
                 break;
             case Eight:
                 defaultColour = new Color(255, 107, 210);
+                jet.getConfig().colours[0] = new Color(225, 107, 255);
+                jet.getConfig().colours[1] = new Color(255, 107, 137);
                 break;
         }
+        jet.getConfig().colours[2] = defaultColour;
     }
 
     /**

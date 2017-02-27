@@ -1,5 +1,6 @@
 package com.teamtwo.aerolites.Entities.AI;
 
+import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.CollisionMask;
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
@@ -9,17 +10,19 @@ import com.teamtwo.engine.Physics.BodyConfig;
 import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.ContentManager;
+import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
+import org.jsfml.system.Vector3f;
 
 import java.util.ArrayList;
 
 /**
  * @author Matthew Threlfall
  */
-public class PascalBoss extends AI {
+public class PascalBoss extends AI implements Disposable {
 
     private static final Vector2f[] vertices = new Vector2f[] {
             Vector2f.ZERO, new Vector2f(250, 0), new Vector2f(125, 217)
@@ -44,8 +47,8 @@ public class PascalBoss extends AI {
 
     private ParticleEmitter damage;
 
-    private ArrayList<Vector2f> bulletPoints;
-    private ArrayList<Float> bulletAngles;
+    private Vector3f[] bulletPositions;
+    private ArrayList<Bullet> bullets;
 
     public PascalBoss(World world, int lives, boolean second) {
 
@@ -56,9 +59,11 @@ public class PascalBoss extends AI {
         totalLives = lives;
         onScreen = true;
         inPlace = false;
-        offScreenAllowance = new Vector2f(170,170);
+        offScreenAllowance = new Vector2f(170, 170);
 
-        BodyConfig config = new BodyConfig();
+        bulletPositions = new Vector3f[5];
+        bullets = new ArrayList<>();
+
         ParticleConfig pConfig = new ParticleConfig();
 
         pConfig.minAngle = 0;
@@ -73,9 +78,8 @@ public class PascalBoss extends AI {
         pConfig.maxLifetime = 3;
 
         Color colour;
+        BodyConfig config = new BodyConfig();
         if(second) {
-            config.position = new Vector2f(State.WORLD_SIZE.x/2 - 80, -150);
-            pConfig.position = config.position;
             colour = new Color(255, 153, 0);
             pConfig.colours[0] = colour;
             defaultColor = colour;
@@ -83,8 +87,6 @@ public class PascalBoss extends AI {
             angle = 0;
         }
         else {
-            config.position = new Vector2f(State.WORLD_SIZE.x/2 + 80, -150);
-            pConfig.position = config.position;
             colour = new Color(36, 25, 178);
             pConfig.colours[0] = colour;
             direction = 1;
@@ -92,7 +94,10 @@ public class PascalBoss extends AI {
             angle = 180 * MathUtil.DEG_TO_RAD;
         }
 
-        damage = new ParticleEmitter(pConfig,150,200);
+        config.position = new Vector2f(State.WORLD_SIZE.x / 2 + 80, -150);
+        pConfig.position = config.position;
+
+        damage = new ParticleEmitter(pConfig, 150, 200);
 
         position = new Vector2f(config.position.x, State.WORLD_SIZE.y / 2);
 
@@ -113,9 +118,9 @@ public class PascalBoss extends AI {
         display.setOutlineColor(colour);
         display.setFillColor(colour);
 
-        bulletPoints = new ArrayList<>();
-        bulletAngles = new ArrayList<>();
         fireFace = MathUtil.randomInt(0, 3);
+        addFirePoints(fireFace);
+
         shootCoolDown = 3f;
         shootTimer = 0;
         lastHit = 2;
@@ -147,6 +152,35 @@ public class PascalBoss extends AI {
             body.setTransform(new Vector2f(position.x, position.y), angle);
             move(dt);
             attack(dt);
+
+            if(shooting) {
+                float bodyAngle = body.getTransform().getAngle();
+                for(Vector3f state : bulletPositions) {
+                    Bullet bullet = new Bullet(10f, MathUtil.toVector2f(state),
+                            Type.EnemyBullet, bodyAngle + state.z, body.getWorld());
+
+                    bullet.setMaxSpeed(250);
+                    bullets.add(bullet);
+                }
+
+                shooting = false;
+            }
+
+            for(int i = 0; i < bullets.size(); i++) {
+                Bullet bullet = bullets.get(i);
+
+                if(bullet.isOnScreen()) {
+                    bullet.update(dt);
+                }
+                else {
+                    if(!bullets.remove(bullet)) {
+                        throw new Error("Error: Failed to remove bullet");
+                    }
+
+                    body.getWorld().removeBody(bullet.getBody());
+                    i--;
+                }
+            }
         }
         else if(body.getTransform().getPosition().y < State.WORLD_SIZE.y / 2){
             body.applyForce(new Vector2f(0, 10000000));
@@ -179,29 +213,30 @@ public class PascalBoss extends AI {
         }
     }
 
-    private void move(float dt){
+    private void move(float dt) {
         float turnSpeed = 30 * MathUtil.DEG_TO_RAD * dt;
-        float x = State.WORLD_SIZE.x / 2f + (position.x - State.WORLD_SIZE.x / 2f) * MathUtil.cos(turnSpeed)
-                - (position.y - State.WORLD_SIZE.y / 2f) * MathUtil.sin(turnSpeed);
+        float cos = MathUtil.cos(turnSpeed);
+        float sin = MathUtil.sin(turnSpeed);
 
-        float y = State.WORLD_SIZE.y / 2f + (position.x - State.WORLD_SIZE.x / 2f) * MathUtil.sin(turnSpeed)
-                + (position.y - State.WORLD_SIZE.y / 2f) * MathUtil.cos(turnSpeed);
+        float x = State.WORLD_SIZE.x / 2f + (position.x - State.WORLD_SIZE.x / 2f) * cos
+                - (position.y - State.WORLD_SIZE.y / 2f) * sin;
+
+        float y = State.WORLD_SIZE.y / 2f + (position.x - State.WORLD_SIZE.x / 2f) * sin
+                + (position.y - State.WORLD_SIZE.y / 2f) * cos;
 
         position = new Vector2f(x, y);
         body.setVelocity(Vector2f.ZERO);
         angle += direction * 30 * dt * MathUtil.DEG_TO_RAD;
     }
 
-    private void attack(float dt){
+    private void attack(float dt) {
         shootTimer += dt;
-        bulletAngles.clear();
-        bulletPoints.clear();
         addFirePoints(fireFace);
-        if(shootTimer>shootCoolDown) {
+        if(shootTimer > shootCoolDown) {
             shooting = true;
             if(shootCoolDown == 3)
                 shootCoolDown = 0.1f;
-            else if(barrage < 3){
+            else if(barrage < 3) {
                 barrage++;
             }
             else {
@@ -220,8 +255,10 @@ public class PascalBoss extends AI {
     public void receiveMessage(Message message) {
         if (message.getType() == Message.Type.Collision) {
             CollisionMessage cm = (CollisionMessage) message;
-            boolean damange = cm.getBodyA().getData().getType() == Type.Bullet || cm.getBodyB().getData().getType() == Type.Bullet;
-            if(damange) {
+            boolean damage = cm.getBodyA().getData().getType() == Type.Bullet
+                    || cm.getBodyB().getData().getType() == Type.Bullet;
+
+            if(damage) {
                 lives--;
                 display.setOutlineColor(Color.WHITE);
                 lastHit = 0;
@@ -235,10 +272,10 @@ public class PascalBoss extends AI {
 
         if(shootCoolDown > shootTimer) {
             CircleShape mark;
-            for(Vector2f v : bulletPoints) {
+            for(Vector3f state : bulletPositions) {
                 mark = new CircleShape(4f);
                 mark.setFillColor(Color.RED);
-                mark.setPosition(v);
+                mark.setPosition(MathUtil.toVector2f(state));
                 renderer.draw(mark);
             }
         }
@@ -255,41 +292,31 @@ public class PascalBoss extends AI {
 
         display.setFillColor(fill);
         super.render(renderer);
+
+        for(Bullet bullet : bullets) {
+            bullet.render(renderer);
+        }
     }
 
     private void addFirePoints(int face) {
-        Vector2f pointOne;
-        Vector2f pointTwo;
-        switch (face) {
-            case 2:
-                pointOne = getBody().getShape().getTransformed()[0];
-                pointTwo = getBody().getShape().getTransformed()[2];
-                break;
-            default:
-                pointOne = getBody().getShape().getTransformed()[face];
-                pointTwo = getBody().getShape().getTransformed()[face + 1];
-                break;
+
+
+        Vector2f pointOne = body.getShape().getTransformed()[face];
+        Vector2f pointTwo = body.getShape().getTransformed()[(face + 1) % 3];
+
+        Vector2f dir = MathUtil.normalise(Vector2f.sub(pointTwo, pointOne));
+        Vector2f nor = new Vector2f(dir.y, -dir.x);
+
+        pointOne = Vector2f.add(pointOne, Vector2f.mul(dir, 2f));
+
+        float faceAngle = (face * 120 * MathUtil.DEG_TO_RAD);
+        for(int i = 0; i < 5; i++) {
+            Vector2f pos = Vector2f.add(pointOne, Vector2f.mul(dir, 60 * i));
+            pos = Vector2f.add(pos, Vector2f.mul(nor, 25f));
+
+            bulletPositions[i] = new Vector3f(pos.x, pos.y, faceAngle);
         }
 
-        float xAdd = 40 * MathUtil.sin(angle + (face) * 120 * MathUtil.DEG_TO_RAD);
-        float yAdd = -40 * MathUtil.cos(angle + (face) * 120 * MathUtil.DEG_TO_RAD);
-
-        pointOne = new Vector2f(pointOne.x+xAdd, pointOne.y+yAdd);
-        pointTwo = new Vector2f(pointTwo.x+xAdd, pointTwo.y+yAdd);
-        bulletPoints.add(pointOne);
-        bulletPoints.add(pointTwo);
-
-        Vector2f mid = MathUtil.midPoint(pointOne, pointTwo);
-        bulletPoints.add(mid);
-
-        Vector2f mid2_1 = MathUtil.midPoint(mid, pointTwo);
-        bulletPoints.add(mid2_1);
-
-        Vector2f mid2_2 = MathUtil.midPoint(mid, pointOne);
-        bulletPoints.add(mid2_2);
-
-        for(int i = 0; i < 5; i++)
-            bulletAngles.add((face) * 120 * MathUtil.DEG_TO_RAD);
     }
 
     private void updateParticles() {
@@ -319,12 +346,16 @@ public class PascalBoss extends AI {
     }
 
     @Override
+    public void dispose() {
+        for(Bullet bullet : bullets) {
+            body.getWorld().removeBody(bullet.getBody());
+        }
+        bullets.clear();
+    }
+
     public Type getType() {
         return Type.PascalBoss;
     }
 
-    public ArrayList<Vector2f> getBulletPoints() { return bulletPoints; }
-
-    public ArrayList<Float> getBulletAngles() { return bulletAngles; }
     public void setShooting(boolean shooting) { this.shooting = shooting; }
 }

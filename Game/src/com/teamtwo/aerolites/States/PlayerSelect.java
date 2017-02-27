@@ -9,10 +9,13 @@ import com.teamtwo.engine.Input.Controllers.PlayerNumber;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
+import org.jsfml.graphics.Color;
 import org.jsfml.graphics.ConvexShape;
 import org.jsfml.graphics.Font;
 import org.jsfml.graphics.Text;
 import org.jsfml.window.Keyboard;
+
+import java.util.HashMap;
 
 
 /**
@@ -20,26 +23,42 @@ import org.jsfml.window.Keyboard;
  */
 public class PlayerSelect extends State {
 
-    private boolean lastQuit;
+    private static final Color[] colours = new Color[] {
+            new Color(61, 64, 255), new Color(255, 228, 94), new Color(123, 255, 94),
+            new Color(124, 255, 189), new Color(124, 235, 255), new Color(244, 75, 66),
+            new Color(204, 86, 255), new Color(255, 107, 210)
+    };
 
-    private InputType defaultInput;
-
-    private InputType[] inputTypes;
+    private InputType[] types;
+    private int nextInput;
     private boolean keyboardTaken;
+
+    private ControllerState[] prevStates;
+    private boolean prevEscape;
+    private boolean prevSpace;
+
+    private boolean ready;
+    private float readyTimer;
 
     private Font font;
 
     public PlayerSelect(GameStateManager gsm, InputType input) {
         super(gsm);
 
-        defaultInput = input;
+        keyboardTaken = input == InputType.Keyboard;
+        types = new InputType[8];
+        types[0] = input;
 
-        keyboardTaken = defaultInput == InputType.Keyboard;
+        nextInput = 1;
 
-        inputTypes = new InputType[8];
-        inputTypes[0] = defaultInput;
+        ready = false;
 
-        lastQuit = false;
+        prevStates = new ControllerState[8];
+        for(PlayerNumber player : PlayerNumber.values()) {
+            prevStates[player.ordinal()] = Controllers.getState(player);
+        }
+        prevEscape = Keyboard.isKeyPressed(Keyboard.Key.ESCAPE);
+        prevSpace = Keyboard.isKeyPressed(Keyboard.Key.SPACE);
 
         font = ContentManager.instance.getFont("Ubuntu");
     }
@@ -58,87 +77,107 @@ public class PlayerSelect extends State {
             count++;
         }
 
+        if(!ready) {
+            int offset = types[0] == InputType.Controller ? 0 : 1;
+            for (int i = 1; i < types.length; i++) {
+                int cNum = i - offset;
 
-        if(defaultInput == InputType.Controller) {
-            if(!states[0].button(Button.B) && lastQuit) {
-                gsm.popState();
+                if (types[i] == null) {
+                    if (states[cNum].button(Button.A)) {
+                        types[i] = InputType.Controller;
+                    } else if (!keyboardTaken && Keyboard.isKeyPressed(Keyboard.Key.SPACE)) {
+                        keyboardTaken = true;
+                        types[i] = InputType.Keyboard;
+                        offset = 1;
+                    }
+                } else if (types[i] == InputType.Keyboard) {
+                    offset = 1;
+                    if (Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)) {
+                        keyboardTaken = false;
+                        types[i] = null;
+                        System.arraycopy(types, i + 1, types, i, types.length - 1 - i);
+                        i--;
+                        offset = 0;
+                    }
+                } else {
+                    if (states[cNum].button(Button.B) && !prevStates[cNum].button(Button.B)) {
+                        types[i] = null;
+                        i--;
+                    }
+                }
             }
 
-            lastQuit = states[0].button(Button.B);
-
-            for(int i = 1; i < states.length; i++) {
-                if (inputTypes[i] == null) {
-                    if(states[i].button(Button.A)) {
-                        inputTypes[i] = InputType.Controller;
-                        System.out.println("Controller Connected!");
-                    }
-                    else if(!keyboardTaken && Keyboard.isKeyPressed(Keyboard.Key.SPACE)) {
-                        keyboardTaken = true;
-                        inputTypes[i] = InputType.Keyboard;
-                        System.out.println("Keyboard Now in use");
-                    }
+            if(types[0] == InputType.Controller) {
+                if(!states[0].button(Button.B) && prevStates[0].button(Button.B)) {
+                    gsm.popState();
                 }
-                else if(inputTypes[i] == InputType.Controller) {
-                    if(states[i].button(Button.B)) {
-                        inputTypes[i] = null;
-                        System.out.println("Controller Disconnected!");
-                    }
+                else if(states[0].button(Button.A) && !prevStates[0].button(Button.A)) {
+                    System.out.println("Readying up!");
+                    ready = true;
                 }
-                else {
-                    if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)) {
-                        inputTypes[i] = null;
-                        keyboardTaken = false;
-                        System.out.println("Keyboard not in use");
-                    }
+            }
+            else {
+                if(!Keyboard.isKeyPressed(Keyboard.Key.ESCAPE) && prevEscape) {
+                    gsm.popState();
+                }
+                else if(Keyboard.isKeyPressed(Keyboard.Key.SPACE) && !prevSpace) {
+                    System.out.println("Readying up!");
+                    ready = true;
                 }
             }
         }
         else {
-            if (!Keyboard.isKeyPressed(Keyboard.Key.ESCAPE) && lastQuit) {
-                gsm.popState();
-            }
+            readyTimer += dt;
 
-            for(int i = 0; i < states.length - 1; i++) {
-                if (inputTypes[i + 1] == null) {
-                    if(states[i].button(Button.A)) {
-                        inputTypes[i + 1] = InputType.Controller;
-                        System.out.println("Controller Connected!");
-                    }
-                    else if(!keyboardTaken && Keyboard.isKeyPressed(Keyboard.Key.SPACE)) {
-                        keyboardTaken = true;
-                    }
+            if(readyTimer >= 5f) {
+                int playerCount = 0;
+                for (InputType type : types) {
+                    if (type != null) playerCount++;
                 }
-                else if(inputTypes[i + 1] == InputType.Controller) {
-                    if(states[i].button(Button.B)) {
-                        inputTypes[i + 1] = null;
-                        System.out.println("Controller Disconnected!");
-                    }
-                }
-                else {
-                    if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)) {
-                        inputTypes[i + 1] = null;
-                        keyboardTaken = false;
-                    }
-                }
-            }
 
-            lastQuit = Keyboard.isKeyPressed(Keyboard.Key.ESCAPE);
+                InputType[] playerTypes = new InputType[playerCount];
+                playerCount = 0;
+                for (InputType type : types) {
+                    if(type != null) {
+                        playerTypes[playerCount] = type;
+                        playerCount++;
+                    }
+                }
+
+                gsm.setState(new StarMap(gsm, playerTypes));
+            }
+            else if(types[0] == InputType.Controller && !states[0].button(Button.B) && prevStates[0].button(Button.B)) {
+                ready = false;
+                readyTimer = 0;
+                System.out.println("Unreadying!");
+            }
+            else if(!Keyboard.isKeyPressed(Keyboard.Key.ESCAPE) && prevEscape) {
+                ready = false;
+                readyTimer = 0;
+                System.out.println("Unreadying!");
+            }
         }
 
 
+        prevEscape = Keyboard.isKeyPressed(Keyboard.Key.ESCAPE);
+        prevSpace = Keyboard.isKeyPressed(Keyboard.Key.SPACE);
+        prevStates = states;
     }
 
     public void render() {
         int playerCount = 0;
-        for(int i = 0; i < inputTypes.length; i++) {
-            if(inputTypes[i] != null) {
-                float x = State.WORLD_SIZE.x /  4f;
+
+        for (InputType type : types) {
+            if (type != null) {
+                float x = State.WORLD_SIZE.x / 4f;
                 ConvexShape shape = new ConvexShape(Player.vertices);
-                shape.setPosition(150 + (x * playerCount), (((i + 1) / 3) * 150f) + 150f);
+                shape.setPosition(350 + (x * playerCount), ((playerCount / 2) * 300f) + 150f);
+                shape.setFillColor(colours[playerCount]);
                 window.draw(shape);
 
-                Text input = new Text("Input Type: " + inputTypes[i], font, 30);
-                input.setPosition((x * playerCount), 200);
+                Text input = new Text("Input Type: " + type, font, 30);
+                input.setPosition(shape.getPosition().x -
+                        (input.getLocalBounds().width / 2f), shape.getPosition().y + 50);
                 window.draw(input);
 
                 playerCount++;

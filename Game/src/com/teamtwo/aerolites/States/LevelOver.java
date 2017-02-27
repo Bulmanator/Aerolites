@@ -39,6 +39,8 @@ public class LevelOver extends State {
     private ControllerState[] previousStates;
     private boolean previousSpace;
 
+    private boolean wasShooting;
+
     public LevelOver(GameStateManager gsm, PlayState background, boolean win) {
         super(gsm);
         this.background = background;
@@ -64,9 +66,15 @@ public class LevelOver extends State {
 
         previousSpace = Keyboard.isKeyPressed(Keyboard.Key.SPACE);
 
+        wasShooting = previousSpace;
+        for(ControllerState state : previousStates) {
+            if(state == null) continue;
+            wasShooting |= state.button(Button.A);
+        }
+
         ContentManager.instance.getMusic("Hexagon").stop();
         ContentManager.instance.getMusic("Pascal").stop();
-        ContentManager.instance.getMusic("PlayMusic").setVolume(10f);
+        ContentManager.instance.getMusic("PlayMusic").setVolume(Options.MUSIC_VOLUME);
         ContentManager.instance.getMusic("PlayMusic").play();
     }
 
@@ -93,26 +101,25 @@ public class LevelOver extends State {
                 }
                 if(backgroundPos == 1920 * 2){
                     if(backgroundYMovement < 400)
-                        backgroundYMovement += 4000*dt;
+                        backgroundYMovement += 4000 * dt;
                     else if(backgroundYMovement > 400)
                         backgroundYMovement = 400;
                 }
 
                 if(backgroundYMovement == 400){
                     if(playerInfoSize < 700)
-                        playerInfoSize += 3000*dt;
+                        playerInfoSize += 3000 * dt;
                     else if(playerInfoSize > 700){
                         playerInfoSize = 700;
                     }
                 }
         }
 
-
         for(int i = 0; i < playerCount; i++) {
             Player player = players[i];
             if(player.isController()) {
                 ControllerState state = Controllers.getState(player.getControllerNumber());
-                if(state.button(Button.A) && !previousStates[i].button(Button.A)) {
+                if(!state.button(Button.A) && previousStates[i].button(Button.A) && !wasShooting) {
                     if(current == Stage.GameOver) {
                         current = Stage.Scores;
                     }
@@ -122,7 +129,7 @@ public class LevelOver extends State {
                 }
                 previousStates[i] = state;
             }
-            else if(Keyboard.isKeyPressed(Keyboard.Key.SPACE) && !previousSpace) {
+            else if(!Keyboard.isKeyPressed(Keyboard.Key.SPACE) && previousSpace && !wasShooting) {
                 if(current == Stage.GameOver) {
                     current = Stage.Scores;
                 }
@@ -132,6 +139,14 @@ public class LevelOver extends State {
             }
 
             previousSpace = Keyboard.isKeyPressed(Keyboard.Key.SPACE);
+
+            boolean other = previousSpace;
+            for(ControllerState prev : previousStates) {
+                if(prev == null) continue;
+                other |= prev.button(Button.A);
+            }
+
+            wasShooting &= other;
         }
     }
 

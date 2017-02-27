@@ -129,6 +129,7 @@ public class Swarmer extends AI {
     public void render(RenderWindow renderer) {
         jet.render(renderer);
         super.render(renderer);
+        //animation.render(window);
     }
 
     @Override

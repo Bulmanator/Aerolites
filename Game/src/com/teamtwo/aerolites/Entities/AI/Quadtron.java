@@ -1,7 +1,10 @@
 package com.teamtwo.aerolites.Entities.AI;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
+import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.CollisionMask;
 import com.teamtwo.aerolites.Entities.Entity;
+import com.teamtwo.engine.Input.Controllers.Controllers;
 import com.teamtwo.engine.Messages.Message;
 import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
@@ -9,20 +12,24 @@ import com.teamtwo.engine.Physics.Polygon;
 import com.teamtwo.engine.Physics.RigidBody;
 import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.ContentManager;
+import com.teamtwo.engine.Utilities.Interfaces.Disposable;
+import com.teamtwo.engine.Utilities.Interfaces.Typeable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.audio.SoundSource;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
+import org.jsfml.system.Vector3f;
+import org.jsfml.window.Window;
 
 import java.util.ArrayList;
 
 /**
  * @author Matthew Threlfall
  */
-public class Quadtron extends Entity{
+public class Quadtron extends Entity implements Disposable {
 
-    public enum Faces{
+    public enum Faces {
         One,
         Two,
         Three,
@@ -38,8 +45,10 @@ public class Quadtron extends Entity{
     private RigidBody shield;
     private RigidBody shield2;
     private Faces currentFace;
-    private ArrayList<Vector2f> bulletPoints;
-    private ArrayList<Float> bulletAngles;
+
+    private ArrayList<Vector3f> bulletPositions;
+    private ArrayList<Bullet> bullets;
+
     private boolean shooting;
     private float cooldown;
     private float shootTimer;
@@ -56,8 +65,6 @@ public class Quadtron extends Entity{
         inPlace = false;
         sheildPlaced = false;
         shooting = false;
-        bulletPoints = new ArrayList<>();
-        bulletAngles = new ArrayList<>();
         offScreenAllowance = new Vector2f(170,170);
         angle = MathUtil.PI/4;
 
@@ -65,6 +72,9 @@ public class Quadtron extends Entity{
         shootTimer = 0;
         waitTimer = 0;
         fadeout = 100;
+
+        bullets = new ArrayList<>();
+        bulletPositions = new ArrayList<>();
 
         /** The main boss body*/
         BodyConfig config = new BodyConfig();
@@ -84,7 +94,9 @@ public class Quadtron extends Entity{
 
         body = world.createBody(config);
         body.setData(this);
+
         display = new ConvexShape(body.getShape().getVertices());
+        display.setFillColor(Color.CYAN);
 
         BodyConfig configA = new BodyConfig();
         verticies = new Vector2f[4];
@@ -122,22 +134,25 @@ public class Quadtron extends Entity{
     public void update(float dt) {
         shootTimer += dt;
         waitTimer += dt;
-        display.setFillColor(new Color((int)MathUtil.lerp(0,255,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives)),(int)MathUtil.lerp(255,0,1-(lives/totalLives))));
+
+        display.setFillColor(MathUtil.lerpColour(Color.CYAN, Color.RED, 1 - (lives / totalLives)));
+
         if(lives < 0){
             onScreen = false;
             alive = false;
         }
 
         if(inPlace) {
+            if(cooldown < shootTimer) {
+                bulletPositions.clear();
+            }
             body.setVelocity(new Vector2f(0,0));
             body.setTransform(new Vector2f(State.WORLD_SIZE.x/2,State.WORLD_SIZE.y/2),angle);
             switch(currentFace) {
                 case One:
                     shield.applyForce(new Vector2f(-350000,350000));
                     shield2.applyForce(new Vector2f(350000,-350000));
-                    if(cooldown<shootTimer) {
-                        bulletAngles.clear();
-                        bulletPoints.clear();
+                    if(cooldown < shootTimer) {
                         addFirePoints(0, shield);
                         addFirePoints(1, shield);
                         addFirePoints(2, shield2);
@@ -157,8 +172,6 @@ public class Quadtron extends Entity{
                     shield.applyForce(new Vector2f(-350000,-350000));
                     shield2.applyForce(new Vector2f(350000,350000));
                     if(cooldown<shootTimer) {
-                        bulletAngles.clear();
-                        bulletPoints.clear();
                         addFirePoints(3, shield);
                         addFirePoints(2, shield);
                         addFirePoints(1, shield);
@@ -180,8 +193,6 @@ public class Quadtron extends Entity{
                     shield.applyForce(new Vector2f(350000,-350000));
                     shield2.applyForce(new Vector2f(-350000,350000));
                     if(cooldown<shootTimer) {
-                        bulletAngles.clear();
-                        bulletPoints.clear();
                         addFirePoints(2, shield2);
                         addFirePoints(3, shield2);
                         addFirePoints(0, shield);
@@ -201,8 +212,6 @@ public class Quadtron extends Entity{
                     shield.applyForce(new Vector2f(350000,350000));
                     shield2.applyForce(new Vector2f(-350000,-350000));
                     if(cooldown<shootTimer) {
-                        bulletAngles.clear();
-                        bulletPoints.clear();
                         addFirePoints(0, shield);
                         addFirePoints(1, shield);
                         addFirePoints(2, shield2);
@@ -221,17 +230,16 @@ public class Quadtron extends Entity{
                     break;
                 case All:
                     if(cooldown<shootTimer) {
-                        bulletAngles.clear();
-                        bulletPoints.clear();
                         if(cooldown < shootTimer){
-                            addFirePoints(3, shield2);
-                            addFirePoints(1, shield2);
-                            addFirePoints(2, shield2);
-                            addFirePoints(0, shield2);
                             addFirePoints(3, shield);
                             addFirePoints(1, shield);
                             addFirePoints(2, shield);
                             addFirePoints(0, shield);
+                            addFirePoints(3, shield2);
+                            addFirePoints(1, shield2);
+                            addFirePoints(2, shield2);
+                            addFirePoints(0, shield2);
+
                             shooting = true;
                             shootTimer = 0;
                         }
@@ -250,9 +258,7 @@ public class Quadtron extends Entity{
                     break;
                 case Spin:
                     angle += MathUtil.PI2/4f*dt;
-                    if(cooldown < shootTimer){
-                        bulletAngles.clear();
-                        bulletPoints.clear();
+                    if(cooldown < shootTimer) {
                         addFirePoints(0, body);
                         shooting = true;
                         shootTimer = 0;
@@ -268,6 +274,33 @@ public class Quadtron extends Entity{
                         angle = MathUtil.PI/4f;
                     }
                     break;
+            }
+
+            if(shooting) {
+                for(Vector3f state : bulletPositions) {
+                    Bullet bullet = new Bullet(10f, MathUtil.toVector2f(state),
+                            Type.EnemyBullet, angle + state.z, body.getWorld());
+
+                    bullet.setMaxSpeed(250);
+                    bullets.add(bullet);
+                }
+                shooting = false;
+            }
+
+            for(int i = 0; i < bullets.size(); i++) {
+                Bullet bullet = bullets.get(i);
+                if(bullet.isOnScreen()) {
+                    bullet.update(dt);
+                }
+                else {
+                    if(!bullets.remove(bullet)) {
+                        throw new Error("Error: Failed to remove bullet");
+                    }
+
+                    body.getWorld().removeBody(bullet.getBody());
+                    i--;
+                }
+
             }
         }
         else if(body.getTransform().getPosition().y<State.WORLD_SIZE.y/2) {
@@ -289,34 +322,42 @@ public class Quadtron extends Entity{
         }
         else {
             body.setVelocity(new Vector2f(0,0));
-            body.setTransform(new Vector2f(State.WORLD_SIZE.x/2,State.WORLD_SIZE.y/2),MathUtil.PI/4);
+            body.setTransform(new Vector2f(State.WORLD_SIZE.x / 2,State.WORLD_SIZE.y / 2),MathUtil.PI / 4);
             shield.setVelocity(new Vector2f(0,0));
-            shield.setTransform(new Vector2f(shield.getTransform().getPosition().x,State.WORLD_SIZE.y/2),MathUtil.PI/4);
+            shield.setTransform(new Vector2f(shield.getTransform().getPosition().x,State.WORLD_SIZE.y / 2),
+                    MathUtil.PI / 4);
             shield2.setVelocity(new Vector2f(0,0));
-            shield2.setTransform(new Vector2f(shield2.getTransform().getPosition().x,State.WORLD_SIZE.y/2),MathUtil.PI/4);
+            shield2.setTransform(new Vector2f(shield2.getTransform().getPosition().x,State.WORLD_SIZE.y / 2),
+                    MathUtil.PI / 4);
             inPlace = true;
             ContentManager.instance.getMusic("PlayMusic").stop();
         }
     }
 
     @Override
-    public void render(RenderWindow window) {
-        super.render(window);
+    public void render(RenderWindow renderer) {
+        super.render(renderer);
         RectangleShape r = new RectangleShape();
         r.setSize(new Vector2f(200,200));
         r.setRotation(45);
         r.setOrigin(new Vector2f(100,100));
         r.setPosition(shield.getTransform().getPosition());
         r.setFillColor(Color.RED);
-        window.draw(r);
+        renderer.draw(r);
         r.setPosition(shield2.getTransform().getPosition());
-        window.draw(r);
+        renderer.draw(r);
 
-        for(Vector2f v: bulletPoints){
+        for(Vector3f v : bulletPositions) {
+
             CircleShape s = new CircleShape();
-            s.setPosition(v);
+            s.setFillColor(Color.GREEN);
+            s.setPosition(MathUtil.toVector2f(v));
             s.setRadius(5);
-            window.draw(s);
+            renderer.draw(s);
+        }
+
+        for(Bullet bullet : bullets) {
+            bullet.render(renderer);
         }
     }
 
@@ -335,37 +376,35 @@ public class Quadtron extends Entity{
 
 
     private void addFirePoints(int face, RigidBody body) {
-        Vector2f pointOne;
-        Vector2f pointTwo;
-        switch (face) {
-            case 3:
-                pointOne = body.getShape().getTransformed()[0];
-                pointTwo = body.getShape().getTransformed()[3];
-                break;
-            default:
-                pointOne = body.getShape().getTransformed()[face];
-                pointTwo = body.getShape().getTransformed()[face + 1];
-                break;
+
+
+        Vector2f pointOne = body.getShape().getTransformed()[face];
+        Vector2f pointTwo = body.getShape().getTransformed()[(face + 1) % 4];
+
+        Vector2f dir = MathUtil.normalise(Vector2f.sub(pointTwo, pointOne));
+        Vector2f nor = new Vector2f(dir.y, -dir.x);
+
+        float offset = (body == shield || body == shield2) ? 45 : 88;
+
+        float faceAngle = face * 90 * MathUtil.DEG_TO_RAD;
+
+        for(int i = 0; i < 5; i++) {
+            Vector2f pos = Vector2f.add(pointOne, Vector2f.mul(dir, offset * i));
+            pos = Vector2f.add(pos, Vector2f.mul(nor, 25));
+            bulletPositions.add(new Vector3f(pos.x, pos.y, faceAngle));
         }
-        float xAdd = 40 * MathUtil.sin(angle + (face) * 90 * MathUtil.DEG_TO_RAD);
-        float yAdd = -40 * MathUtil.cos(angle + (face) * 90 * MathUtil.DEG_TO_RAD);
+    }
 
-        pointOne = new Vector2f(pointOne.x + xAdd, pointOne.y + yAdd);
-        pointTwo = new Vector2f(pointTwo.x + xAdd, pointTwo.y + yAdd);
-        bulletPoints.add(pointOne);
-        bulletPoints.add(pointTwo);
+    @Override
+    public void dispose() {
+        for(Bullet bullet : bullets) {
+            body.getWorld().removeBody(bullet.getBody());
+        }
 
-        Vector2f mid = MathUtil.midPoint(pointOne, pointTwo);
-        bulletPoints.add(mid);
+        body.getWorld().removeBody(shield);
+        body.getWorld().removeBody(shield2);
 
-        Vector2f mid2_1 = MathUtil.midPoint(mid, pointTwo);
-        bulletPoints.add(mid2_1);
-
-        Vector2f mid2_2 = MathUtil.midPoint(mid, pointOne);
-        bulletPoints.add(mid2_2);
-
-        for(int i = 0; i < 5; i++)
-            bulletAngles.add((face)*90*MathUtil.DEG_TO_RAD);
+        bullets.clear();
     }
 
     @Override
@@ -379,14 +418,6 @@ public class Quadtron extends Entity{
 
     public void setShooting(boolean shooting) {
         this.shooting = shooting;
-    }
-
-    public ArrayList<Vector2f> getBulletPoints() {
-        return bulletPoints;
-    }
-
-    public ArrayList<Float> getBulletAngles() {
-        return bulletAngles;
     }
 
     public Faces getCurrentFace(){

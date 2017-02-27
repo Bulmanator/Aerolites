@@ -29,9 +29,14 @@ public abstract class Entity implements EntityRenderable, Updateable, Observer, 
         Life,
         ShotSpeed,
         SwamerBase,
-        Hexaboss,
-        PascalBoss,
-        Quadtron
+        Hexaboss(360),
+        PascalBoss(90),
+        Quadtron(240);
+
+        public final int lives;
+
+        Type(int lives) { this.lives = lives; }
+        Type() { lives = 1; }
     }
 
     /** The physics body which represents the Entity */
