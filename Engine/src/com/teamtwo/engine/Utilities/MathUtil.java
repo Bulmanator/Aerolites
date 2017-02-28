@@ -117,7 +117,7 @@ public final class MathUtil {
         float end;
 
         if(max < min) {
-            end = min;
+            end = max;
             max = min;
             min = end;
         }

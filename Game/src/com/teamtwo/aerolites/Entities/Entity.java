@@ -31,7 +31,7 @@ public abstract class Entity implements EntityRenderable, Updateable, Observer, 
         SwamerBase,
         Hexaboss(360),
         PascalBoss(90),
-        Quadtron(240);
+        Quadtron(120);
 
         public final int lives;
 

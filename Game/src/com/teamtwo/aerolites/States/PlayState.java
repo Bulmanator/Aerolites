@@ -136,9 +136,9 @@ public class PlayState extends State implements Listener {
 
         timer = new Timers();
 
-        timer.asteroidRate = config.difficulty.asteroid / (playerCount * 1.8f);
-        timer.swarmerRate = config.difficulty.swarmer;
-        timer.aiRate = config.difficulty.ai;
+        timer.asteroidRate = config.difficulty.asteroid / (1.8f * playerCount);
+        timer.swarmerRate = config.difficulty.swarmer / (float) playerCount;
+        timer.aiRate = config.difficulty.ai / (float) playerCount;
         timer.bossRate = config.difficulty.boss;
 
         background = new RectangleShape(State.WORLD_SIZE);
@@ -149,6 +149,25 @@ public class PlayState extends State implements Listener {
     }
 
     public void update(float dt) {
+
+        /*
+         *
+         * Check for Alive players
+         *  -- If no alive players push the Level Over state
+         * Check difficulty
+         *  -- Easy: Check if time has expired, if not spawn entities
+         *  -- Medium: Check if time has expired, if not spawn entities
+         *  -- Hard: Check if time has reached the boss time, if not spawn entities, otherwise spawn the boss
+         * Check the boss spawn
+         *  -- If spawned, make sure if it is still alive, if not push the Level Over state
+         *  -- If not spawned -> perform Hard Difficulty check
+         * Update all entities
+         *  -- If the entity is no longer alive, remove its RigidBody and delete it
+         *  -- If asteroid destroyed, split and spawn power ups
+         * Update bosses if they have been spawned
+         * Update the physics world
+         *
+         */
 
         int alive = 0;
         for(Player player : players) {
@@ -165,6 +184,7 @@ public class PlayState extends State implements Listener {
             postMessage(message);
 
             if(bossSpawned) {
+                System.out.println("Current Boss: " + bossIndex);
                 bossIndex--;
             }
 
@@ -185,7 +205,7 @@ public class PlayState extends State implements Listener {
                     break;
                 case Hard:
                     if(!bossSpawned) {
-                        switch (2) {
+                        switch (bossIndex) {
                             case 0:
                                 bosses = new Entity[1];
                                 bosses[0] = new Hexaboss(world, Hexaboss.lives * players.length);
@@ -199,6 +219,9 @@ public class PlayState extends State implements Listener {
                                 bosses = new Entity[1];
                                 bosses[0] = new Quadtron(world, Quadtron.lives * players.length);
                                 break;
+                            default:
+                                System.out.println("Error: Boss index exceeded!");
+                                throw new IllegalStateException("BOSS ERROR");
                         }
 
                         bossSpawned = true;
