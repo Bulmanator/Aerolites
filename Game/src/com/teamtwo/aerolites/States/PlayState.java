@@ -1,9 +1,14 @@
 package com.teamtwo.aerolites.States;
 
+import com.teamtwo.aerolites.Entities.AI.Hexaboss;
+import com.teamtwo.aerolites.Entities.AI.PascalBoss;
+import com.teamtwo.aerolites.Entities.AI.Quadtron;
+import com.teamtwo.aerolites.Entities.AI.StandardAI;
 import com.teamtwo.aerolites.Entities.AI.*;
 import com.teamtwo.aerolites.Entities.Asteroid;
-import com.teamtwo.aerolites.Entities.*;
+import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.aerolites.Entities.Player;
+import com.teamtwo.aerolites.Entities.Powerup;
 import com.teamtwo.aerolites.Utilities.InputType;
 import com.teamtwo.aerolites.Utilities.LevelConfig;
 import com.teamtwo.aerolites.Utilities.LevelOverMessage;
@@ -18,9 +23,11 @@ import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.audio.Music;
-import org.jsfml.graphics.*;
+import org.jsfml.graphics.ConvexShape;
+import org.jsfml.graphics.RectangleShape;
+import org.jsfml.graphics.Text;
+import org.jsfml.graphics.TextStyle;
 import org.jsfml.system.Vector2f;
-import org.jsfml.window.Keyboard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,9 +139,9 @@ public class PlayState extends State implements Listener {
 
         timer = new Timers();
 
-        timer.asteroidRate = config.difficulty.asteroid;
-        timer.swarmerRate = config.difficulty.swarmer;
-        timer.aiRate = config.difficulty.ai;
+        timer.asteroidRate = config.difficulty.asteroid / (1.8f * playerCount);
+        timer.swarmerRate = config.difficulty.swarmer / (float) playerCount;
+        timer.aiRate = config.difficulty.ai / (float) playerCount;
         timer.bossRate = config.difficulty.boss;
 
         background = new RectangleShape(State.WORLD_SIZE);
@@ -145,11 +152,6 @@ public class PlayState extends State implements Listener {
     }
 
     public void update(float dt) {
-
-
-        if(!Keyboard.isKeyPressed(Keyboard.Key.W)) {
-            dt = dt * 0.25f;
-        }
 
         /*
          *
@@ -185,6 +187,7 @@ public class PlayState extends State implements Listener {
             postMessage(message);
 
             if(bossSpawned) {
+                System.out.println("Current Boss: " + bossIndex);
                 bossIndex--;
             }
 
@@ -219,6 +222,9 @@ public class PlayState extends State implements Listener {
                                 bosses = new Entity[1];
                                 bosses[0] = new Quadtron(world, Quadtron.lives * players.length);
                                 break;
+                            default:
+                                System.out.println("Error: Boss index exceeded!");
+                                throw new IllegalStateException("BOSS ERROR");
                         }
 
                         bossSpawned = true;
