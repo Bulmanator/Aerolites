@@ -14,7 +14,6 @@ import org.jsfml.graphics.Font;
 import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
-import org.jsfml.system.Vector2i;
 import org.jsfml.window.Keyboard;
 import org.jsfml.window.Mouse;
 
@@ -45,7 +44,7 @@ public class CreditState extends State {
 
         background = new RectangleShape(State.WORLD_SIZE);
         background.setPosition(0, 0);
-        background.setTexture(ContentManager.instance.getTexture("Background"));
+        background.setTexture(ContentManager.instance.getTexture("Space"));
 
 /*        Buttons[0] = new UIButton((int)State.WORLD_SIZE.x  / 2, (int)State.WORLD_SIZE.y / 42 * 6, window.getSize().x / 4, window.getSize().y / 10, "James Bulman");
         Buttons[1] = new UIButton((int)State.WORLD_SIZE.x  / 2, (int)State.WORLD_SIZE.y / 42 * 12, window.getSize().x / 4, window.getSize().y / 10, "Matt Threlfall");

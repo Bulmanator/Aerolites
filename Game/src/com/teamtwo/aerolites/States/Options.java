@@ -12,12 +12,13 @@ import org.jsfml.window.Keyboard;
 import org.jsfml.window.Mouse;
 
 /**
- * Created by james on 22/02/17.
+ * @author James Bulman
  */
+//TODO resolution options
 public class Options extends State {
 
-    public static float MUSIC_VOLUME = 0.5f;
-    public static float SFX_VOLUME = 0.5f;
+    public static float MUSIC_VOLUME = 50f;
+    public static float SFX_VOLUME = 50f;
 
     private static final String[] resolutionStrings = new String[] {
             "640x360", "960x540", "1280x720", "1366x768", "1600x900", "1920x1080"
@@ -38,8 +39,9 @@ public class Options extends State {
         sliders[0] = new Slider("Music Volume", 25, new Vector2f(140, 360), new Vector2f(State.WORLD_SIZE.x - 240, 80));
         sliders[1] = new Slider("SFX Volume", 25, new Vector2f(140, 460), new Vector2f(State.WORLD_SIZE.x - 240, 80));
 
-        sliders[0].setValue(MUSIC_VOLUME);
-        sliders[1].setValue(SFX_VOLUME);
+        sliders[0].setValue(MUSIC_VOLUME/100f);
+        System.out.println(MUSIC_VOLUME/100f);
+        sliders[1].setValue(SFX_VOLUME/100f);
 
         String res = window.getSize().x + "x" + window.getSize().y;
         currentRes = 0;

@@ -1,9 +1,14 @@
 package com.teamtwo.aerolites.States;
 
+import com.teamtwo.aerolites.Entities.AI.Hexaboss;
+import com.teamtwo.aerolites.Entities.AI.PascalBoss;
+import com.teamtwo.aerolites.Entities.AI.Quadtron;
+import com.teamtwo.aerolites.Entities.AI.StandardAI;
 import com.teamtwo.aerolites.Entities.AI.*;
 import com.teamtwo.aerolites.Entities.Asteroid;
-import com.teamtwo.aerolites.Entities.*;
+import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.aerolites.Entities.Player;
+import com.teamtwo.aerolites.Entities.Powerup;
 import com.teamtwo.aerolites.Utilities.InputType;
 import com.teamtwo.aerolites.Utilities.LevelConfig;
 import com.teamtwo.aerolites.Utilities.LevelOverMessage;
@@ -18,9 +23,11 @@ import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.audio.Music;
-import org.jsfml.graphics.*;
+import org.jsfml.graphics.ConvexShape;
+import org.jsfml.graphics.RectangleShape;
+import org.jsfml.graphics.Text;
+import org.jsfml.graphics.TextStyle;
 import org.jsfml.system.Vector2f;
-import org.jsfml.window.Keyboard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +38,8 @@ import static com.teamtwo.aerolites.Entities.Entity.Type.*;
 /**
  * @author Matthew Threlfall
  */
+//TODO remove asteroids when bosses are spawning
+//TODO maybe particles on asteroids blowing up
 public class PlayState extends State implements Listener {
 
     private static boolean contentLoaded = false;
@@ -83,11 +92,6 @@ public class PlayState extends State implements Listener {
     // Messages
     private HashMap<Message.Type, List<Observer>> observers;
 
-    //TODO shoot bullets out of ait
-    //TODO shop and stuff
-    //TODO make Tijans shit work
-    //TODO tie everything together
-
     /**
      * Creates a new level from the configuration provided
      * @param gsm the game state manager for the entire game
@@ -132,7 +136,7 @@ public class PlayState extends State implements Listener {
 
         timer = new Timers();
 
-        timer.asteroidRate = config.difficulty.asteroid;
+        timer.asteroidRate = config.difficulty.asteroid / (playerCount * 1.8f);
         timer.swarmerRate = config.difficulty.swarmer;
         timer.aiRate = config.difficulty.ai;
         timer.bossRate = config.difficulty.boss;
@@ -145,30 +149,6 @@ public class PlayState extends State implements Listener {
     }
 
     public void update(float dt) {
-
-
-        if(!Keyboard.isKeyPressed(Keyboard.Key.W)) {
-            dt = dt * 0.25f;
-        }
-
-        /*
-         *
-         * Check for Alive players
-         *  -- If no alive players push the Level Over state
-         * Check difficulty
-         *  -- Easy: Check if time has expired, if not spawn entities
-         *  -- Medium: Check if time has expired, if not spawn entities
-         *  -- Hard: Check if time has reached the boss time, if not spawn entities, otherwise spawn the boss
-         * Check the boss spawn
-         *  -- If spawned, make sure if it is still alive, if not push the Level Over state
-         *  -- If not spawned -> perform Hard Difficulty check
-         * Update all entities
-         *  -- If the entity is no longer alive, remove its RigidBody and delete it
-         *  -- If asteroid destroyed, split and spawn power ups
-         * Update bosses if they have been spawned
-         * Update the physics world
-         *
-         */
 
         int alive = 0;
         for(Player player : players) {
@@ -205,7 +185,7 @@ public class PlayState extends State implements Listener {
                     break;
                 case Hard:
                     if(!bossSpawned) {
-                        switch (bossIndex) {
+                        switch (2) {
                             case 0:
                                 bosses = new Entity[1];
                                 bosses[0] = new Hexaboss(world, Hexaboss.lives * players.length);
@@ -530,7 +510,7 @@ public class PlayState extends State implements Listener {
             ContentManager.instance.loadTexture("Player", "Retro.png");
         }
 
-        ContentManager.instance.loadTexture("Space", "Space.png");
+        ContentManager.instance.loadTexture("Space", "Stars.png");
 
         // Load Fonts
         ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");

@@ -27,8 +27,6 @@ import java.util.ArrayList;
  */
 public class Player extends Entity implements Disposable {
 
-    // TODO Add jet stream colours
-
     // #### Static Begin ####
     // Various constants which are the same across players
 
@@ -83,7 +81,7 @@ public class Player extends Entity implements Disposable {
 
         if(this.controllerNumber == null) controller = false;
 
-        lives = 19;
+        lives = 2;
         alive = true;
 
         immuneTime = 0;

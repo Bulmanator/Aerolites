@@ -10,11 +10,11 @@ public class LevelConfig {
      */
     public enum Difficulty {
         /** Easy difficulty */
-        Easy(8, 33, 45, 60),
+        Easy(6, 33, 45, 60),
         /** Medium difficulty */
-        Medium(4, 25, 30, 90),
+        Medium(4, 25, 30, 75),
         /** Hard difficulty */
-        Hard(2.4f, 14, 16, 120);
+        Hard(2.4f, 14, 16, 90);
 
         public final float asteroid;
         public final float swarmer;
