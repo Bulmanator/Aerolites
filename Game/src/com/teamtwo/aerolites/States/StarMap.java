@@ -160,7 +160,6 @@ public class StarMap extends State implements Observer {
 
         current = stars.get(0);
 
-        System.out.println("Star Count: " + stars.size());
     }
 
     public void update(float dt) {
