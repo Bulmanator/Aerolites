@@ -96,8 +96,59 @@ public class GameOver extends State {
 
     public void render() {
         window.draw(background);
-        if(currentStage == Display)
+        if(currentStage == Display) {
             window.draw(congrats);
+            float playerWidth = (1920-(90 + 40*(scores.length)))/(scores.length);
+            for(int i = 0; i < scores.length; i++) {
+                Score score = scores[i];
+                score.roundValues();
+
+                Text text = new Text("Player " + (i + 1), ContentManager.instance.getFont("Ubuntu"), 64);
+                text.setOrigin(0, 0);
+                text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 8 + 110);
+                window.draw(text);
+
+                text = new Text("Score: " + score.getTotalScore(), ContentManager.instance.getFont("Ubuntu"), 32);
+                text.setOrigin(0, 0);
+                text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 8 + 190);
+                window.draw(text);
+
+                text = new Text("Asteroids Destroyed: " + score.getTotalAsteroids(), ContentManager.instance.getFont("Ubuntu"), 32);
+                text.setOrigin(0, 0);
+                text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 8 + 230);
+                window.draw(text);
+
+                text = new Text("Enemies Killed: " + score.getTotalEnemies(), ContentManager.instance.getFont("Ubuntu"), 32);
+                text.setOrigin(0, 0);
+                text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 8 + 270);
+                window.draw(text);
+
+                text = new Text("Time Survived: " + score.getTotalTimeAlive() + "s", ContentManager.instance.getFont("Ubuntu"), 32);
+                text.setOrigin(0, 0);
+                text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 8 + 310);
+                window.draw(text);
+
+                text = new Text("Bullets Fired: " + score.getTotalBulletsFired(), ContentManager.instance.getFont("Ubuntu"), 32);
+                text.setOrigin(0, 0);
+                text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 8 + 350);
+                window.draw(text);
+
+                text = new Text("Bullets Missed: " + score.getTotalBulletsMissed(), ContentManager.instance.getFont("Ubuntu"), 32);
+                text.setOrigin(0, 0);
+                text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 8 + 390);
+                window.draw(text);
+
+                text = new Text("Accuracy: " + score.getTotalAccuracy() + "%", ContentManager.instance.getFont("Ubuntu"), 32);
+                text.setOrigin(0, 0);
+                text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 8 + 430);
+                window.draw(text);
+
+                text = new Text("Time Spent Boosting: " + score.getTotalTimeBoosting() + "s", ContentManager.instance.getFont("Ubuntu"), 32);
+                text.setOrigin(0, 0);
+                text.setPosition(30 + 40 * (i + 1) + playerWidth * i + 10, WORLD_SIZE.y / 8 + 470);
+                window.draw(text);
+            }
+        }
     }
 
     public void dispose() {}
