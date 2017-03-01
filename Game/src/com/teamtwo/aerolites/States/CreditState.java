@@ -1,6 +1,5 @@
 package com.teamtwo.aerolites.States;
 
-import com.teamtwo.aerolites.UI.Slider;
 import com.teamtwo.engine.Input.Controllers.Button;
 import com.teamtwo.engine.Input.Controllers.ControllerState;
 import com.teamtwo.engine.Input.Controllers.Controllers;
@@ -13,10 +12,7 @@ import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Font;
 import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.Text;
-import org.jsfml.system.Vector2f;
-import org.jsfml.system.Vector2i;
 import org.jsfml.window.Keyboard;
-import org.jsfml.window.Mouse;
 
 
 /**
@@ -37,22 +33,13 @@ public class CreditState extends State {
 
     private Color[] colours;
 
-    private Slider slider;
-
     public CreditState(GameStateManager gsm) {
         super(gsm);
         Font font = ContentManager.instance.getFont("Ubuntu");
 
         background = new RectangleShape(State.WORLD_SIZE);
         background.setPosition(0, 0);
-        background.setTexture(ContentManager.instance.getTexture("Background"));
-
-/*        Buttons[0] = new UIButton((int)State.WORLD_SIZE.x  / 2, (int)State.WORLD_SIZE.y / 42 * 6, window.getSize().x / 4, window.getSize().y / 10, "James Bulman");
-        Buttons[1] = new UIButton((int)State.WORLD_SIZE.x  / 2, (int)State.WORLD_SIZE.y / 42 * 12, window.getSize().x / 4, window.getSize().y / 10, "Matt Threlfall");
-        Buttons[2] = new UIButton((int)State.WORLD_SIZE.x  / 2, (int)State.WORLD_SIZE.y / 42 * 18, window.getSize().x / 4, window.getSize().y / 10, "Ayo Olutobi");
-        Buttons[3] = new UIButton((int)State.WORLD_SIZE.x  / 2, (int)State.WORLD_SIZE.y / 42 * 24, window.getSize().x / 4, window.getSize().y / 10, "Tijan Weir");
-        Buttons[4] = new UIButton((int)State.WORLD_SIZE.x / 2, (int)State.WORLD_SIZE.y / 42 * 30, window.getSize().x / 4, window.getSize().y / 10, "Pavlos Anastasiadis");
-        Buttons[5] = new UIButton((int)State.WORLD_SIZE.x  / 2, (int)State.WORLD_SIZE.y / 42 * 36, window.getSize().x / 4, window.getSize().y / 10, "Lewis Linaker");*/
+        background.setTexture(ContentManager.instance.getTexture("Stars"));
 
         colours = new Color[] {
                 Color.RED, Color.YELLOW, new Color(255, 45, 195),
@@ -77,13 +64,10 @@ public class CreditState extends State {
 
         prevEscape = false;
         prevState = Controllers.getState(PlayerNumber.One);
-
-        slider = new Slider("Test", 20, new Vector2f(50, 400), new Vector2f(500, 60));
     }
 
     /**
      * This is called once per frame, used to perform any updates required
-     *
      * @param dt The amount of time passed since last frame
      */
     public void update(float dt) {
@@ -97,11 +81,6 @@ public class CreditState extends State {
         }
 
         colourTimer += dt;
-
-        mouse = Mouse.getPosition(window);
-
-        Vector2f pos = window.mapPixelToCoords(mouse);
-        slider.checkValue(pos);
 
         float ratio = colourTimer / timerPerColour;
 
@@ -122,8 +101,6 @@ public class CreditState extends State {
     public void render() {
         window.draw(background);
         for(Text text : names) { window.draw(text); }
-
-        slider.render(window);
     }
 
     @Override

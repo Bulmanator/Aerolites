@@ -109,7 +109,7 @@ public class MainMenu extends State {
 
         ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
         ContentManager.instance.loadTexture("Asteroid", "Asteroid.png");
-        Texture bg = ContentManager.instance.loadTexture("Space", "Space.png");
+        Texture bg = ContentManager.instance.loadTexture("Stars", "Stars.png");
 
         background = new RectangleShape(State.WORLD_SIZE);
         background.setPosition(0, 0);

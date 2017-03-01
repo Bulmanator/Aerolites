@@ -1,5 +1,6 @@
 package com.teamtwo.aerolites.States;
 
+import com.teamtwo.aerolites.Utilities.Score;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
@@ -19,10 +20,14 @@ public class GameOver extends State {
 
     private float accumulator;
 
-    public GameOver(GameStateManager gsm) {
+    private Score[] scores;
+
+    public GameOver(GameStateManager gsm, Score[] scores) {
         super(gsm);
 
         font = ContentManager.instance.getFont("Ubuntu");
+
+        this.scores = scores;
 
         colours = new Color[] {
                 Color.RED, Color.YELLOW, new Color(255, 45, 195),
@@ -50,6 +55,10 @@ public class GameOver extends State {
     }
 
     public void render() {
+
+        Text t = new Text("Player 1 Score: " + scores[0].getTotalScore(), font, 30);
+        t.setPosition(450, 450);
+        window.draw(t);
 
         window.draw(congrats);
     }

@@ -3,6 +3,8 @@ package com.teamtwo.aerolites.States;
 import com.teamtwo.aerolites.Entities.Player;
 import com.teamtwo.aerolites.UI.Slider;
 import com.teamtwo.aerolites.Utilities.InputType;
+import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
+import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
 import com.teamtwo.engine.Input.Controllers.Button;
 import com.teamtwo.engine.Input.Controllers.ControllerState;
 import com.teamtwo.engine.Input.Controllers.Controllers;
@@ -11,10 +13,7 @@ import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
-import org.jsfml.graphics.Color;
-import org.jsfml.graphics.ConvexShape;
-import org.jsfml.graphics.Font;
-import org.jsfml.graphics.Text;
+import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
 
@@ -30,9 +29,13 @@ public class PlayerSelect extends State {
             new Color(204, 86, 255), new Color(255, 107, 210)
     };
 
+    private RectangleShape background;
+
     private InputType[] types;
     private int playerCount;
     private boolean keyboardTaken;
+
+    private ParticleEmitter[] emitters;
 
     private ControllerState[] prevStates;
     private boolean prevEscape;
@@ -54,8 +57,11 @@ public class PlayerSelect extends State {
 
         playerCount = 1;
 
+        background = new RectangleShape(WORLD_SIZE);
+        background.setTexture(ContentManager.instance.getTexture("Stars"));
+
         ready = false;
-        Vector2f position = new Vector2f((WORLD_SIZE.x / 2f) - 400f, 800f);
+        Vector2f position = new Vector2f((WORLD_SIZE.x / 2f) - 400f, 875f);
         readyUp = new Slider("Not Ready", 45, position, new Vector2f(800, 80f));
         readyUp.setValue(100);
 
@@ -67,6 +73,42 @@ public class PlayerSelect extends State {
         prevSpace = Keyboard.isKeyPressed(Keyboard.Key.SPACE);
 
         font = ContentManager.instance.getFont("Ubuntu");
+
+        ParticleConfig config = new ParticleConfig();
+
+        config.minAngle = -15;
+        config.maxAngle = 15;
+        config.speed = -70;
+        config.rotationalSpeed = 40;
+
+        config.pointCount = 3;
+
+        config.startSize = 14;
+        config.endSize = 4;
+
+        config.minLifetime = 1.5f;
+        config.maxLifetime = 3;
+
+        emitters = new ParticleEmitter[8];
+
+        Color[] jetColours = new Color[] {
+                new Color(62, 162, 255), new Color(155, 61, 255),
+                new Color(255, 148, 94),  new Color(201, 255, 94),
+                new Color(204, 255, 94), new Color(94, 255, 145),
+                new Color(124, 255, 124),  new Color(124, 255, 255),
+                new Color(124, 255, 209), new Color(124, 170, 255),
+                new Color(244, 66, 146), new Color(244, 164, 66),
+                new Color(120, 86, 255), new Color(255, 86, 221),
+                new Color(225, 107, 255),  new Color(255, 107, 137)
+        };
+
+        float x = WORLD_SIZE.x / 4f;
+        for(int i = 0; i < 8; i++) {
+            config.position = new Vector2f(290 + (x * (i % 4)), 355f + ((i / 4) * 300f));
+            config.colours[0] = jetColours[i * 2];
+            config.colours[1] = jetColours[(i * 2) + 1];
+            emitters[i] = new ParticleEmitter(config, 40, 400);
+        }
     }
 
     /**
@@ -82,6 +124,11 @@ public class PlayerSelect extends State {
             states[count] = Controllers.getState(player);
             count++;
         }
+
+        for(ParticleEmitter emitter : emitters) {
+            if(emitter != null) emitter.update(dt);
+        }
+
 
         if(!ready) {
             int offset = types[0] == InputType.Controller ? 0 : 1;
@@ -176,6 +223,8 @@ public class PlayerSelect extends State {
     }
 
     public void render() {
+        window.draw(background);
+
         int playerCount = 0;
 
         Text title = new Text("Multiplayer", font, 90);
@@ -183,18 +232,32 @@ public class PlayerSelect extends State {
 
         window.draw(title);
 
+        float x = State.WORLD_SIZE.x / 4f;
         for (InputType type : types) {
             if (type != null) {
-                float x = State.WORLD_SIZE.x / 4f;
+                emitters[playerCount].render(window);
+
+
                 ConvexShape shape = new ConvexShape(Player.vertices);
                 shape.setPosition(240 + (x * (playerCount % 4)), 350f + ((playerCount / 4) * 300f));
                 shape.setFillColor(colours[playerCount]);
+                shape.setRotation(90f);
+                shape.setOrigin(-3, 85);
+
                 window.draw(shape);
+
+                Text player = new Text("Player " + (playerCount + 1), font, 30);
+                player.setPosition(shape.getPosition().x - (player.getLocalBounds().width / 2f),
+                        shape.getPosition().y + 50);
+
+                window.draw(player);
 
                 Text input = new Text("Input Type: " + type, font, 30);
                 input.setPosition(shape.getPosition().x -
-                        (input.getLocalBounds().width / 2f), shape.getPosition().y + 50);
+                        (input.getLocalBounds().width / 2f), shape.getPosition().y + 100);
                 window.draw(input);
+
+
 
                 playerCount++;
             }

@@ -20,6 +20,8 @@ public class LevelOverMessage implements Message {
         return players[index];
     }
 
+    public int getPlayerCount() { return players.length; }
+
     public boolean isComplete() {
         return complete;
     }

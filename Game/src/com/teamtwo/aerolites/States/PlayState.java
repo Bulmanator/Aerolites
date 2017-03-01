@@ -12,6 +12,7 @@ import com.teamtwo.aerolites.Entities.Powerup;
 import com.teamtwo.aerolites.Utilities.InputType;
 import com.teamtwo.aerolites.Utilities.LevelConfig;
 import com.teamtwo.aerolites.Utilities.LevelOverMessage;
+import com.teamtwo.aerolites.Utilities.Score;
 import com.teamtwo.engine.Input.Controllers.PlayerNumber;
 import com.teamtwo.engine.Messages.Listener;
 import com.teamtwo.engine.Messages.Message;
@@ -95,12 +96,14 @@ public class PlayState extends State implements Listener {
     //TODO make Tijans shit work
     //TODO tie everything together
 
+    public PlayState(GameStateManager gsm, LevelConfig config) { this(gsm, config, null); }
+
     /**
      * Creates a new level from the configuration provided
      * @param gsm the game state manager for the entire game
      * @param config The configuration for the level
      */
-    public PlayState(GameStateManager gsm, LevelConfig config) {
+    public PlayState(GameStateManager gsm, LevelConfig config, Score[] playerScores) {
         super(gsm);
 
         this.config = config;
@@ -137,6 +140,13 @@ public class PlayState extends State implements Listener {
             }
         }
 
+        if(playerScores != null) {
+            for(int i = 0; i < players.length; i++) {
+                playerScores[i].newLevel();
+                players[i].setScore(playerScores[i]);
+            }
+        }
+
         timer = new Timers();
 
         timer.asteroidRate = config.difficulty.asteroid / (1.8f * playerCount);
@@ -146,7 +156,7 @@ public class PlayState extends State implements Listener {
 
         background = new RectangleShape(State.WORLD_SIZE);
         background.setPosition(0, 0);
-        background.setTexture(ContentManager.instance.getTexture("Space"));
+        background.setTexture(ContentManager.instance.getTexture("Stars"));
 
         observers = new HashMap<>();
     }
@@ -187,9 +197,11 @@ public class PlayState extends State implements Listener {
             postMessage(message);
 
             if(bossSpawned) {
-                System.out.println("Current Boss: " + bossIndex);
+
                 bossIndex--;
             }
+
+            System.out.println("Current Boss: " + bossIndex);
 
             gameOver = false;
             onState = false;
@@ -354,7 +366,7 @@ public class PlayState extends State implements Listener {
     }
 
 
-    public int updateAsteroid(Asteroid a){
+    public int updateAsteroid(Asteroid a) {
         int index = entities.indexOf(a);
 
         Vector2f pos = a.getBody().getTransform().getPosition();
