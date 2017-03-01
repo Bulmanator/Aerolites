@@ -378,7 +378,7 @@ public class StarMap extends State implements Observer {
                 firstLevel = false;
                 scores = new Score[levelOver.getPlayerCount()];
                 for(int i = 0; i < scores.length; i++) {
-                    scores[i] = levelOver.getPlayers(i).getScore();
+                    scores[i] = levelOver.getPlayer(i).getScore();
                 }
             }
             else {

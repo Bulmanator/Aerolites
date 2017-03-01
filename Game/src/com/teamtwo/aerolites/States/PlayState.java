@@ -142,7 +142,6 @@ public class PlayState extends State implements Listener {
 
         if(playerScores != null) {
             for(int i = 0; i < players.length; i++) {
-                playerScores[i].newLevel();
                 players[i].setScore(playerScores[i]);
             }
         }
