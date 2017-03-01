@@ -390,12 +390,12 @@ public class Player extends Entity implements Disposable {
     public PlayerNumber getControllerNumber() { return controllerNumber; }
 
     public Color getDefaultColour() { return defaultColour; }
+    public Score getScore() { return score; }
 
     public void setLives(int lives) { this.lives = lives; }
-
     public void setAlive(boolean alive) { this.alive = alive; }
+    public void setScore(Score score) { this.score = score; }
 
-    public Score getScore() { return score; }
 
     @Override
     public void dispose() {

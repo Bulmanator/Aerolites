@@ -1,5 +1,6 @@
 package com.teamtwo.aerolites.States;
 
+import com.teamtwo.aerolites.Utilities.Score;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
@@ -31,7 +32,9 @@ public class GameOver extends State {
     private RectangleShape background;
     private float speed;
 
-    public GameOver(GameStateManager gsm) {
+    private Score[] scores;
+
+    public GameOver(GameStateManager gsm, Score[] scores) {
         super(gsm);
 
 
@@ -43,6 +46,8 @@ public class GameOver extends State {
 
         currentStage = Intro;
         font = ContentManager.instance.getFont("Ubuntu");
+
+        this.scores = scores;
 
         colours = new Color[] {
                 Color.RED, Color.YELLOW, new Color(255, 45, 195),

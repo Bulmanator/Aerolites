@@ -14,6 +14,7 @@ import com.teamtwo.aerolites.Utilities.LevelConfig;
 import com.teamtwo.aerolites.Utilities.LevelOverMessage;
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
+import com.teamtwo.aerolites.Utilities.Score;
 import com.teamtwo.engine.Input.Controllers.PlayerNumber;
 import com.teamtwo.engine.Messages.Listener;
 import com.teamtwo.engine.Messages.Message;
@@ -38,7 +39,6 @@ import static com.teamtwo.aerolites.Entities.Entity.Type.*;
 /**
  * @author Matthew Threlfall
  */
-//TODO maybe particles on asteroids blowing up
 public class PlayState extends State implements Listener {
 
     private static boolean contentLoaded = false;
@@ -95,12 +95,14 @@ public class PlayState extends State implements Listener {
     // Messages
     private HashMap<Message.Type, List<Observer>> observers;
 
+    public PlayState(GameStateManager gsm, LevelConfig config) { this(gsm, config, null); }
+
     /**
      * Creates a new level from the configuration provided
      * @param gsm the game state manager for the entire game
      * @param config The configuration for the level
      */
-    public PlayState(GameStateManager gsm, LevelConfig config) {
+    public PlayState(GameStateManager gsm, LevelConfig config, Score[] playerScores) {
         super(gsm);
 
         this.config = config;
@@ -134,6 +136,13 @@ public class PlayState extends State implements Listener {
             }
             else {
                 players[i] = new Player(world, PlayerNumber.values()[i]);
+            }
+        }
+
+        if(playerScores != null) {
+            for(int i = 0; i < players.length; i++) {
+                playerScores[i].newLevel();
+                players[i].setScore(playerScores[i]);
             }
         }
 
@@ -190,7 +199,7 @@ public class PlayState extends State implements Listener {
             postMessage(message);
 
             if(bossSpawned) {
-                System.out.println("Current Boss: " + bossIndex);
+
                 bossIndex--;
             }
 
@@ -288,7 +297,7 @@ public class PlayState extends State implements Listener {
 
             if (timer.spawnAsteroid()) {
                 entities.add(new Asteroid(world));
-                //timer.asteroidRate = MathUtil.clamp(0.99f * timer.asteroidRate, 0f, 8f);
+                timer.asteroidRate = MathUtil.clamp(0.99f * timer.asteroidRate, 0.6f, 8f);
                 timer.asteroid = 0;
             }
 
@@ -367,7 +376,7 @@ public class PlayState extends State implements Listener {
     }
 
 
-    public int updateAsteroid(Asteroid a){
+    public int updateAsteroid(Asteroid a) {
         int index = entities.indexOf(a);
 
         Vector2f pos = a.getBody().getTransform().getPosition();

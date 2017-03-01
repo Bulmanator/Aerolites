@@ -3,6 +3,7 @@ package com.teamtwo.aerolites.States;
 import com.teamtwo.aerolites.Utilities.InputType;
 import com.teamtwo.aerolites.Utilities.LevelConfig;
 import com.teamtwo.aerolites.Utilities.LevelOverMessage;
+import com.teamtwo.aerolites.Utilities.Score;
 import com.teamtwo.engine.Input.Controllers.*;
 import com.teamtwo.engine.Messages.Message;
 import com.teamtwo.engine.Messages.Observer;
@@ -48,6 +49,7 @@ public class StarMap extends State implements Observer {
     }
 
     private InputType[] players;
+    private Score[] scores;
 
     private RectangleShape background;
 
@@ -62,6 +64,8 @@ public class StarMap extends State implements Observer {
     private ArrayList<Node> prevNodes;
 
     private InputType defaultInput;
+
+    private boolean firstLevel;
 
     private boolean generated;
     private ArrayList<Node> stars;
@@ -79,9 +83,12 @@ public class StarMap extends State implements Observer {
 
         font = ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
 
+        firstLevel = true;
+        scores = null;
+
         background = new RectangleShape(WORLD_SIZE);
         background.setPosition(Vector2f.ZERO);
-        background.setTexture(ContentManager.instance.getTexture("Space"));
+        background.setTexture(ContentManager.instance.getTexture("Stars"));
 
         this.players = players;
         defaultInput = players[0];
@@ -164,7 +171,7 @@ public class StarMap extends State implements Observer {
 
     public void update(float dt) {
         if(gameComplete) {
-            gsm.setState(new GameOver(gsm));
+            gsm.setState(new GameOver(gsm, scores));
         }
 
         if(Keyboard.isKeyPressed(Keyboard.Key.R) && !r) {
@@ -178,7 +185,14 @@ public class StarMap extends State implements Observer {
                 reset(current.difficulty);
                 lastPhase = current.phase;
 
-                PlayState playState = new PlayState(gsm, config);
+                PlayState playState;
+                if(firstLevel) {
+                    playState = new PlayState(gsm, config);
+                }
+                else {
+                    playState = new PlayState(gsm, config, scores);
+                }
+
                 playState.registerObserver(this, Message.Type.LevelOver);
                 gsm.addState(playState);
             }
@@ -259,7 +273,14 @@ public class StarMap extends State implements Observer {
                         reset(node.difficulty);
                         lastPhase = node.phase;
 
-                        PlayState playState = new PlayState(gsm, config);
+                        PlayState playState;
+                        if(firstLevel) {
+                            playState = new PlayState(gsm, config);
+                        }
+                        else {
+                            playState = new PlayState(gsm, config, scores);
+                        }
+
                         playState.registerObserver(this, Message.Type.LevelOver);
                         gsm.addState(playState);
                     }
@@ -353,6 +374,11 @@ public class StarMap extends State implements Observer {
 
             if(complete) {
                 System.out.println("Congratulations! You beat the level!");
+                firstLevel = false;
+                scores = new Score[levelOver.getPlayerCount()];
+                for(int i = 0; i < scores.length; i++) {
+                    scores[i] = levelOver.getPlayers(i).getScore();
+                }
             }
             else {
                 System.out.println("Too Bad! Try again");
