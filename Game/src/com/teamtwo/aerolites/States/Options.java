@@ -1,6 +1,7 @@
 package com.teamtwo.aerolites.States;
 
 import com.teamtwo.aerolites.UI.Slider;
+import com.teamtwo.aerolites.UI.UIButton;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
@@ -27,8 +28,10 @@ public class Options extends State {
     private Slider[] sliders;
     private int currentRes;
     private Text resText;
+    private UIButton resButton;
 
     private boolean prevEscape;
+    private boolean prevClick;
 
     public Options(GameStateManager gsm) {
         super(gsm);
@@ -56,6 +59,10 @@ public class Options extends State {
         resText = new Text("Current Resolution: " + resolutionStrings[currentRes], font, 120);
 
         prevEscape = false;
+        prevClick = false;
+
+        resButton = new UIButton(State.WORLD_SIZE.x/2,580,"Resolution: " + resolutionStrings[currentRes], 45);
+
     }
 
 
@@ -71,15 +78,28 @@ public class Options extends State {
         MUSIC_VOLUME = sliders[0].getValue() * 100f;
         SFX_VOLUME = sliders[1].getValue() * 100f;
 
-        resText.setString("Current Resolution: " + resolutionStrings[currentRes]);
         float width = resText.getLocalBounds().width;
         resText.setPosition((State.WORLD_SIZE.x / 2f) - (width / 2f), 40f);
 
         if(!Keyboard.isKeyPressed(Keyboard.Key.ESCAPE) && prevEscape) {
             gsm.popState();
         }
+        resButton.checkInBox(pos);
+        if(resButton.isClicked() &&  Mouse.isButtonPressed(Mouse.Button.LEFT) && !prevClick) {
+            prevClick = true;
+            currentRes++;
+            if(currentRes>5)
+                currentRes = 0;
+            resButton.setTitle("Resolution: " + resolutionStrings[currentRes]);
+            String res = resolutionStrings[currentRes];
+            String[] sizes = res.split("x");
+            window.setSize(new Vector2i(Integer.parseInt(sizes[0]),Integer.parseInt(sizes[1])));
+        }
+
+        resText.setString("Current Resolution: " + resolutionStrings[currentRes]);
 
         prevEscape = Keyboard.isKeyPressed(Keyboard.Key.ESCAPE);
+        prevClick = Mouse.isButtonPressed(Mouse.Button.LEFT);
     }
 
     public void render() {
@@ -89,6 +109,7 @@ public class Options extends State {
         for(Slider slider : sliders) {
             slider.render(window);
         }
+        resButton.render(window);
     }
 
     public void dispose() {}

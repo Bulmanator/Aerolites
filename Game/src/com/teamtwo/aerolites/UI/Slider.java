@@ -69,7 +69,7 @@ public class Slider implements EntityRenderable {
 
                     display[0].setSize(new Vector2f(size.x * value, size.y));
 
-                    text.setString(title);
+                    text.setString(title + " - " + (int)(value * 100f) + "%");
                 }
             }
         }

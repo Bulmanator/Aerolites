@@ -58,7 +58,7 @@ public class PlayerSelect extends State {
         playerCount = 1;
 
         background = new RectangleShape(WORLD_SIZE);
-        background.setTexture(ContentManager.instance.getTexture("Stars"));
+        background.setTexture(ContentManager.instance.getTexture("Space"));
 
         ready = false;
         Vector2f position = new Vector2f((WORLD_SIZE.x / 2f) - 400f, 875f);
