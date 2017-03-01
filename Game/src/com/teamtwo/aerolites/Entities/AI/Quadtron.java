@@ -1,10 +1,8 @@
 package com.teamtwo.aerolites.Entities.AI;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import com.teamtwo.aerolites.Entities.Bullet;
 import com.teamtwo.aerolites.Entities.CollisionMask;
 import com.teamtwo.aerolites.Entities.Entity;
-import com.teamtwo.engine.Input.Controllers.Controllers;
 import com.teamtwo.engine.Messages.Message;
 import com.teamtwo.engine.Messages.Types.CollisionMessage;
 import com.teamtwo.engine.Physics.BodyConfig;
@@ -13,20 +11,19 @@ import com.teamtwo.engine.Physics.RigidBody;
 import com.teamtwo.engine.Physics.World;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.Interfaces.Disposable;
-import com.teamtwo.engine.Utilities.Interfaces.Typeable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.audio.SoundSource;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector3f;
-import org.jsfml.window.Window;
 
 import java.util.ArrayList;
 
 /**
  * @author Matthew Threlfall
  */
+
 public class Quadtron extends Entity implements Disposable {
 
     public enum Faces {
@@ -54,9 +51,9 @@ public class Quadtron extends Entity implements Disposable {
     private float shootTimer;
     private float waitTimer;
     private float fadeout;
-    private boolean swarmer;
     private float angle;
-    //TODO swarmers
+    private float lastHit;
+    //TODO make fade out work with lerp
 
     public Quadtron(World world, int lives) {
         this.lives = lives;
@@ -72,6 +69,7 @@ public class Quadtron extends Entity implements Disposable {
         shootTimer = 0;
         waitTimer = 0;
         fadeout = 100;
+        lastHit = 10;
 
         bullets = new ArrayList<>();
         bulletPositions = new ArrayList<>();
@@ -84,13 +82,12 @@ public class Quadtron extends Entity implements Disposable {
         verticies[2] = new Vector2f(360,360);
         verticies[3] = new Vector2f(0,360);
         config.shape = new Polygon(verticies);
-        currentFace = Faces.Four;
-        swarmer = true;
+        currentFace = Faces.One;
 
         config.position = new Vector2f(State.WORLD_SIZE.x/2, -180);
         config.category = CollisionMask.QUADTRON;
         config.mask = CollisionMask.ALL;
-        config.angularVelocity = 0.1205f * MathUtil.PI;
+        config.angularVelocity = 0.1205f * MathUtil.PI/2;
 
         body = world.createBody(config);
         body.setData(this);
@@ -134,8 +131,14 @@ public class Quadtron extends Entity implements Disposable {
     public void update(float dt) {
         shootTimer += dt;
         waitTimer += dt;
+        lastHit += dt;
 
-        display.setFillColor(MathUtil.lerpColour(Color.CYAN, Color.RED, 1 - (lives / totalLives)));
+        if(lastHit < 0.1f) {
+            display.setFillColor(Color.WHITE);
+        }
+        else {
+            display.setFillColor(MathUtil.lerpColour(Color.CYAN, Color.RED, 1 - (lives / totalLives)));
+        }
 
         if(lives < 0){
             onScreen = false;
@@ -250,7 +253,6 @@ public class Quadtron extends Entity implements Disposable {
                             shield2.setVelocity(new Vector2f(0,0));
                             shield.setTransform(new Vector2f(1358,540),MathUtil.PI/4);
                             shield2.setTransform(new Vector2f(561,540),MathUtil.PI/4);
-                            swarmer = true;
                             waitTimer = 0;
                             cooldown = 0.3f;
                         }
@@ -269,7 +271,6 @@ public class Quadtron extends Entity implements Disposable {
                         shield2.setVelocity(new Vector2f(0,0));
                         shield.setTransform(new Vector2f(1358,540),MathUtil.PI/4);
                         shield2.setTransform(new Vector2f(561,540),MathUtil.PI/4);
-                        swarmer = true;
                         cooldown = 0.7f;
                         angle = MathUtil.PI/4f;
                     }
@@ -369,6 +370,7 @@ public class Quadtron extends Entity implements Disposable {
             damage = damage && (cm.getBodyA() != shield && cm.getBodyB() != shield && cm.getBodyA() != shield2 && cm.getBodyB() != shield);
             if(damage) {
                 lives--;
+                lastHit = 0;
             }
         }
     }
@@ -412,15 +414,4 @@ public class Quadtron extends Entity implements Disposable {
         return Type.Quadtron;
     }
 
-    public boolean isShooting() {
-        return shooting;
-    }
-
-    public void setShooting(boolean shooting) {
-        this.shooting = shooting;
-    }
-
-    public Faces getCurrentFace(){
-        return currentFace;
-    }
 }

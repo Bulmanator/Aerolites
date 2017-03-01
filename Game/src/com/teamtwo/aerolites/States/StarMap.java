@@ -29,7 +29,7 @@ public class StarMap extends State implements Observer {
             this.difficulty = difficulty;
             display = new CircleShape(starSize, 4);
             display.setOrigin(starSize, starSize);
-            display.setPosition(position);
+            display.setPosition(position.x + MathUtil.randomFloat(-30,70), position.y + MathUtil.randomFloat(-70,70));
 
             this.phase = phase;
 
@@ -167,7 +167,6 @@ public class StarMap extends State implements Observer {
 
         current = stars.get(0);
 
-        System.out.println("Star Count: " + stars.size());
     }
 
     public void update(float dt) {

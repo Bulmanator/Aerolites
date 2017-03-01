@@ -11,7 +11,7 @@ import org.jsfml.system.Vector2f;
 import org.jsfml.window.Mouse;
 
 /**
- * Created by james on 22/02/17.
+ * @author James Bulman
  */
 public class Slider implements EntityRenderable {
 
@@ -55,7 +55,6 @@ public class Slider implements EntityRenderable {
         for(RectangleShape shape : display) {
             renderer.draw(shape);
         }
-
         renderer.draw(text);
     }
 

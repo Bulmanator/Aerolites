@@ -28,8 +28,6 @@ import java.util.ArrayList;
  */
 public class Player extends Entity implements Disposable {
 
-    // TODO Add jet stream colours
-
     // #### Static Begin ####
     // Various constants which are the same across players
 

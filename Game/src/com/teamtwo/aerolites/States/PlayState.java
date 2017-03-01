@@ -155,7 +155,7 @@ public class PlayState extends State implements Listener {
 
         background = new RectangleShape(State.WORLD_SIZE);
         background.setPosition(0, 0);
-        background.setTexture(ContentManager.instance.getTexture("Stars"));
+        background.setTexture(ContentManager.instance.getTexture("Space"));
 
         observers = new HashMap<>();
     }
@@ -196,11 +196,8 @@ public class PlayState extends State implements Listener {
             postMessage(message);
 
             if(bossSpawned) {
-
                 bossIndex--;
             }
-
-            System.out.println("Current Boss: " + bossIndex);
 
             gameOver = false;
             onState = false;
@@ -547,7 +544,7 @@ public class PlayState extends State implements Listener {
             ContentManager.instance.loadTexture("Player", "Retro.png");
         }
 
-        ContentManager.instance.loadTexture("Space", "Space.png");
+        ContentManager.instance.loadTexture("Space", "Stars.png");
 
         // Load Fonts
         ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");
