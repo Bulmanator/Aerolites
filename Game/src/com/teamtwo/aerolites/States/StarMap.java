@@ -3,6 +3,7 @@ package com.teamtwo.aerolites.States;
 import com.teamtwo.aerolites.Utilities.InputType;
 import com.teamtwo.aerolites.Utilities.LevelConfig;
 import com.teamtwo.aerolites.Utilities.LevelOverMessage;
+import com.teamtwo.aerolites.Utilities.Score;
 import com.teamtwo.engine.Input.Controllers.*;
 import com.teamtwo.engine.Messages.Message;
 import com.teamtwo.engine.Messages.Observer;
@@ -28,7 +29,7 @@ public class StarMap extends State implements Observer {
             this.difficulty = difficulty;
             display = new CircleShape(starSize, 4);
             display.setOrigin(starSize, starSize);
-            display.setPosition(position);
+            display.setPosition(position.x + MathUtil.randomFloat(-30,70), position.y + MathUtil.randomFloat(-70,70));
 
             this.phase = phase;
 
@@ -48,6 +49,7 @@ public class StarMap extends State implements Observer {
     }
 
     private InputType[] players;
+    private Score[] scores;
 
     private RectangleShape background;
 
@@ -63,10 +65,13 @@ public class StarMap extends State implements Observer {
 
     private InputType defaultInput;
 
+    private boolean firstLevel;
+
     private boolean generated;
     private ArrayList<Node> stars;
     private float starSize;
-    private boolean r;
+    private boolean escape;
+    private boolean circle;
 
     private Font font;
 
@@ -78,6 +83,9 @@ public class StarMap extends State implements Observer {
         super(gsm);
 
         font = ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
+
+        firstLevel = true;
+        scores = null;
 
         background = new RectangleShape(WORLD_SIZE);
         background.setPosition(Vector2f.ZERO);
@@ -160,17 +168,14 @@ public class StarMap extends State implements Observer {
 
         current = stars.get(0);
 
-        System.out.println("Star Count: " + stars.size());
     }
 
     public void update(float dt) {
         if(gameComplete) {
-            gsm.setState(new GameOver(gsm));
+            gsm.setState(new GameOver(gsm, scores));
         }
 
-        if(Keyboard.isKeyPressed(Keyboard.Key.R) && !r) {
-            generate();
-        }
+
 
         ControllerState state = Controllers.getState(PlayerNumber.One);
 
@@ -179,7 +184,14 @@ public class StarMap extends State implements Observer {
                 reset(current.difficulty);
                 lastPhase = current.phase;
 
-                PlayState playState = new PlayState(gsm, config);
+                PlayState playState;
+                if(firstLevel) {
+                    playState = new PlayState(gsm, config);
+                }
+                else {
+                    playState = new PlayState(gsm, config, scores);
+                }
+
                 playState.registerObserver(this, Message.Type.LevelOver);
                 gsm.addState(playState);
             }
@@ -229,6 +241,10 @@ public class StarMap extends State implements Observer {
                     }
                 }
             }
+
+            if(!state.button(Button.B) && circle) {
+                gsm.popState();
+            }
         }
         else {
 
@@ -260,18 +276,30 @@ public class StarMap extends State implements Observer {
                         reset(node.difficulty);
                         lastPhase = node.phase;
 
-                        PlayState playState = new PlayState(gsm, config);
+                        PlayState playState;
+                        if(firstLevel) {
+                            playState = new PlayState(gsm, config);
+                        }
+                        else {
+                            playState = new PlayState(gsm, config, scores);
+                        }
+
                         playState.registerObserver(this, Message.Type.LevelOver);
                         gsm.addState(playState);
                     }
                 }
+            }
+
+            if(!Keyboard.isKeyPressed(Keyboard.Key.ESCAPE) && escape) {
+                gsm.popState();
             }
         }
 
         selection.rotate(-35 * dt);
         current.display.rotate(35f * dt);
 
-        r = Keyboard.isKeyPressed(Keyboard.Key.R);
+        escape = Keyboard.isKeyPressed(Keyboard.Key.ESCAPE);
+        circle = state.button(Button.B);
         prevPress = Mouse.isButtonPressed(Mouse.Button.LEFT);
         prevState = state;
     }
@@ -354,6 +382,11 @@ public class StarMap extends State implements Observer {
 
             if(complete) {
                 System.out.println("Congratulations! You beat the level!");
+                firstLevel = false;
+                scores = new Score[levelOver.getPlayerCount()];
+                for(int i = 0; i < scores.length; i++) {
+                    scores[i] = levelOver.getPlayer(i).getScore();
+                }
             }
             else {
                 System.out.println("Too Bad! Try again");

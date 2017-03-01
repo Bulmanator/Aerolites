@@ -13,7 +13,10 @@ import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
-import org.jsfml.graphics.*;
+import org.jsfml.graphics.CircleShape;
+import org.jsfml.graphics.Color;
+import org.jsfml.graphics.ConvexShape;
+import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector3f;
 
@@ -49,6 +52,8 @@ public class PascalBoss extends AI implements Disposable {
 
     private Vector3f[] bulletPositions;
     private ArrayList<Bullet> bullets;
+
+    //TODO make fadeout work with lerp
 
     public PascalBoss(World world, int lives, boolean second) {
 
@@ -125,7 +130,6 @@ public class PascalBoss extends AI implements Disposable {
         shootTimer = 0;
         lastHit = 2;
         barrage = 0;
-        fadeout  = 100;
     }
 
     public void update(float dt) {

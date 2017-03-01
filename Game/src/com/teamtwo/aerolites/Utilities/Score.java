@@ -65,13 +65,9 @@ public class Score {
     }
 
     /**
-     * Starts a new level, updating totals and resetting values
+     * Resets all of the level score parameters
      */
-    public void newLevel() {
-
-        roundValues();
-        updateTotals();
-
+    public void reset() {
         score = 0;
 
         asteroids = 0;
@@ -84,10 +80,21 @@ public class Score {
         timeBoosting = 0;
     }
 
+
+    /**
+     * Starts a new level, updating totals and resetting values
+     */
+    public void newLevel() {
+
+        roundValues();
+        updateTotals();
+        reset();
+    }
+
     /**
      * Adds all of the current level values to the totals
      */
-    public void updateTotals() {
+    private void updateTotals() {
         totalScore += score;
 
         totalAsteroids += asteroids;
@@ -98,6 +105,9 @@ public class Score {
 
         totalTimeAlive += timeAlive;
         totalTimeBoosting += totalTimeBoosting;
+
+
+        System.out.println("Total Score: " + totalScore + " Score: " + score);
     }
 
     /**

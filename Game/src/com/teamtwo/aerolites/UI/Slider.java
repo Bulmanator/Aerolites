@@ -11,7 +11,7 @@ import org.jsfml.system.Vector2f;
 import org.jsfml.window.Mouse;
 
 /**
- * Created by james on 22/02/17.
+ * @author James Bulman
  */
 public class Slider implements EntityRenderable {
 
@@ -45,7 +45,7 @@ public class Slider implements EntityRenderable {
         value = 0.5f;
         display[0].setSize(new Vector2f(size.x * value, size.y));
 
-        this.text.setString(title + " - " + (int)(value * 100f) + "%");
+        this.text.setString(title);
         float width = this.text.getLocalBounds().width;
         this.text.setPosition(position.x + (size.x / 2f) - (width / 2f), position.y);
     }
@@ -55,7 +55,6 @@ public class Slider implements EntityRenderable {
         for(RectangleShape shape : display) {
             renderer.draw(shape);
         }
-
         renderer.draw(text);
     }
 
@@ -80,5 +79,15 @@ public class Slider implements EntityRenderable {
 
     public void setValue(float value) {
         this.value = MathUtil.clamp(value, 0, 1);
+        display[0].setSize(new Vector2f(size.x * this.value, size.y));
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+        text.setString(title);
+        Vector2f pos = display[0].getPosition();
+        text.setPosition((pos.x + (display[1].getSize().x / 2f)) - (text.getLocalBounds().width / 2f), pos.y);
+    }
+
+    public void setColour(Color colour) { display[0].setFillColor(colour); }
 }

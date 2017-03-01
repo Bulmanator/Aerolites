@@ -13,6 +13,7 @@ import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
+import org.jsfml.graphics.CircleShape;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.ConvexShape;
 import org.jsfml.graphics.RenderWindow;
@@ -26,8 +27,6 @@ import java.util.ArrayList;
  * @author Matthew Threlfall
  */
 public class Player extends Entity implements Disposable {
-
-    // TODO Add jet stream colours
 
     // #### Static Begin ####
     // Various constants which are the same across players
@@ -55,6 +54,8 @@ public class Player extends Entity implements Disposable {
     private PlayerNumber player;
     private PlayerNumber controllerNumber;
 
+    private CircleShape[] shields;
+
     // The amount of lives the player has left
     private int lives;
 
@@ -67,6 +68,7 @@ public class Player extends Entity implements Disposable {
     private Color defaultColour;
 
     private float immuneTime;
+    private boolean hasShield;
 
     //Scoring
     private Score score;
@@ -83,10 +85,12 @@ public class Player extends Entity implements Disposable {
 
         if(this.controllerNumber == null) controller = false;
 
-        lives = 19;
+        lives = 2;
         alive = true;
 
         immuneTime = 0;
+        hasShield = false;
+
         score = new Score();
 
         BodyConfig config = new BodyConfig();
@@ -135,6 +139,20 @@ public class Player extends Entity implements Disposable {
         display.setFillColor(defaultColour);
 
         bullets = new ArrayList<>();
+
+        shields = new CircleShape[2];
+
+        shields[0] = new CircleShape(48, 4);
+        shields[0].setOrigin(48, 48);
+        shields[0].setFillColor(Color.TRANSPARENT);
+        shields[0].setOutlineColor(Color.WHITE);
+        shields[0].setOutlineThickness(3f);
+
+        shields[1] = new CircleShape(48, 4);
+        shields[1].setOrigin(48, 48);
+        shields[1].setFillColor(Color.TRANSPARENT);
+        shields[1].setOutlineColor(defaultColour);
+        shields[1].setOutlineThickness(3f);
     }
 
     private void setColours() {
@@ -244,6 +262,9 @@ public class Player extends Entity implements Disposable {
                 ContentManager.instance.getSound("Pew").play();
             }
         }
+
+        shields[0].rotate(-65 * dt);
+        shields[1].rotate(65 * dt);
     }
 
     /**
@@ -263,8 +284,13 @@ public class Player extends Entity implements Disposable {
 
         if(immuneTime > 0) {
             immuneTime -= dt;
-            if (MathUtil.round(immuneTime % 0.3f, 1) == 0)
+            if (!hasShield && MathUtil.round(immuneTime % 0.3f, 1) == 0) {
                 display.setFillColor(Color.WHITE);
+            }
+        }
+        else {
+            immuneTime = 0;
+            hasShield = false;
         }
 
         if(powerUpTime > 0) {
@@ -317,7 +343,9 @@ public class Player extends Entity implements Disposable {
     public void render(RenderWindow renderer) {
         if(!alive) return;
 
-        display.setPosition(body.getTransform().getPosition());
+        Vector2f pos = body.getTransform().getPosition();
+
+        display.setPosition(pos);
         display.setRotation(body.getTransform().getAngle() * MathUtil.RAD_TO_DEG);
 
         // Draw the jet and shape
@@ -326,6 +354,14 @@ public class Player extends Entity implements Disposable {
 
         for(Bullet bullet : bullets) {
             bullet.render(renderer);
+        }
+
+
+        if(hasShield) {
+            for (CircleShape shield : shields) {
+                shield.setPosition(pos);
+                renderer.draw(shield);
+            }
         }
     }
 
@@ -355,6 +391,7 @@ public class Player extends Entity implements Disposable {
             switch (other) {
                 case Shield:
                     immuneTime = 10;
+                    hasShield = true;
                     break;
                 case Life:
                     lives++;
@@ -392,12 +429,12 @@ public class Player extends Entity implements Disposable {
     public PlayerNumber getControllerNumber() { return controllerNumber; }
 
     public Color getDefaultColour() { return defaultColour; }
+    public Score getScore() { return score; }
 
     public void setLives(int lives) { this.lives = lives; }
-
     public void setAlive(boolean alive) { this.alive = alive; }
+    public void setScore(Score score) { this.score = score; }
 
-    public Score getScore() { return score; }
 
     @Override
     public void dispose() {

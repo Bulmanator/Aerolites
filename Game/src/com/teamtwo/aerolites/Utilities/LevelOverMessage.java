@@ -16,9 +16,11 @@ public class LevelOverMessage implements Message {
         this.complete = complete;
     }
 
-    public Player getPlayers(int index) {
+    public Player getPlayer(int index) {
         return players[index];
     }
+
+    public int getPlayerCount() { return players.length; }
 
     public boolean isComplete() {
         return complete;

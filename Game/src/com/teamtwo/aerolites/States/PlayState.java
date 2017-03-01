@@ -1,12 +1,20 @@
 package com.teamtwo.aerolites.States;
 
+import com.teamtwo.aerolites.Entities.AI.Hexaboss;
+import com.teamtwo.aerolites.Entities.AI.PascalBoss;
+import com.teamtwo.aerolites.Entities.AI.Quadtron;
+import com.teamtwo.aerolites.Entities.AI.StandardAI;
 import com.teamtwo.aerolites.Entities.AI.*;
 import com.teamtwo.aerolites.Entities.Asteroid;
-import com.teamtwo.aerolites.Entities.*;
+import com.teamtwo.aerolites.Entities.Entity;
 import com.teamtwo.aerolites.Entities.Player;
+import com.teamtwo.aerolites.Entities.Powerup;
 import com.teamtwo.aerolites.Utilities.InputType;
 import com.teamtwo.aerolites.Utilities.LevelConfig;
 import com.teamtwo.aerolites.Utilities.LevelOverMessage;
+import com.teamtwo.aerolites.Utilities.Score;
+import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
+import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
 import com.teamtwo.engine.Input.Controllers.PlayerNumber;
 import com.teamtwo.engine.Messages.Listener;
 import com.teamtwo.engine.Messages.Message;
@@ -18,9 +26,9 @@ import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.audio.Music;
+import org.jsfml.audio.SoundSource;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
-import org.jsfml.window.Keyboard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,7 +67,7 @@ public class PlayState extends State implements Listener {
         private boolean spawnAsteroid() { return asteroid >= asteroidRate; }
         private boolean spawnSwarmer() { return swarmer >= swarmerRate; }
         private boolean spawnAI() { return ai >= aiRate; }
-        private boolean spawnBoss() { return boss >= bossRate; }
+        private boolean spawnBoss() { return boss >= bossRate - 6; }
     }
 
     private boolean onState;
@@ -80,20 +88,21 @@ public class PlayState extends State implements Listener {
 
     private boolean gameOver;
 
+    //asteroid Particles
+    private ArrayList<ParticleEmitter> debris;
+    private ArrayList<Float> debrisTimer;
+
     // Messages
     private HashMap<Message.Type, List<Observer>> observers;
 
-    //TODO shoot bullets out of ait
-    //TODO shop and stuff
-    //TODO make Tijans shit work
-    //TODO tie everything together
+    public PlayState(GameStateManager gsm, LevelConfig config) { this(gsm, config, null); }
 
     /**
      * Creates a new level from the configuration provided
      * @param gsm the game state manager for the entire game
      * @param config The configuration for the level
      */
-    public PlayState(GameStateManager gsm, LevelConfig config) {
+    public PlayState(GameStateManager gsm, LevelConfig config, Score[] playerScores) {
         super(gsm);
 
         this.config = config;
@@ -130,11 +139,17 @@ public class PlayState extends State implements Listener {
             }
         }
 
+        if(playerScores != null) {
+            for(int i = 0; i < players.length; i++) {
+                players[i].setScore(playerScores[i]);
+            }
+        }
+
         timer = new Timers();
 
-        timer.asteroidRate = config.difficulty.asteroid;
-        timer.swarmerRate = config.difficulty.swarmer;
-        timer.aiRate = config.difficulty.ai;
+        timer.asteroidRate = config.difficulty.asteroid / (1.8f * playerCount);
+        timer.swarmerRate = config.difficulty.swarmer / (float) playerCount;
+        timer.aiRate = config.difficulty.ai / (float) playerCount;
         timer.bossRate = config.difficulty.boss;
 
         background = new RectangleShape(State.WORLD_SIZE);
@@ -142,14 +157,12 @@ public class PlayState extends State implements Listener {
         background.setTexture(ContentManager.instance.getTexture("Space"));
 
         observers = new HashMap<>();
+
+        debris = new ArrayList<>();
+        debrisTimer = new ArrayList<>();
     }
 
     public void update(float dt) {
-
-
-        if(!Keyboard.isKeyPressed(Keyboard.Key.W)) {
-            dt = dt * 0.25f;
-        }
 
         /*
          *
@@ -196,7 +209,6 @@ public class PlayState extends State implements Listener {
         if(alive == 0) {
             gameOver = true;
         }
-
         if(timer.spawnBoss()) {
             switch (config.difficulty) {
                 case Easy:
@@ -204,7 +216,9 @@ public class PlayState extends State implements Listener {
                     gameOver = true;
                     break;
                 case Hard:
-                    if(!bossSpawned) {
+                    if(timer.boss > timer.bossRate - 6 && timer.boss  < timer.bossRate)
+                        bossWipeout();
+                    else if(!bossSpawned) {
                         switch (bossIndex) {
                             case 0:
                                 bosses = new Entity[1];
@@ -219,6 +233,9 @@ public class PlayState extends State implements Listener {
                                 bosses = new Entity[1];
                                 bosses[0] = new Quadtron(world, Quadtron.lives * players.length);
                                 break;
+                            default:
+                                System.out.println("Error: Boss index exceeded!");
+                                throw new IllegalStateException("BOSS ERROR");
                         }
 
                         bossSpawned = true;
@@ -273,9 +290,8 @@ public class PlayState extends State implements Listener {
                 gameOver = true;
             }
         }
-
-        if(!bossSpawned) {
-            timer.advance(dt);
+        timer.advance(dt);
+        if(!bossSpawned && timer.boss < timer.bossRate - 6) {
 
             if (timer.spawnAsteroid()) {
                 entities.add(new Asteroid(world));
@@ -299,11 +315,28 @@ public class PlayState extends State implements Listener {
             Entity entity = entities.get(i);
 
             if(!entity.isOnScreen()) {
+                ParticleConfig config = new ParticleConfig();
+                config.endSize = 1;
+                config.startSize = MathUtil.randomInt(7, 12);
+                config.maxAngle = 0;
+                config.minAngle = 360;
+                config.maxLifetime = 3;
+                config.minLifetime = 3f;
+                config.pointCount = 3;
+                config.position = entity.getBody().getTransform().getPosition();
+                config.rotationalSpeed = MathUtil.randomInt(-20,20);
+                config.speed = MathUtil.randomInt(40, 40);
+                config.colours[0] = new Color(255,153,0);
+                config.colours[1] = Color.RED;
+                config.colours[2] = Color.RED;
+                debris.add(new ParticleEmitter(config,10000f, MathUtil.randomInt(4,20)));
+                debrisTimer.add(0f);
                 world.removeBody(entity.getBody());
                 if(entity instanceof Disposable) {
                     Disposable d = (Disposable) entity;
                     d.dispose();
                 }
+
 
                 entities.remove(entity);
                 i--;
@@ -343,12 +376,22 @@ public class PlayState extends State implements Listener {
             }
         }
 
+        for(int i = 0; i < debrisTimer.size(); i++) {
+            debrisTimer.set(i, debrisTimer.get(i)+dt);
+            debris.get(i).update(dt);
+            if(debrisTimer.get(i) > 3f) {
+                debrisTimer.remove(i);
+                debris.remove(i);
+                i--;
+            }
+        }
+
         // Update the physics world
         world.update(dt);
     }
 
 
-    public int updateAsteroid(Asteroid a){
+    public int updateAsteroid(Asteroid a) {
         int index = entities.indexOf(a);
 
         Vector2f pos = a.getBody().getTransform().getPosition();
@@ -390,6 +433,22 @@ public class PlayState extends State implements Listener {
                 entities.add(a1);
                 entities.add(a2);
             }
+            ParticleConfig config = new ParticleConfig();
+            config.endSize = 1;
+            config.startSize = MathUtil.randomInt(7, 12);
+            config.maxAngle = 0;
+            config.minAngle = 360;
+            config.maxLifetime = 3;
+            config.minLifetime = 3f;
+            config.pointCount = 3;
+            config.position = a.getBody().getTransform().getPosition();
+            config.rotationalSpeed = MathUtil.randomInt(-20,20);
+            config.speed = MathUtil.randomInt(40, 40);
+            config.colours[0] = Color.WHITE;
+            config.colours[1] = Color.RED;
+            config.colours[2] = Color.RED;
+            debris.add(new ParticleEmitter(config,10000f, MathUtil.randomInt(4,20)));
+            debrisTimer.add(0f);
 
             ContentManager.instance.getSound("Explode_" + MathUtil.randomInt(1, 4)).play();
             world.removeBody(a.getBody());
@@ -399,12 +458,57 @@ public class PlayState extends State implements Listener {
         return index;
     }
 
+    public void bossWipeout() {
+        for(int i = 0; i < entities.size(); i++) {
+            if(MathUtil.randomInt(0, 35) == 0) {
+                Entity e  = entities.get(i);
+                if(e.getType() == Entity.Type.Asteroid && e.getBody().getShape().getRadius() / 2 > 15) {
+                    Asteroid a = (Asteroid) e;
+                    Vector2f position = e.getBody().getTransform().getPosition();
+                    Vector2f velocity = new Vector2f(e.getBody().getVelocity().x, e.getBody().getVelocity().y);
+                    float radius = a.getShape().getRadius() * MathUtil.randomFloat(0.5f, 0.8f);
+
+                    Asteroid a1 = new Asteroid(world, position, velocity, radius);
+                    radius = a.getShape().getRadius() * MathUtil.randomFloat(0.5f, 0.8f);
+                    Asteroid a2 = new Asteroid(world, position, Vector2f.neg(velocity), radius);
+
+                    entities.add(a1);
+                    entities.add(a2);
+                    ParticleConfig config = new ParticleConfig();
+                    config.endSize = 1;
+                    config.startSize = MathUtil.randomInt(7, 12);
+                    config.maxAngle = 0;
+                    config.minAngle = 360;
+                    config.maxLifetime = 3;
+                    config.minLifetime = 3f;
+                    config.pointCount = 3;
+                    config.position = a.getBody().getTransform().getPosition();
+                    config.rotationalSpeed = MathUtil.randomInt(-20,20);
+                    config.speed = MathUtil.randomInt(40, 40);
+                    config.colours[0] = Color.WHITE;
+                    config.colours[1] = Color.RED;
+                    config.colours[2] = Color.RED;
+                    debris.add(new ParticleEmitter(config,10000f, MathUtil.randomInt(4,20)));
+                    debrisTimer.add(0f);
+                }
+                world.removeBody(e.getBody());
+                entities.remove(i);
+                ContentManager.instance.getSound("Explode_" + MathUtil.randomInt(1, 4)).play();
+                i--;
+            }
+        }
+    }
+
     @Override
     public void render() {
 
         window.setTitle("FPS: " + game.getEngine().getFramerate());
 
         window.draw(background);
+
+        for(ParticleEmitter pe: debris) {
+            pe.render(window);
+        }
 
         for(Entity entity : entities) {
             entity.render(window);
@@ -441,16 +545,13 @@ public class PlayState extends State implements Listener {
             }
         }
 
-      /*  if(bossSpawned && bossIndex == Entity.Type.PascalBoss)
-            if(boss2.isAlive()) boss2.render(window);
-        if(bossSpawned && boss.isAlive()) {
-            boss.render(window);
-        }
 
-        boolean showText = bossTimer > config.bossSpawnTime - 6 && bossTimer < config.bossSpawnTime + 10
-                && MathUtil.round(bossTimer % 1f, 0) == 0; */
 
-        /*if(showText) {
+        boolean showText = timer.boss > timer.bossRate - 6 && !bossSpawned
+                && MathUtil.round(timer.boss % 1f, 0) == 0
+                && config.difficulty == LevelConfig.Difficulty.Hard;
+
+        if(showText) {
 
             text = new Text("Danger! Boss Approaching!", ContentManager.instance.getFont("Ubuntu"), 36);
             text.setStyle(Text.BOLD | TextStyle.UNDERLINED);
@@ -460,14 +561,10 @@ public class PlayState extends State implements Listener {
             text.setPosition(State.WORLD_SIZE.x / 2, 40);
             window.draw(text);
 
-            if(!alertPlaying) {
+            if(ContentManager.instance.getSound("Alert").getStatus() == SoundSource.Status.STOPPED) {
                 ContentManager.instance.getSound("Alert").play();
-                alertPlaying = true;
             }
         }
-        else {
-            alertPlaying = false;
-        }*/
 
        world.render(window);
     }
@@ -530,7 +627,7 @@ public class PlayState extends State implements Listener {
             ContentManager.instance.loadTexture("Player", "Retro.png");
         }
 
-        ContentManager.instance.loadTexture("Space", "Space.png");
+        ContentManager.instance.loadTexture("Space", "Stars.png");
 
         // Load Fonts
         ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");

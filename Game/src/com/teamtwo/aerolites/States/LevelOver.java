@@ -25,6 +25,8 @@ public class LevelOver extends State {
         Scores
     }
 
+    private boolean win;
+
     private PlayState background;
 
     private Stage current;
@@ -44,6 +46,8 @@ public class LevelOver extends State {
     public LevelOver(GameStateManager gsm, PlayState background, boolean win) {
         super(gsm);
         this.background = background;
+
+        this.win = win;
 
         current = Stage.GameOver;
         backgroundPos = 0;
@@ -124,6 +128,17 @@ public class LevelOver extends State {
                         current = Stage.Scores;
                     }
                     else {
+                        if(win) {
+                            for(Player score : players) {
+                                score.getScore().newLevel();
+                            }
+                        }
+                        else {
+                            for(Player score : players) {
+                                score.getScore().reset();
+                            }
+                        }
+
                         gsm.popState();
                     }
                 }
@@ -134,6 +149,17 @@ public class LevelOver extends State {
                     current = Stage.Scores;
                 }
                 else {
+                    if(win) {
+                        for(Player score : players) {
+                            score.getScore().newLevel();
+                        }
+                    }
+                    else {
+                        for(Player score : players) {
+                            score.getScore().reset();
+                        }
+                    }
+
                     gsm.popState();
                 }
             }
