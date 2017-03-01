@@ -4,6 +4,7 @@ import com.teamtwo.aerolites.States.MainMenu;
 import com.teamtwo.engine.Game;
 import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
+import org.jsfml.window.Keyboard;
 
 public class Aerolites extends Game {
 
@@ -22,6 +23,8 @@ public class Aerolites extends Game {
      * @param dt The amount of time passed since last frame
      */
     public void update(float dt) {
+        if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE) && Keyboard.isKeyPressed(Keyboard.Key.LSHIFT))
+            engine.close();
         stateManager.update(dt);
     }
 

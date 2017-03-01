@@ -50,4 +50,8 @@ public class UIButton implements EntityRenderable {
     public String getLabel() { return text.getString(); }
 
     public boolean isClicked() { return clicked; }
+
+    public void setTitle(String title) {
+        this.text.setString(title);
+    }
 }

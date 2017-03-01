@@ -70,7 +70,8 @@ public class StarMap extends State implements Observer {
     private boolean generated;
     private ArrayList<Node> stars;
     private float starSize;
-    private boolean r;
+    private boolean escape;
+    private boolean circle;
 
     private Font font;
 
@@ -88,7 +89,7 @@ public class StarMap extends State implements Observer {
 
         background = new RectangleShape(WORLD_SIZE);
         background.setPosition(Vector2f.ZERO);
-        background.setTexture(ContentManager.instance.getTexture("Stars"));
+        background.setTexture(ContentManager.instance.getTexture("Space"));
 
         this.players = players;
         defaultInput = players[0];
@@ -174,9 +175,7 @@ public class StarMap extends State implements Observer {
             gsm.setState(new GameOver(gsm, scores));
         }
 
-        if(Keyboard.isKeyPressed(Keyboard.Key.R) && !r) {
-            generate();
-        }
+
 
         ControllerState state = Controllers.getState(PlayerNumber.One);
 
@@ -242,6 +241,10 @@ public class StarMap extends State implements Observer {
                     }
                 }
             }
+
+            if(!state.button(Button.B) && circle) {
+                gsm.popState();
+            }
         }
         else {
 
@@ -286,12 +289,17 @@ public class StarMap extends State implements Observer {
                     }
                 }
             }
+
+            if(!Keyboard.isKeyPressed(Keyboard.Key.ESCAPE) && escape) {
+                gsm.popState();
+            }
         }
 
         selection.rotate(-35 * dt);
         current.display.rotate(35f * dt);
 
-        r = Keyboard.isKeyPressed(Keyboard.Key.R);
+        escape = Keyboard.isKeyPressed(Keyboard.Key.ESCAPE);
+        circle = state.button(Button.B);
         prevPress = Mouse.isButtonPressed(Mouse.Button.LEFT);
         prevState = state;
     }

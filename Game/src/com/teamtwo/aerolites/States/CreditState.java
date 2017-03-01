@@ -39,7 +39,7 @@ public class CreditState extends State {
 
         background = new RectangleShape(State.WORLD_SIZE);
         background.setPosition(0, 0);
-        background.setTexture(ContentManager.instance.getTexture("Stars"));
+        background.setTexture(ContentManager.instance.getTexture("Space"));
 
         colours = new Color[] {
                 Color.RED, Color.YELLOW, new Color(255, 45, 195),

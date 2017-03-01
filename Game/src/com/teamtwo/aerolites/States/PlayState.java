@@ -12,9 +12,9 @@ import com.teamtwo.aerolites.Entities.Powerup;
 import com.teamtwo.aerolites.Utilities.InputType;
 import com.teamtwo.aerolites.Utilities.LevelConfig;
 import com.teamtwo.aerolites.Utilities.LevelOverMessage;
+import com.teamtwo.aerolites.Utilities.Score;
 import com.teamtwo.engine.Graphics.Particles.ParticleConfig;
 import com.teamtwo.engine.Graphics.Particles.ParticleEmitter;
-import com.teamtwo.aerolites.Utilities.Score;
 import com.teamtwo.engine.Input.Controllers.PlayerNumber;
 import com.teamtwo.engine.Messages.Listener;
 import com.teamtwo.engine.Messages.Message;
@@ -317,11 +317,28 @@ public class PlayState extends State implements Listener {
             Entity entity = entities.get(i);
 
             if(!entity.isOnScreen()) {
+                ParticleConfig config = new ParticleConfig();
+                config.endSize = 1;
+                config.startSize = MathUtil.randomInt(7, 12);
+                config.maxAngle = 0;
+                config.minAngle = 360;
+                config.maxLifetime = 3;
+                config.minLifetime = 3f;
+                config.pointCount = 3;
+                config.position = entity.getBody().getTransform().getPosition();
+                config.rotationalSpeed = MathUtil.randomInt(-20,20);
+                config.speed = MathUtil.randomInt(40, 40);
+                config.colours[0] = new Color(255,153,0);
+                config.colours[1] = Color.RED;
+                config.colours[2] = Color.RED;
+                debris.add(new ParticleEmitter(config,10000f, MathUtil.randomInt(4,20)));
+                debrisTimer.add(0f);
                 world.removeBody(entity.getBody());
                 if(entity instanceof Disposable) {
                     Disposable d = (Disposable) entity;
                     d.dispose();
                 }
+
 
                 entities.remove(entity);
                 i--;
