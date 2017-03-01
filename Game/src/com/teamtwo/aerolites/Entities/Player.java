@@ -132,6 +132,8 @@ public class Player extends Entity implements Disposable {
 
         pConfig.position = body.getTransform().getPosition();
 
+        display.setTexture(ContentManager.instance.getTexture("Player"));
+
         jet = new ParticleEmitter(pConfig, 40f, 400);
 
         defaultColour = Color.WHITE;

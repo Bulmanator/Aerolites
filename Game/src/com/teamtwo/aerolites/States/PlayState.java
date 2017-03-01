@@ -219,7 +219,7 @@ public class PlayState extends State implements Listener {
                     if(timer.boss > timer.bossRate - 6 && timer.boss  < timer.bossRate)
                         bossWipeout();
                     else if(!bossSpawned) {
-                        switch (bossIndex) {
+                        switch (1) {
                             case 0:
                                 bosses = new Entity[1];
                                 bosses[0] = new Hexaboss(world, Hexaboss.lives * players.length);
@@ -618,16 +618,16 @@ public class PlayState extends State implements Listener {
         contentLoaded = true;
 
         // Load Textures
-        if(textured) {
-            ContentManager.instance.loadTexture("Asteroid", "Asteroid.png");
-            ContentManager.instance.loadTexture("Player", "Player.png");
-        }
-        else {
-            ContentManager.instance.loadTexture("Asteroid", "Retro.png");
-            ContentManager.instance.loadTexture("Player", "Retro.png");
-        }
+
+        ContentManager.instance.loadTexture("Asteroid", "Asteroid.png");
+        ContentManager.instance.loadTexture("Player", "Player.png");
+
+
 
         ContentManager.instance.loadTexture("Space", "Stars.png");
+
+        ContentManager.instance.loadTexture("Pascal1", "LargeEnemy1.png");
+        ContentManager.instance.loadTexture("Pascal2", "LargeEnemy2.png");
 
         // Load Fonts
         ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");

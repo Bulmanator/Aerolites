@@ -13,10 +13,7 @@ import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
-import org.jsfml.graphics.CircleShape;
-import org.jsfml.graphics.Color;
-import org.jsfml.graphics.ConvexShape;
-import org.jsfml.graphics.RenderWindow;
+import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector3f;
 
@@ -122,6 +119,13 @@ public class PascalBoss extends AI implements Disposable {
         display.setOutlineThickness(-8f);
         display.setOutlineColor(colour);
         display.setFillColor(colour);
+        if(second) {
+            Texture t = ContentManager.instance.getTexture("Pascal1");
+            display.setTexture(t);
+        }
+        else {
+            display.setTexture(ContentManager.instance.getTexture("Pascal2"));
+        }
 
         fireFace = MathUtil.randomInt(0, 3);
         addFirePoints(fireFace);
