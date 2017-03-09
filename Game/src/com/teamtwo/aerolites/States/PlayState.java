@@ -615,14 +615,12 @@ public class PlayState extends State implements Listener {
         contentLoaded = true;
 
         // Load Textures
-        if(textured) {
-            ContentManager.instance.loadTexture("Asteroid", "Asteroid.png");
-            ContentManager.instance.loadTexture("Player", "Player.png");
-        }
-        else {
-            ContentManager.instance.loadTexture("Asteroid", "Retro.png");
-            ContentManager.instance.loadTexture("Player", "Retro.png");
-        }
+
+        ContentManager.instance.loadTexture("Asteroid", "Asteroid.png");
+        ContentManager.instance.loadTexture("Player", "Player.png");
+
+        ContentManager.instance.loadTexture("Pascal1", "LargeEnemy1.png");
+        ContentManager.instance.loadTexture("Pascal2", "LargeEnemy2.png");
 
         // Load Sounds
         ContentManager.instance.loadSound("Pew", "pew.wav");
