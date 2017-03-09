@@ -2,7 +2,6 @@ package com.teamtwo.aerolites;
 
 import com.teamtwo.aerolites.States.MainMenu;
 import com.teamtwo.engine.Game;
-import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import org.jsfml.window.Keyboard;
 
@@ -14,7 +13,6 @@ public class Aerolites extends Game {
     /** This method is called once before the game begins running */
     public void initialise() {
         stateManager = new GameStateManager(this);
-        ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
         stateManager.addState(new MainMenu(stateManager));
     }
 
@@ -23,8 +21,10 @@ public class Aerolites extends Game {
      * @param dt The amount of time passed since last frame
      */
     public void update(float dt) {
-        if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE) && Keyboard.isKeyPressed(Keyboard.Key.LSHIFT))
+        if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE) && Keyboard.isKeyPressed(Keyboard.Key.LSHIFT)) {
             engine.close();
+        }
+
         stateManager.update(dt);
     }
 

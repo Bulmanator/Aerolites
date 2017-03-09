@@ -245,14 +245,11 @@ public class PlayState extends State implements Listener {
             }
         }
 
-
-
         if(gameOver && onState) {
-            System.out.println("Level Over!");
 
             for(Player player : players) {
                 world.removeBody(player.getBody());
-                player.setAlive(false);
+                player.kill();
             }
 
             LevelOverMessage message = new LevelOverMessage(players, true);
@@ -391,7 +388,7 @@ public class PlayState extends State implements Listener {
     }
 
 
-    public int updateAsteroid(Asteroid a) {
+    private int updateAsteroid(Asteroid a) {
         int index = entities.indexOf(a);
 
         Vector2f pos = a.getBody().getTransform().getPosition();
@@ -458,7 +455,7 @@ public class PlayState extends State implements Listener {
         return index;
     }
 
-    public void bossWipeout() {
+    private void bossWipeout() {
         for(int i = 0; i < entities.size(); i++) {
             if(MathUtil.randomInt(0, 35) == 0) {
                 Entity e  = entities.get(i);
@@ -626,11 +623,6 @@ public class PlayState extends State implements Listener {
             ContentManager.instance.loadTexture("Asteroid", "Retro.png");
             ContentManager.instance.loadTexture("Player", "Retro.png");
         }
-
-        ContentManager.instance.loadTexture("Space", "Stars.png");
-
-        // Load Fonts
-        ContentManager.instance.loadFont("Ubuntu","Ubuntu.ttf");
 
         // Load Sounds
         ContentManager.instance.loadSound("Pew", "pew.wav");

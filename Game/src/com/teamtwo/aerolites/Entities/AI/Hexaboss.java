@@ -160,6 +160,8 @@ public class Hexaboss extends AI implements Disposable {
 
         display = new ConvexShape(body.getShape().getVertices());
         display.setFillColor(Color.CYAN);
+        display.setOutlineColor(Color.CYAN);
+        display.setOutlineThickness(10f);
 
         cooldown = 0;
         lastHit = 0;
@@ -216,8 +218,10 @@ public class Hexaboss extends AI implements Disposable {
         damage.update(dt);
         updateParticles();
 
-        if(lastHit > 0.03f) {
-            display.setFillColor(MathUtil.lerpColour(Color.CYAN, Color.RED, 1 - (lives / totalLives)));
+        display.setFillColor(MathUtil.lerpColour(Color.CYAN, Color.RED, 1 - (lives / totalLives)));
+
+        if(lastHit > 0.25f) {
+            display.setOutlineColor(Color.CYAN);
         }
 
         if(lives < 0) {
@@ -364,7 +368,7 @@ public class Hexaboss extends AI implements Disposable {
 
             if(hit) {
                 lives--;
-                display.setFillColor(Color.WHITE);
+                display.setOutlineColor(Color.WHITE);
                 lastHit = 0;
             }
         }

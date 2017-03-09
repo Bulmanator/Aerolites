@@ -54,7 +54,6 @@ public class StarMap extends State implements Observer {
     private RectangleShape background;
 
     private Node current;
-    private int lastPhase;
     private CircleShape selection;
     private boolean complete;
 
@@ -67,7 +66,6 @@ public class StarMap extends State implements Observer {
 
     private boolean firstLevel;
 
-    private boolean generated;
     private ArrayList<Node> stars;
     private float starSize;
     private boolean escape;
@@ -82,7 +80,7 @@ public class StarMap extends State implements Observer {
     public StarMap(GameStateManager gsm, InputType[] players) {
         super(gsm);
 
-        font = ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
+        font = ContentManager.instance.getFont("Ubuntu");
 
         firstLevel = true;
         scores = null;
@@ -96,15 +94,12 @@ public class StarMap extends State implements Observer {
 
         stars = new ArrayList<>();
         prevNodes = new ArrayList<>();
-        generated = false;
-        lastPhase = -1;
 
         complete = false;
 
         prevState = Controllers.getState(PlayerNumber.One);
 
         generate();
-
 
         selection = new CircleShape(starSize * 2, 4);
         selection.setPosition(current.display.getPosition());
@@ -116,13 +111,8 @@ public class StarMap extends State implements Observer {
     }
 
     private void generate() {
-        //if(generated) return;
-      //  generated = true;
-
-        int hardCount = 2;
 
         starSize = 16;
-
         stars.clear();
 
         stars.add(
@@ -130,14 +120,15 @@ public class StarMap extends State implements Observer {
         );
 
         int difMin = 0, difMax = 2;
-
         int starCount = 4;
+        boolean hardGen = true;
         for(int pass = 0; pass < 3; pass++) {
             switch (pass) {
                 case 1:
                 case 2:
                     difMin = 0;
                     difMax = 3;
+                    hardGen = false;
                     break;
             }
 
@@ -150,11 +141,15 @@ public class StarMap extends State implements Observer {
                         (WORLD_SIZE.y / (float) (starCount + 1)) * (i + 1)
                 );
 
-                if(hardCount == 0) {
+                if(hardGen) {
                     difficulty = LevelConfig.Difficulty.values()[MathUtil.randomInt(difMin, 2)];
                 }
                 else if(difficulty == LevelConfig.Difficulty.Hard) {
-                    hardCount--;
+                    hardGen = true;
+                }
+
+                if((i == starCount - 1) && !hardGen) {
+                    difficulty = LevelConfig.Difficulty.Hard;
                 }
 
                 stars.add(new Node(difficulty, position, pass + 1));
@@ -178,11 +173,9 @@ public class StarMap extends State implements Observer {
 
 
         ControllerState state = Controllers.getState(PlayerNumber.One);
-
         if(defaultInput == InputType.Controller) {
             if (!state.button(Button.A) && prevState.button(Button.A) && !complete) {
                 reset(current.difficulty);
-                lastPhase = current.phase;
 
                 PlayState playState;
                 if(firstLevel) {
@@ -252,9 +245,6 @@ public class StarMap extends State implements Observer {
             boolean pressed = Mouse.isButtonPressed(Mouse.Button.LEFT);
             Vector2f mousePos = window.mapPixelToCoords(mouse);
 
-
-            //window.setTitle("FPS: " + game.getEngine().getFramerate());
-
             for (Node node : stars) {
                 Vector2f pos = node.display.getPosition();
                 pos = Vector2f.sub(pos, mousePos);
@@ -274,7 +264,6 @@ public class StarMap extends State implements Observer {
                     } else if (pressed && !prevPress && node == current && !complete) {
                         prevPress = true;
                         reset(node.difficulty);
-                        lastPhase = node.phase;
 
                         PlayState playState;
                         if(firstLevel) {
@@ -381,22 +370,14 @@ public class StarMap extends State implements Observer {
             complete = levelOver.isComplete();
 
             if(complete) {
-                System.out.println("Congratulations! You beat the level!");
                 firstLevel = false;
                 scores = new Score[levelOver.getPlayerCount()];
                 for(int i = 0; i < scores.length; i++) {
                     scores[i] = levelOver.getPlayer(i).getScore();
                 }
             }
-            else {
-                System.out.println("Too Bad! Try again");
-            }
 
-            if(complete && current == stars.get(stars.size() - 1)) {
-                System.out.println("Congrats! you beat the game!");
-                gameComplete = true;
-            }
-
+            gameComplete = complete && current == stars.get(stars.size() - 1);
         }
     }
 

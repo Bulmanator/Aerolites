@@ -10,9 +10,9 @@ public class LevelConfig {
      */
     public enum Difficulty {
         /** Easy difficulty */
-        Easy(8, 33, 45, 60),
+        Easy(8, 33, 45, 66),
         /** Medium difficulty */
-        Medium(4, 25, 30, 75),
+        Medium(4, 25, 30, 81),
         /** Hard difficulty */
         Hard(3f, 14, 16, 90);
 

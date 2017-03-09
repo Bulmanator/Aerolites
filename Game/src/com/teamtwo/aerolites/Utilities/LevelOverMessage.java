@@ -3,9 +3,6 @@ package com.teamtwo.aerolites.Utilities;
 import com.teamtwo.aerolites.Entities.Player;
 import com.teamtwo.engine.Messages.Message;
 
-/**
- * Created by james on 25/02/17.
- */
 public class LevelOverMessage implements Message {
 
     private Player[] players;

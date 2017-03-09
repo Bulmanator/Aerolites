@@ -84,9 +84,13 @@ public class LevelOver extends State {
 
     @Override
     public void update(float dt) {
+
         background.update(dt);
-        if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE))
+
+        if(Keyboard.isKeyPressed(Keyboard.Key.ESCAPE)) {
             game.getEngine().close();
+        }
+
         switch (current) {
             case GameOver:
                 if(backgroundPos < 1920) {
@@ -110,7 +114,7 @@ public class LevelOver extends State {
                         backgroundYMovement = 400;
                 }
 
-                if(backgroundYMovement == 400){
+                if(backgroundYMovement == 400) {
                     if(playerInfoSize < 700)
                         playerInfoSize += 3000 * dt;
                     else if(playerInfoSize > 700){

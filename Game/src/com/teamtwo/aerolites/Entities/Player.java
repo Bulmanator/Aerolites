@@ -432,7 +432,7 @@ public class Player extends Entity implements Disposable {
     public Score getScore() { return score; }
 
     public void setLives(int lives) { this.lives = lives; }
-    public void setAlive(boolean alive) { this.alive = alive; }
+    public void kill() { alive = false; }
     public void setScore(Score score) { this.score = score; }
 
 
