@@ -22,7 +22,7 @@ public abstract class Game implements Updateable, Renderable, Disposable {
     /**
      * Runs once at the beginning of the game, this should be used for setup
      */
-    public abstract void initialise();
+    protected abstract void initialise();
 
     /**
      * Runs once per frame, should be used to update all of your game objects

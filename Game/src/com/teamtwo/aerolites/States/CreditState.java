@@ -8,10 +8,7 @@ import com.teamtwo.engine.Utilities.ContentManager;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
-import org.jsfml.graphics.Color;
-import org.jsfml.graphics.Font;
-import org.jsfml.graphics.RectangleShape;
-import org.jsfml.graphics.Text;
+import org.jsfml.graphics.*;
 import org.jsfml.window.Keyboard;
 
 
@@ -23,6 +20,7 @@ public class CreditState extends State {
     private static final float timerPerColour = 0.5f;
 
     private Text[] names;
+    private Text[] musicCredit;
     private RectangleShape background;
 
     private float colourTimer;
@@ -33,10 +31,16 @@ public class CreditState extends State {
 
     private Color[] colours;
 
+    private boolean enabled;
+    private Button[] code = new Button[] {
+            Button.DPad_Up, Button.DPad_Up, Button.DPad_Down, Button.DPad_Down, Button.DPad_Left, Button.DPad_Right,
+            Button.DPad_Left, Button.DPad_Right, Button.B, Button.A
+    };
+    private int currentIndex;
+
     public CreditState(GameStateManager gsm) {
         super(gsm);
         Font font = ContentManager.instance.getFont("Ubuntu");
-
         background = new RectangleShape(State.WORLD_SIZE);
         background.setPosition(0, 0);
         background.setTexture(ContentManager.instance.getTexture("Space"));
@@ -58,12 +62,27 @@ public class CreditState extends State {
         names[4] = new Text("Pavlos Anastasiadis", font, fontSize);
         names[5] = new Text("Lewis Linaker", font, fontSize);
 
+        musicCredit = new Text[4];
+        musicCredit[0] = new Text("Perturbator - Complete Domination (Feat. Carpenter Brut)", font, fontSize);
+        musicCredit[1] = new Text("Chipzel - Focus (? Remix)", font, fontSize);
+        musicCredit[2] = new Text("Sabrepulse - First Crush (Feat. Knife City)", font, fontSize);
+        musicCredit[3] = new Text("Quadtron Boss music name goes here", font, fontSize);
+
+
         for(int i = 0; i < names.length; i++) {
-            names[i].setPosition((State.WORLD_SIZE.x / 2f) - (names[i].getLocalBounds().width / 2f), 100 + (i * 80));
+            names[i].setPosition(380, 100 + (i * 70));
         }
+
+        for(int i = 0; i < musicCredit.length; i++) {
+            musicCredit[i].setPosition(380, 580 + (i * 80));
+        }
+
+        currentIndex = 0;
 
         prevEscape = false;
         prevState = Controllers.getState(PlayerNumber.One);
+
+        enabled = true;
     }
 
     /**
@@ -73,12 +92,15 @@ public class CreditState extends State {
     public void update(float dt) {
         ControllerState state = Controllers.getState(PlayerNumber.One);
 
-        if (!Keyboard.isKeyPressed(Keyboard.Key.ESCAPE) && prevEscape) {
-            gsm.popState();
+        if(currentIndex != 8) {
+            if (!Keyboard.isKeyPressed(Keyboard.Key.ESCAPE) && prevEscape) {
+                gsm.popState();
+            }
+            else if (!state.button(Button.B) && prevState.button(Button.B)) {
+                gsm.popState();
+            }
         }
-        else if(!state.button(Button.B) && prevState.button(Button.B)) {
-            gsm.popState();
-        }
+
 
         colourTimer += dt;
 
@@ -94,13 +116,55 @@ public class CreditState extends State {
             currentColour++;
         }
 
+        for (Button button : Button.values()) {
+            if (!state.button(button) && prevState.button(button)) {
+                if (button == code[currentIndex]) {
+                    currentIndex++;
+                    if(currentIndex == code.length) {
+                        enabled = !enabled;
+                        currentIndex = 0;
+                    }
+                }
+                else {
+                    currentIndex = 0;
+                }
+            }
+        }
+
         prevState = state;
         prevEscape = Keyboard.isKeyPressed(Keyboard.Key.ESCAPE);
     }
 
     public void render() {
+
+        Font font = ContentManager.instance.getFont("Ubuntu");
+
         window.draw(background);
+
+        Text music = new Text("Music", font, 85);
+        music.setPosition(255, 840);
+        music.setStyle(TextStyle.BOLD | TextStyle.UNDERLINED);
+        music.setColor(Color.GREEN);
+        music.setRotation(-90);
+
+        window.draw(music);
+
+        music.setString("Development");
+        music.setCharacterSize(55);
+        music.setPosition(285, 475);
+        window.draw(music);
+
         for(Text text : names) { window.draw(text); }
+        for(Text text : musicCredit) { window.draw(text); }
+
+        if(enabled) {
+            Text superHot = new Text("Super Hot Mode Enabled!", font, 55);
+            superHot.setPosition(1040, 260);
+            superHot.setStyle(TextStyle.BOLD | TextStyle.UNDERLINED);
+            superHot.setColor(Color.GREEN);
+
+            window.draw(superHot);
+        }
     }
 
     @Override

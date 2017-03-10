@@ -31,6 +31,12 @@ import java.io.UncheckedIOException;
  */
 public class Engine implements Updateable, Renderable, Disposable {
 
+    public enum WindowMode {
+        Windowed,
+        Borderless,
+        Fullscreen
+    }
+
     /** The Name of the operating system */
     public static final String OS_NAME = System.getProperty("os.name").toLowerCase();
 
@@ -56,6 +62,7 @@ public class Engine implements Updateable, Renderable, Disposable {
 
     // The main Window of the Engine
     private RenderWindow window;
+    private WindowMode windowMode;
 
     // The Keyboard handler the engine is currently using
     private InputProcessor input;
@@ -97,6 +104,8 @@ public class Engine implements Updateable, Renderable, Disposable {
             deltaTime = 1.0f / (float)config.fpsLimit;
         }
 
+
+
         if(Debug.DEBUG) printDebugInfo();
 
         // Sets the Input Handling to a Default Handler
@@ -105,6 +114,16 @@ public class Engine implements Updateable, Renderable, Disposable {
         // Move the window to the top left corner if there is not title-bar
         if(config.style == WindowStyle.NONE) {
             window.setPosition(new Vector2i(0, 0));
+        }
+
+        if((config.style & WindowStyle.FULLSCREEN) == WindowStyle.FULLSCREEN) {
+            windowMode = WindowMode.Fullscreen;
+        }
+        else if(config.style == 0) {
+            windowMode = WindowMode.Borderless;
+        }
+        else {
+            windowMode = WindowMode.Windowed;
         }
 
         // Set content directory
@@ -339,4 +358,12 @@ public class Engine implements Updateable, Renderable, Disposable {
      * @return The framerate of the engine
      */
     public int getFramerate() { return fps; }
+
+    /**
+     * Gets the current mode of the window
+     * @return {@link WindowMode#Windowed}, {@link WindowMode#Borderless} or {@link WindowMode#Fullscreen}
+     */
+    public WindowMode getWindowMode() { return windowMode; }
+
+    public void setWindowMode(WindowMode mode) { windowMode = mode; }
 }

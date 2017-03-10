@@ -161,7 +161,7 @@ public class Hexaboss extends AI implements Disposable {
         display = new ConvexShape(body.getShape().getVertices());
         display.setFillColor(Color.CYAN);
         display.setOutlineColor(Color.CYAN);
-        display.setOutlineThickness(10f);
+        display.setOutlineThickness(-10f);
 
         cooldown = 0;
         lastHit = 0;
@@ -234,7 +234,6 @@ public class Hexaboss extends AI implements Disposable {
                 inPlace = true;
                 Music hexagon = ContentManager.instance.getMusic("Hexagon");
                 hexagon.play();
-                hexagon.setVolume(Options.MUSIC_VOLUME);
                 hexagon.setLoop(true);
                 ContentManager.instance.getMusic("PlayMusic").stop();
             }

@@ -14,6 +14,8 @@ import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.GameStateManager;
 import com.teamtwo.engine.Utilities.State.State;
+import org.jsfml.audio.Sound;
+import org.jsfml.audio.SoundSource;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
@@ -48,7 +50,6 @@ public class MainMenu extends State {
             selected[1] = new Text("]", font, fontSize);
             selected[1].setStyle(TextStyle.BOLD);
             float width = buttons[0].getText().getLocalBounds().width;
-            float height = buttons[0].getText().getLocalBounds().height;
             selected[1].setPosition(Vector2f.add(buttons[0].getPosition(), new Vector2f(width + offset.x, -offset.y)));
 
             current = buttons[0];
@@ -104,12 +105,16 @@ public class MainMenu extends State {
     private float accumulator, spawn;
     private int swarmerCount;
 
+    private Sound beep;
+
     public MainMenu(GameStateManager gsm) {
         super(gsm);
 
         ContentManager.instance.loadFont("Ubuntu", "Ubuntu.ttf");
         ContentManager.instance.loadTexture("Asteroid", "Asteroid.png");
         Texture bg = ContentManager.instance.loadTexture("Space", "Stars.png");
+
+        beep = ContentManager.instance.loadSound("Beep", "beep.wav");
 
         background = new RectangleShape(State.WORLD_SIZE);
         background.setPosition(0, 0);
@@ -209,6 +214,8 @@ public class MainMenu extends State {
                     selection.transitionTimer = 0;
                     selection.current = button;
 
+                    if(beep.getStatus() != SoundSource.Status.PLAYING) beep.play();
+
                     controllerIndex = i;
                 }
 
@@ -225,12 +232,16 @@ public class MainMenu extends State {
             selection.current = buttons[controllerIndex];
             selection.transition = true;
             selection.transitionTimer = 0;
+
+            if(beep.getStatus() != SoundSource.Status.PLAYING) beep.play();
         }
         else if(state.thumbstick(Thumbstick.Left).y > 25 && Math.abs(prevState.thumbstick(Thumbstick.Left).y) < 25) {
             controllerIndex = controllerIndex + 1 > 3 ? 0 : controllerIndex + 1;
             selection.current = buttons[controllerIndex];
             selection.transition = true;
             selection.transitionTimer = 0;
+
+            if(beep.getStatus() != SoundSource.Status.PLAYING) beep.play();
         }
 
         boolean controller = !state.button(Button.A) && prevState.button(Button.A);
@@ -267,7 +278,6 @@ public class MainMenu extends State {
         prevState = state;
 
         selected = false;
-        controller = false;
 
         selection.transition(dt);
     }

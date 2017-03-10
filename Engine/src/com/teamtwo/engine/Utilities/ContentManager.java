@@ -10,6 +10,7 @@ import org.jsfml.graphics.Texture;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -33,6 +34,9 @@ public class ContentManager {
     // Maps a String name onto a piece of music
     private HashMap<String, Music> music;
 
+    // The global sound effect and music volume
+    private float globalSFXVolume;
+    private float globalMusicVolume;
 
     /**
      * Private constructor to prevent other instances from being created
@@ -42,6 +46,9 @@ public class ContentManager {
         fonts = new HashMap<>();
         sounds = new HashMap<>();
         music = new HashMap<>();
+
+        globalSFXVolume = 50f;
+        globalMusicVolume = 50f;
     }
 
     /**
@@ -86,7 +93,9 @@ public class ContentManager {
         }
 
         // Returns the Sound associated
-        return sounds.get(name);
+        Sound ret = sounds.get(name);
+        ret.setVolume(globalSFXVolume);
+        return ret;
     }
 
     /**
@@ -101,7 +110,9 @@ public class ContentManager {
         }
 
         // Returns the Music associated
-        return music.get(name);
+        Music ret = music.get(name);
+        ret.setVolume(globalMusicVolume);
+        return ret;
     }
 
     /**
@@ -200,6 +211,7 @@ public class ContentManager {
         }
 
         // If it succeeds then put it into the hash map
+        s.setVolume(globalSFXVolume);
         sounds.put(name, s);
         return s;
     }
@@ -233,6 +245,7 @@ public class ContentManager {
         }
 
         // If it succeeds then put it into the hash map
+        m.setVolume(globalMusicVolume);
         music.put(name, m);
         return m;
     }
@@ -287,5 +300,29 @@ public class ContentManager {
         }
 
         music.remove(name);
+    }
+
+    /**
+     * Sets the volume for all of the sounds loaded
+     * @param volume The sound volume, between 0 and 100
+     */
+    public void setGlobalSFXVolume(float volume) {
+        Collection<Sound> sounds = this.sounds.values();
+        for(Sound sound : sounds) {
+            sound.setVolume(volume);
+        }
+        globalSFXVolume = volume;
+    }
+
+    /**
+     * Sets the volume for all of the music loaded
+     * @param volume The music volume, between 0 and 100
+     */
+    public void setGlobalMusicVolume(float volume) {
+        Collection<Music> music = this.music.values();
+        for(Music m : music) {
+            m.setVolume(volume);
+        }
+        globalMusicVolume = volume;
     }
 }

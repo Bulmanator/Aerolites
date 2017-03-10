@@ -104,10 +104,7 @@ public class Score {
         totalBulletsMissed += bulletsMissed;
 
         totalTimeAlive += timeAlive;
-        totalTimeBoosting += totalTimeBoosting;
-
-
-        System.out.println("Total Score: " + totalScore + " Score: " + score);
+        totalTimeBoosting += timeBoosting;
     }
 
     /**

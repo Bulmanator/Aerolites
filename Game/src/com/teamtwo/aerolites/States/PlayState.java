@@ -61,7 +61,7 @@ public class PlayState extends State implements Listener {
             asteroid += dt;
             swarmer += dt;
             ai += dt;
-            boss += dt;
+            if(onState) boss += dt;
         }
 
         private boolean spawnAsteroid() { return asteroid >= asteroidRate; }
@@ -113,7 +113,6 @@ public class PlayState extends State implements Listener {
         // Load content and then play the level music
         loadContent(config.textured);
         Music bgm = ContentManager.instance.getMusic("PlayMusic");
-        bgm.setVolume(Options.MUSIC_VOLUME);
         bgm.play();
 
         gameOver = false;
@@ -488,6 +487,9 @@ public class PlayState extends State implements Listener {
                     debris.add(new ParticleEmitter(config,10000f, MathUtil.randomInt(4,20)));
                     debrisTimer.add(0f);
                 }
+                else if(e.getType() == StandardAI) {
+                    ((StandardAI)e).dispose();
+                }
                 world.removeBody(e.getBody());
                 entities.remove(i);
                 ContentManager.instance.getSound("Explode_" + MathUtil.randomInt(1, 4)).play();
@@ -511,11 +513,12 @@ public class PlayState extends State implements Listener {
             entity.render(window);
         }
 
+        Font font = ContentManager.instance.getFont("Ubuntu");
         for(Player player : players) {
             player.render(window);
             if(player.isAlive()) {
                 int number = player.getNumber().ordinal();
-                Text text = new Text("Player " + (number + 1), ContentManager.instance.getFont("Ubuntu"), 28);
+                Text text = new Text("Player " + (number + 1), font, 28);
                 text.setStyle(TextStyle.BOLD);
                 text.setPosition(15, 25 + (number * 60));
                 window.draw(text);
@@ -526,10 +529,21 @@ public class PlayState extends State implements Listener {
                     shape.setFillColor(player.getDefaultColour());
                     window.draw(shape);
                 }
+
+                text = new Text("Score: " +
+                        (player.getScore().getTotalScore() + player.getScore().getScore()) + " Points", font, 28);
+                text.setPosition(270, 25 + (number * 60));
+                text.setStyle(TextStyle.BOLD);
+                window.draw(text);
             }
         }
 
-        Text text = new Text("Time Survived " + MathUtil.round(timer.boss, 2) + "s",
+        float time = MathUtil.round(timer.boss, 2);
+
+        int minutes = (int)(time / 60f);
+        float second = MathUtil.round(time % 60f, 2);
+
+        Text text = new Text("Time Survived: " + ((minutes > 0) ? minutes + "m " : "") + second + "s",
                 ContentManager.instance.getFont("Ubuntu"), 28);
 
         text.setStyle(TextStyle.BOLD);
@@ -623,12 +637,11 @@ public class PlayState extends State implements Listener {
         ContentManager.instance.loadTexture("Pascal2", "LargeEnemy2.png");
 
         // Load Sounds
-        ContentManager.instance.loadSound("Pew", "pew.wav");
+        ContentManager.instance.loadSound("Pew", "pew_two.wav");
         ContentManager.instance.loadSound("Explode_1", "explode.wav");
         ContentManager.instance.loadSound("Explode_2", "explode2.wav");
         ContentManager.instance.loadSound("Explode_3", "explode3.wav");
         ContentManager.instance.loadSound("Alert", "alert.wav");
-        ContentManager.instance.getSound("Alert").setVolume(50f);
 
         // Load Music
         ContentManager.instance.loadMusic("PlayMusic", "Music.wav");

@@ -14,7 +14,10 @@ import com.teamtwo.engine.Utilities.Interfaces.Disposable;
 import com.teamtwo.engine.Utilities.MathUtil;
 import com.teamtwo.engine.Utilities.State.State;
 import org.jsfml.audio.SoundSource;
-import org.jsfml.graphics.*;
+import org.jsfml.graphics.Color;
+import org.jsfml.graphics.ConvexShape;
+import org.jsfml.graphics.RectangleShape;
+import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector3f;
 
@@ -305,8 +308,8 @@ public class Quadtron extends Entity implements Disposable {
             }
         }
         else if(body.getTransform().getPosition().y<State.WORLD_SIZE.y/2) {
-            body.applyForce(new Vector2f(0,10000000));
-            fadeout-=35*dt;
+            body.applyForce(new Vector2f(0, 10000000));
+            fadeout -= 35 * dt;
             ContentManager.instance.getMusic("PlayMusic").setVolume(fadeout);
         }
         else if(!sheildPlaced){
@@ -347,15 +350,6 @@ public class Quadtron extends Entity implements Disposable {
         renderer.draw(r);
         r.setPosition(shield2.getTransform().getPosition());
         renderer.draw(r);
-
-        for(Vector3f v : bulletPositions) {
-
-            CircleShape s = new CircleShape();
-            s.setFillColor(Color.GREEN);
-            s.setPosition(MathUtil.toVector2f(v));
-            s.setRadius(5);
-            renderer.draw(s);
-        }
 
         for(Bullet bullet : bullets) {
             bullet.render(renderer);

@@ -132,8 +132,6 @@ public class Player extends Entity implements Disposable {
 
         pConfig.position = body.getTransform().getPosition();
 
-        display.setTexture(ContentManager.instance.getTexture("Player"));
-
         jet = new ParticleEmitter(pConfig, 40f, 400);
 
         defaultColour = Color.WHITE;
@@ -258,7 +256,6 @@ public class Player extends Entity implements Disposable {
                         body.getTransform().getAngle(), body.getWorld());
 
                 bullets.add(bullet);
-
                 score.bulletFired();
 
                 ContentManager.instance.getSound("Pew").play();
